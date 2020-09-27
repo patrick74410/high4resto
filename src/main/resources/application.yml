@@ -1,0 +1,13 @@
+server:
+  port: 8080
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/high4resto
+
+jwt:
+  secretKey: ecf1222c-88fd-47f3-988f-bdd78bade1ad
+logging:
+  level:
+    com.example: DEBUG
+    org.springframework.web: DEBUG
