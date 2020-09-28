@@ -12,6 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor(onConstructor = @__({@JsonCreator}))
 public class CountValue implements Serializable {
 
+    private static final long serialVersionUID = -6111842686170395417L;
     private final long count;
 
 }

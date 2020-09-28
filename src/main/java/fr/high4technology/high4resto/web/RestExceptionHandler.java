@@ -62,6 +62,8 @@ public class RestExceptionHandler implements WebExceptionHandler {
 @ToString
 class Errors implements Serializable {
 
+    private static final long serialVersionUID = -364930284448383693L;
+
     private final String code;
 
     private final String message;
@@ -83,6 +85,8 @@ class Errors implements Serializable {
 @Getter
 @ToString
 class Error implements Serializable {
+
+    private static final long serialVersionUID = 290293595435078077L;
 
     private final String path;
 

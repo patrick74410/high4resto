@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class UpdateStatusRequest implements Serializable {
 
+    private static final long serialVersionUID = -6194755734106931149L;
     @NotBlank
     private String status;
 

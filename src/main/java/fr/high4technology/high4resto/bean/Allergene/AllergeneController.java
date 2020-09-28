@@ -39,7 +39,7 @@ public class AllergeneController {
 	{
 	
 		return allergenes.deleteById(idItem)
-                .map( r -> ResponseEntity.ok().<Void>build())
+				.map( r -> ResponseEntity.ok().<Void>build())
                 .defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 
