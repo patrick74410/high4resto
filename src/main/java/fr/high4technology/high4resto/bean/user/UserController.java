@@ -37,7 +37,7 @@ public class UserController {
     private final ReactiveAuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public Mono<ResponseEntity> login(@Valid @RequestBody Mono<AuthenticationRequest> authRequest) {
+    public Mono<ResponseEntity<Map<String,String>>> login(@Valid @RequestBody Mono<AuthenticationRequest> authRequest) {
 
         return authRequest
                 .flatMap(login -> this.authenticationManager
