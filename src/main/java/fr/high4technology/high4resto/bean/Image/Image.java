@@ -20,5 +20,8 @@ public class Image {
     private String description;
 	@Getter
     private String gridId;
-
+    @Getter
+    private String fileName;
+    @Getter 
+    private String directory;
 }

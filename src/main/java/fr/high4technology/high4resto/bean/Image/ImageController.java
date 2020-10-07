@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ import reactor.core.publisher.Mono;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/images")
@@ -31,19 +34,23 @@ public class ImageController {
 	private final ReactiveGridFsTemplate gridFsTemplate;
 
     @PostMapping(path = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,@RequestParam("description") String description) {
+    public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,@RequestParam("description") String description,@RequestParam("fileName") String fileName,@RequestParam("directory") String directory) {
         return fileParts
             .flatMap(part -> this.gridFsTemplate.store(part.content(), part.filename()))
-            .flatMap(id -> this.images.save(Image.builder().description(description).gridId(id.toHexString()).build()))
+            .flatMap(id -> this.images.save(Image.builder().fileName(fileName).directory(directory).description(description).gridId(id.toHexString()).build()))
  			.map( r -> ResponseEntity.ok().<Void>build())
 			.defaultIfEmpty(ResponseEntity.notFound().build());
 	}    
 
     @GetMapping("/download/{id}")
     public Flux<Void> read(@PathVariable String id, ServerWebExchange exchange) {
-        return this.gridFsTemplate.findOne(query(where("_id").is(id)))
+       return this.gridFsTemplate.findOne(query(where("_id").is(id)))
             .flatMap(gridFsTemplate::getResource)
-            .flatMapMany(r -> exchange.getResponse().writeWith(r.getDownloadStream()));
+            .flatMapMany(r -> {
+				exchange.getResponse().getHeaders().setContentType(MediaType.IMAGE_PNG);
+				exchange.getResponse().getHeaders().setCacheControl(CacheControl.maxAge(Duration.ofSeconds(3600)).cachePrivate());		
+				return exchange.getResponse().writeWith(r.getDownloadStream());
+			});
     }
 
     @GetMapping("/find/")
@@ -72,6 +79,4 @@ public class ImageController {
 				.map( r -> ResponseEntity.ok().<Void>build())
                 .defaultIfEmpty(ResponseEntity.notFound().build());
 	}
-
-
 }
