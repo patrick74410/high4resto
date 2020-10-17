@@ -18,4 +18,6 @@ public class Categorie {
 	private String id;
 	@Getter
 	private String name;    
+	@Getter
+	private int order;
 }

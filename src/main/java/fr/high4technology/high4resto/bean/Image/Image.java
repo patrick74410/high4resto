@@ -23,5 +23,5 @@ public class Image {
     @Getter
     private String fileName;
     @Getter 
-    private String directory;
+    private String group;
 }

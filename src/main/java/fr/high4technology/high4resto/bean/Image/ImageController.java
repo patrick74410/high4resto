@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -34,12 +36,12 @@ public class ImageController {
 	private final ReactiveGridFsTemplate gridFsTemplate;
 
     @PostMapping(path = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,@RequestParam("description") String description,@RequestParam("fileName") String fileName,@RequestParam("directory") String directory) {
+    public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,@RequestParam("description") String description,@RequestParam("fileName") String fileName,@RequestParam("group") String group) {
         return fileParts
             .flatMap(part -> this.gridFsTemplate.store(part.content(), part.filename()))
-            .flatMap(id -> this.images.save(Image.builder().fileName(fileName).directory(directory).description(description).gridId(id.toHexString()).build()))
+            .flatMap(id -> this.images.save(Image.builder().fileName(fileName).description(description).group(group).gridId(id.toHexString()).build()))
  			.map( r -> ResponseEntity.ok().<Void>build())
-			.defaultIfEmpty(ResponseEntity.notFound().build());
+			.defaultIfEmpty(ResponseEntity.ok().build());
 	}    
 
     @GetMapping("/download/{id}")
@@ -69,7 +71,7 @@ public class ImageController {
 	{
 		return images.deleteById(idItem)
 				.map( r -> ResponseEntity.ok().<Void>build())
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+                .defaultIfEmpty(ResponseEntity.ok().build());
 	}
 
 	@DeleteMapping("/deleteGrid/{idGrid}")
@@ -77,6 +79,19 @@ public class ImageController {
 	{
 		return gridFsTemplate.delete(query(where("_id").is(idGrid)))
 				.map( r -> ResponseEntity.ok().<Void>build())
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+                .defaultIfEmpty(ResponseEntity.ok().build());
 	}
+
+	@PutMapping("/update/")
+	Mono<Image> update(@RequestBody Image image)
+	{
+		return images.findById(image.getId())
+		.map(foundItem -> {
+			foundItem.setDescription(image.getDescription());
+			foundItem.setGroup(image.getGroup());
+			return foundItem;
+		 })
+		.flatMap(images::save);
+	}	
+
 }

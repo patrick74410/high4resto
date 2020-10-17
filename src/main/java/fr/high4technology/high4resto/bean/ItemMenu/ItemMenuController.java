@@ -1,5 +1,4 @@
-package fr.high4technology.high4resto.bean.Categorie;
-
+package fr.high4technology.high4resto.bean.ItemMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,48 +14,53 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/categorie")
+@RequestMapping("/itemMenu")
 @RequiredArgsConstructor
-public class CategorieController {
+public class ItemMenuController {
 	@Autowired
-	private CategorieRepository categories;
-
+    private ItemMenuRepository itemMenus;
+    
 	@GetMapping("/find/")
-	public Flux<Categorie> getAllAll()
+	public Flux<ItemMenu> getAllAll()
 	{
-		return categories.findAll();
+		return itemMenus.findAll();
 	}
 
 	@GetMapping("/find/{idItem}")
-	public Mono<Categorie> getById(@PathVariable String idItem){
-		return categories.findById(idItem);
+	public Mono<ItemMenu> getById(@PathVariable String idItem){
+		return itemMenus.findById(idItem);
 	}
 
 	@DeleteMapping("/delete/{idItem}")
 	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
 	{
 	
-		return categories.deleteById(idItem)
+		return itemMenus.deleteById(idItem)
                 .map( r -> ResponseEntity.ok().<Void>build())
                 .defaultIfEmpty(ResponseEntity.ok().<Void>build());
 	}
 
 	@PutMapping("/insert/")
-	Mono<Categorie> insert(@RequestBody Categorie categorie)
+	Mono<ItemMenu> insert(@RequestBody ItemMenu itemMenu)
 	{
-		return categories.save(categorie);
+		return itemMenus.save(itemMenu);
 	}
 
 	@PutMapping("/update/")
-	Mono<Categorie> update(@RequestBody Categorie categorie)
+	Mono<ItemMenu> update(@RequestBody ItemMenu itemMenu)
 	{
-		return categories.findById(categorie.getId())
+		return itemMenus.findById(itemMenu.getId())
 		.map(foundItem -> {
-			foundItem.setName(categorie.getName());
-			foundItem.setOrder(categorie.getOrder());
+			foundItem.setName(itemMenu.getName());
+            foundItem.setOrder(itemMenu.getOrder());
+            foundItem.setAllergenes(itemMenu.getAllergenes());
+            foundItem.setCategorie(itemMenu.getCategorie());
+            foundItem.setDescription(itemMenu.getDescription());
+            foundItem.setPrice(itemMenu.getPrice());
+            foundItem.setSourceImage(itemMenu.getSourceImage());
 			return foundItem;
 		 })
-		.flatMap(categories::save);
-	}
-    
+		.flatMap(itemMenus::save);
+	}    
+
 }
