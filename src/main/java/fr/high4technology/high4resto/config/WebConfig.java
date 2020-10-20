@@ -14,7 +14,9 @@ public class WebConfig {
     @Bean
     CorsWebFilter corsWebFilter() {
         var corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("localhost:4200", "localhost"));
+        corsConfiguration.setAllowedMethods(List.of("PUT","POST","GET","DELETE","OPTIONS"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsWebFilter(source);
