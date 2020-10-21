@@ -46,7 +46,7 @@ public class UserController {
                     httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
                     var tokenBody = Map.of("access_token", jwt);
                     return new ResponseEntity<>(tokenBody, httpHeaders, HttpStatus.OK);
-                });
+                }).onErrorReturn(new ResponseEntity<>(HttpStatus.UNAUTHORIZED));
     }    
 
     @GetMapping("/find/{username}")

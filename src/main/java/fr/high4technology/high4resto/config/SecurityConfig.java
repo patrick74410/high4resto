@@ -2,8 +2,10 @@ package fr.high4technology.high4resto.config;
 
 import fr.high4technology.high4resto.bean.user.UserRepository;
 import fr.high4technology.high4resto.security.jwt.*;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.authorization.AuthorizationDecision;
@@ -31,6 +33,7 @@ public class SecurityConfig {
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .authorizeExchange(it -> it
                         .pathMatchers("/users/{user}/**").access(this::currentUserMatchesPath)
+                        .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .pathMatchers("/allergene/find/**").permitAll()
                         .pathMatchers("/allergene/delete/**").hasRole("ADMIN")
                         .pathMatchers("/allergene/insert/**").hasRole("ADMIN")
