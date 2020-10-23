@@ -1,4 +1,4 @@
-package fr.high4technology.high4resto.bean.ItemMenu;
+package fr.high4technology.high4resto.bean.ItemCarte;
 
 import lombok.Builder;
 import lombok.Data;
@@ -15,13 +15,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import fr.high4technology.high4resto.bean.Allergene.Allergene;
 import fr.high4technology.high4resto.bean.Categorie.Categorie;
 import fr.high4technology.high4resto.bean.Image.Image;
+import fr.high4technology.high4resto.bean.Tva.Tva;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class ItemMenu {
+public class ItemCarte {
     @Id
     private String id;
     @Getter
@@ -35,6 +36,9 @@ public class ItemMenu {
     @Getter
     @Builder.Default
     private Image sourceImage=new Image();
+    @Getter
+    @Builder.Default
+    private Tva tva =new Tva();
     @Getter
     @Builder.Default
     private Categorie categorie =new Categorie();

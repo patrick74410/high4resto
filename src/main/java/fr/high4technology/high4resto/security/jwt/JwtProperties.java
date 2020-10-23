@@ -7,5 +7,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "jwt")
 @Data
 public class JwtProperties {
-    private long validityInMs = 3600000; // 1h
+    private long validityInMs = 36000000; // 10h
 }

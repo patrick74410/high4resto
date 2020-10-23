@@ -1,4 +1,4 @@
-package fr.high4technology.high4resto.bean.ItemMenu;
+package fr.high4technology.high4resto.bean.ItemCarte;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,53 +14,53 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/itemMenu")
+@RequestMapping("/itemCarte")
 @RequiredArgsConstructor
-public class ItemMenuController {
+public class ItemCarteController {
 	@Autowired
-    private ItemMenuRepository itemMenus;
+    private ItemCarteRepository itemCartes;
     
 	@GetMapping("/find/")
-	public Flux<ItemMenu> getAllAll()
+	public Flux<ItemCarte> getAllAll()
 	{
-		return itemMenus.findAll();
+		return itemCartes.findAll();
 	}
 
 	@GetMapping("/find/{idItem}")
-	public Mono<ItemMenu> getById(@PathVariable String idItem){
-		return itemMenus.findById(idItem);
+	public Mono<ItemCarte> getById(@PathVariable String idItem){
+		return itemCartes.findById(idItem);
 	}
 
 	@DeleteMapping("/delete/{idItem}")
 	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
 	{
 	
-		return itemMenus.deleteById(idItem)
+		return itemCartes.deleteById(idItem)
                 .map( r -> ResponseEntity.ok().<Void>build())
                 .defaultIfEmpty(ResponseEntity.ok().<Void>build());
 	}
 
 	@PutMapping("/insert/")
-	Mono<ItemMenu> insert(@RequestBody ItemMenu itemMenu)
+	Mono<ItemCarte> insert(@RequestBody ItemCarte itemCarte)
 	{
-		return itemMenus.save(itemMenu);
+		return itemCartes.save(itemCarte);
 	}
 
 	@PutMapping("/update/")
-	Mono<ItemMenu> update(@RequestBody ItemMenu itemMenu)
+	Mono<ItemCarte> update(@RequestBody ItemCarte itemCarte)
 	{
-		return itemMenus.findById(itemMenu.getId())
+		return itemCartes.findById(itemCarte.getId())
 		.map(foundItem -> {
-			foundItem.setName(itemMenu.getName());
-            foundItem.setOrder(itemMenu.getOrder());
-            foundItem.setAllergenes(itemMenu.getAllergenes());
-            foundItem.setCategorie(itemMenu.getCategorie());
-            foundItem.setDescription(itemMenu.getDescription());
-            foundItem.setPrice(itemMenu.getPrice());
-            foundItem.setSourceImage(itemMenu.getSourceImage());
+			foundItem.setName(itemCarte.getName());
+            foundItem.setOrder(itemCarte.getOrder());
+            foundItem.setAllergenes(itemCarte.getAllergenes());
+            foundItem.setCategorie(itemCarte.getCategorie());
+            foundItem.setDescription(itemCarte.getDescription());
+            foundItem.setPrice(itemCarte.getPrice());
+            foundItem.setSourceImage(itemCarte.getSourceImage());
 			return foundItem;
 		 })
-		.flatMap(itemMenus::save);
+		.flatMap(itemCartes::save);
 	}    
 
 }
