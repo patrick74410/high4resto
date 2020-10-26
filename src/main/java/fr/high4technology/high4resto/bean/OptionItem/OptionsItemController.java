@@ -52,7 +52,8 @@ public class OptionsItemController {
 		return this.optionsItem.findById(optionsItem.getId())
 		.map(foundItem -> {
             foundItem.setUnique(optionsItem.isUnique());
-            foundItem.setOptions(optionsItem.getOptions());
+			foundItem.setOptions(optionsItem.getOptions());
+			foundItem.setLabel(optionsItem.getLabel());
 			return foundItem;
 		 })
 		.flatMap(this.optionsItem::save);

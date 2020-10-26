@@ -56,8 +56,10 @@ public class ItemCarteController {
             foundItem.setAllergenes(itemCarte.getAllergenes());
             foundItem.setCategorie(itemCarte.getCategorie());
             foundItem.setDescription(itemCarte.getDescription());
-            foundItem.setPrice(itemCarte.getPrice());
-            foundItem.setSourceImage(itemCarte.getSourceImage());
+			foundItem.setPrice(itemCarte.getPrice());
+			foundItem.setTva(itemCarte.getTva());
+			foundItem.setSourceImage(itemCarte.getSourceImage());
+			foundItem.setOptions(itemCarte.getOptions());
 			return foundItem;
 		 })
 		.flatMap(itemCartes::save);

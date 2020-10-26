@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import fr.high4technology.high4resto.bean.Allergene.Allergene;
 import fr.high4technology.high4resto.bean.Categorie.Categorie;
 import fr.high4technology.high4resto.bean.Image.Image;
+import fr.high4technology.high4resto.bean.OptionItem.OptionsItem;
 import fr.high4technology.high4resto.bean.Tva.Tva;
 
 @Data
@@ -45,5 +46,8 @@ public class ItemCarte {
     @Getter
     @Builder.Default
     private List<Allergene> allergenes = new ArrayList<Allergene>();
+    @Getter
+    @Builder.Default
+    private List<OptionsItem> options = new ArrayList<OptionsItem>();
 
 }
