@@ -21,7 +21,7 @@ public class OptionsItemController {
     @Autowired
     private OptionsItemRepository optionsItem;
 	@GetMapping("/find/")
-	public Flux<OptionsItem> getAllAll()
+	public Flux<OptionsItem> getAll()
 	{
 		return optionsItem.findAll();
 	}

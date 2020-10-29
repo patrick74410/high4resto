@@ -16,6 +16,7 @@ import fr.high4technology.high4resto.bean.Allergene.Allergene;
 import fr.high4technology.high4resto.bean.Categorie.Categorie;
 import fr.high4technology.high4resto.bean.Image.Image;
 import fr.high4technology.high4resto.bean.OptionItem.OptionsItem;
+import fr.high4technology.high4resto.bean.Promotion.Promotion;
 import fr.high4technology.high4resto.bean.Tva.Tva;
 
 @Data
@@ -49,5 +50,11 @@ public class ItemCarte {
     @Getter
     @Builder.Default
     private List<OptionsItem> options = new ArrayList<OptionsItem>();
-
+    @Getter
+    @Builder.Default
+    private boolean visible=true;
+    @Getter
+    @Builder.Default
+    private List<Promotion> promotions = new ArrayList<Promotion>();
+    
 }

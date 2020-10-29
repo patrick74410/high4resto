@@ -64,7 +64,10 @@ public class SecurityConfig {
                         .pathMatchers("/optionsItem/delete/**").hasRole("ADMIN")
                         .pathMatchers("/optionsItem/insert/**").hasRole("ADMIN")
                         .pathMatchers("/optionsItem/update/**").hasRole("ADMIN")
-                        .anyExchange().permitAll()
+                        .pathMatchers("/promotion/find/**").permitAll()
+                        .pathMatchers("/promotion/delete/**").hasRole("ADMIN")
+                        .pathMatchers("/promotion/insert/**").hasRole("ADMIN")
+                        .pathMatchers("/promotion/update/**").hasRole("ADMIN")                       .anyExchange().permitAll()
                 )
                 .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
                 .build();

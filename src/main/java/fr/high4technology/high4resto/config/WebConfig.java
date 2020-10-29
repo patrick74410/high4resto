@@ -15,7 +15,7 @@ public class WebConfig {
     CorsWebFilter corsWebFilter() {
         var corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedMethods(List.of("PUT","POST","GET","DELETE"));
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200","http://localhost"));
         corsConfiguration.setAllowedHeaders(List.of("Access-Control-Allow-Headers","Access-Control-Allow-Origin","Access-Control-Request-Method", "Access-Control-Request-Headers","Origin","Cache-Control", "Content-Type", "Authorization"));
         corsConfiguration.setAllowCredentials(true);
         var source = new UrlBasedCorsConfigurationSource();

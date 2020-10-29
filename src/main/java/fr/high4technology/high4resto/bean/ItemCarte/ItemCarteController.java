@@ -60,6 +60,8 @@ public class ItemCarteController {
 			foundItem.setTva(itemCarte.getTva());
 			foundItem.setSourceImage(itemCarte.getSourceImage());
 			foundItem.setOptions(itemCarte.getOptions());
+			foundItem.setVisible(itemCarte.isVisible());
+			foundItem.setPromotions(itemCarte.getPromotions());
 			return foundItem;
 		 })
 		.flatMap(itemCartes::save);
