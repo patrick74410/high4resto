@@ -25,11 +25,7 @@ public class DataInitializer {
     @EventListener(value = ApplicationReadyEvent.class)
     public void init() {
         log.info("start data initialization...");
-        
-
-
-       var initAllergenes=this.allergenes.deleteAll()
-                .thenMany(Flux.just(
+        var initAllergenes=this.allergenes.findAll().switchIfEmpty(Flux.just(
                 "Céréales contenant du gluten : blé, seigle, orge, avoine, épeautre, kamut…",
                 "Arachides",
                 "Fruits à coque : noix, amandes, noisettes, noix de cajou, noix de pécan, pistaches, etc.",
@@ -51,9 +47,9 @@ public class DataInitializer {
                         return this.allergenes.save(allergene);
                         })
                 );
-              
-        var initUsers=this.users.deleteAll()
-                .thenMany(
+
+        var initUsers=this.users.findAll()
+                .switchIfEmpty(
                         Flux.just("user", "admin")
                                 .flatMap(username -> {
                                     List<String> roles = "user".equals(username) ?
@@ -62,7 +58,7 @@ public class DataInitializer {
                                     User user = User.builder()
                                             .roles(roles)
                                             .username(username)
-                                            .password(passwordEncoder.encode("password"))
+                                            .password(passwordEncoder.encode("iddadidkfq"))
                                             .email(username + "@example.com")
                                             .build();
 
@@ -70,21 +66,18 @@ public class DataInitializer {
                                 })
                 );
 
-
-                initAllergenes.doOnSubscribe(data -> log.info("data:"+data))
-                .thenMany(initAllergenes)
-                .subscribe(
-                        data -> log.info("data:" + data), err -> log.error("error:" + err),
-                        () -> log.info("done initialization...")
-                );
-                
                 initUsers.doOnSubscribe(data -> log.info("data:" + data))
                 .thenMany(initUsers)
                 .subscribe(
                         data -> log.info("data:" + data), err -> log.error("error:" + err),
                         () -> log.info("done initialization...")
                 );
-
+                initAllergenes.doOnSubscribe(data -> log.info("data:"+data))
+                .thenMany(initAllergenes)
+                .subscribe(
+                        data -> log.info("data:" + data), err -> log.error("error:" + err),
+                        () -> log.info("done initialization...")
+                );
 
     }
 
