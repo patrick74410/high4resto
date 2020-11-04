@@ -1,16 +1,14 @@
-package fr.high4technology.high4resto.bean.Album;
+package fr.high4technology.high4resto.bean.Article;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
-import java.util.List;
-import java.util.ArrayList;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import fr.high4technology.high4resto.bean.ArticleCategorie.ArticleCategorie;
 import fr.high4technology.high4resto.bean.Image.Image;
 
 @Data
@@ -18,16 +16,25 @@ import fr.high4technology.high4resto.bean.Image.Image;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Album {
+public class Article {
     @Id
     private String id;
     @Getter
-    private String name;
-    @Getter 
-    private String description;
-    @Builder.Default
+    private ArticleCategorie categorie;
     @Getter
-    private List<Image> photos=new ArrayList<Image>();   
+    private Image image;
+    @Getter
+    private boolean onTop;
     @Getter
     private boolean visible;
+    @Getter
+    private String title;
+    @Getter
+    private String resume;
+    @Getter
+    private String content;
+    @Getter
+    private String date;
+    @Getter
+    private String author;
 }

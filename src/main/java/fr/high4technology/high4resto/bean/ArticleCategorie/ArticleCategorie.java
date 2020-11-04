@@ -1,4 +1,4 @@
-package fr.high4technology.high4resto.bean.Categorie;
+package fr.high4technology.high4resto.bean.ArticleCategorie;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import fr.high4technology.high4resto.bean.Image.Image;
 
 @Data
@@ -15,7 +14,7 @@ import fr.high4technology.high4resto.bean.Image.Image;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Categorie {
+public class ArticleCategorie {
 	@Id
 	private String id;
 	@Getter
@@ -27,5 +26,5 @@ public class Categorie {
 	@Getter
 	private Image iconImage;
 	@Getter
-	private Image image;
+	private Image image;    
 }

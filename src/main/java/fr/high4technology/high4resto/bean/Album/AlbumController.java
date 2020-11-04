@@ -57,7 +57,9 @@ public class AlbumController {
 		return albums.findById(album.getId())
 		.map(foundItem -> {
             foundItem.setName(album.getName());
-            foundItem.setPhotos(album.getPhotos());
+			foundItem.setPhotos(album.getPhotos());
+			foundItem.setDescription(album.getDescription());
+			foundItem.setVisible(album.isVisible());
 			return foundItem;
 		 })
 		.flatMap(albums::save);

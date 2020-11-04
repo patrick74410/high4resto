@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import fr.high4technology.high4resto.bean.Image.Image;
 import fr.high4technology.high4resto.bean.Struct.Gps;
 import fr.high4technology.high4resto.bean.Struct.KeyMap;
 
@@ -43,4 +44,8 @@ public class Identite {
     @Getter
     @Builder.Default
     private Gps coordonnee=Gps.builder().latitude(0).longitude(0).build();
+    @Getter
+    private Image logo;
+    @Getter
+    private String description;
 }

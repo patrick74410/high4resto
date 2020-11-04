@@ -36,10 +36,10 @@ public class ImageController {
 	private final ReactiveGridFsTemplate gridFsTemplate;
 
     @PostMapping(path = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,@RequestParam("description") String description,@RequestParam("fileName") String fileName,@RequestParam("group") String group) {
+    public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,@RequestParam("link") String link,@RequestParam("alt") String alt,@RequestParam("description") String description,@RequestParam("fileName") String fileName,@RequestParam("group") String group) {
         return fileParts
             .flatMap(part -> this.gridFsTemplate.store(part.content(), part.filename()))
-            .flatMap(id -> this.images.save(Image.builder().fileName(fileName).description(description).group(group).gridId(id.toHexString()).build()))
+            .flatMap(id -> this.images.save(Image.builder().link(link).alt(alt).fileName(fileName).description(description).group(group).gridId(id.toHexString()).build()))
  			.map( r -> ResponseEntity.ok().<Void>build())
 			.defaultIfEmpty(ResponseEntity.ok().build());
 	}    
@@ -53,8 +53,22 @@ public class ImageController {
 				exchange.getResponse().getHeaders().setCacheControl(CacheControl.maxAge(Duration.ofSeconds(3600)).cachePrivate());		
 				return exchange.getResponse().writeWith(r.getDownloadStream());
 			});
-    }
-
+	}
+	
+    @GetMapping("/download/{id}/{name}")
+    public Flux<Void> getImage(@PathVariable String id,@PathVariable String name, ServerWebExchange exchange) {
+       return this.gridFsTemplate.findOne(query(where("_id").is(id)))
+            .flatMap(gridFsTemplate::getResource)
+            .flatMapMany(r -> {
+				if(name.contains(".png"))
+					exchange.getResponse().getHeaders().setContentType(MediaType.IMAGE_PNG);
+				else if(name.contains(".jpg")||name.contains(".jpeg"))
+					exchange.getResponse().getHeaders().setContentType(MediaType.IMAGE_JPEG);
+				exchange.getResponse().getHeaders().setCacheControl(CacheControl.maxAge(Duration.ofSeconds(3600)).cachePrivate());		
+				return exchange.getResponse().writeWith(r.getDownloadStream());
+			});
+	}
+	
     @GetMapping("/find/")
 	public Flux<Image> getAllAll()
 	{
@@ -89,6 +103,8 @@ public class ImageController {
 		.map(foundItem -> {
 			foundItem.setDescription(image.getDescription());
 			foundItem.setGroup(image.getGroup());
+			foundItem.setAlt(image.getAlt());
+			foundItem.setLink(image.getLink());
 			return foundItem;
 		 })
 		.flatMap(images::save);

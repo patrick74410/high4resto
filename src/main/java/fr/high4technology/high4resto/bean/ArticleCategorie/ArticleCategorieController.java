@@ -1,5 +1,4 @@
-package fr.high4technology.high4resto.bean.Categorie;
-
+package fr.high4technology.high4resto.bean.ArticleCategorie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,51 +14,52 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/categorie")
+@RequestMapping("/articleCategorie")
 @RequiredArgsConstructor
-public class CategorieController {
+
+public class ArticleCategorieController {
 	@Autowired
-	private CategorieRepository categories;
+	private ArticleCategorieRepository articleCategories;
 
 	@GetMapping("/find/")
-	public Flux<Categorie> getAllAll()
+	public Flux<ArticleCategorie> getAllAll()
 	{
-		return categories.findAll();
+		return articleCategories.findAll();
 	}
 
 	@GetMapping("/find/{idItem}")
-	public Mono<Categorie> getById(@PathVariable String idItem){
-		return categories.findById(idItem);
+	public Mono<ArticleCategorie> getById(@PathVariable String idItem){
+		return articleCategories.findById(idItem);
 	}
 
 	@DeleteMapping("/delete/{idItem}")
 	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
 	{
 	
-		return categories.deleteById(idItem)
+		return articleCategories.deleteById(idItem)
                 .map( r -> ResponseEntity.ok().<Void>build())
                 .defaultIfEmpty(ResponseEntity.ok().<Void>build());
 	}
 
 	@PutMapping("/insert/")
-	Mono<Categorie> insert(@RequestBody Categorie categorie)
+	Mono<ArticleCategorie> insert(@RequestBody ArticleCategorie articleCategorie)
 	{
-		return categories.save(categorie);
+		return articleCategories.save(articleCategorie);
 	}
 
 	@PutMapping("/update/")
-	Mono<Categorie> update(@RequestBody Categorie categorie)
+	Mono<ArticleCategorie> update(@RequestBody ArticleCategorie articleCategorie)
 	{
-		return categories.findById(categorie.getId())
+		return articleCategories.findById(articleCategorie.getId())
 		.map(foundItem -> {
-			foundItem.setName(categorie.getName());
-			foundItem.setOrder(categorie.getOrder());
-			foundItem.setDescription(categorie.getDescription());
-			foundItem.setIconImage(categorie.getIconImage());
-			foundItem.setImage(categorie.getImage());
+			foundItem.setName(articleCategorie.getName());
+			foundItem.setOrder(articleCategorie.getOrder());
+			foundItem.setDescription(articleCategorie.getDescription());
+			foundItem.setIconImage(articleCategorie.getIconImage());
+			foundItem.setImage(articleCategorie.getImage());
 			return foundItem;
 		 })
-		.flatMap(categories::save);
+		.flatMap(articleCategories::save);
 	}
     
 }

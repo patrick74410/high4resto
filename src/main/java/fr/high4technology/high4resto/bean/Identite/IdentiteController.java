@@ -63,6 +63,8 @@ public class IdentiteController {
 			foundItem.setNumber(identite.getNumber());
 			foundItem.setSiret(identite.getSiret());
 			foundItem.setZip(identite.getZip());
+			foundItem.setLogo(identite.getLogo());
+			foundItem.setDescription(identite.getDescription());
 			return foundItem;
 		}).flatMap(identites::save);
 	}

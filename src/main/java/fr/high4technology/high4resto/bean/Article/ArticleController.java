@@ -1,5 +1,4 @@
-package fr.high4technology.high4resto.bean.Categorie;
-
+package fr.high4technology.high4resto.bean.Article;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,51 +14,56 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/categorie")
+@RequestMapping("/article")
 @RequiredArgsConstructor
-public class CategorieController {
+
+public class ArticleController {
 	@Autowired
-	private CategorieRepository categories;
+	private ArticleRepository articles;
 
 	@GetMapping("/find/")
-	public Flux<Categorie> getAllAll()
+	public Flux<Article> getAllAll()
 	{
-		return categories.findAll();
+		return articles.findAll();
 	}
 
 	@GetMapping("/find/{idItem}")
-	public Mono<Categorie> getById(@PathVariable String idItem){
-		return categories.findById(idItem);
+	public Mono<Article> getById(@PathVariable String idItem){
+		return articles.findById(idItem);
 	}
 
 	@DeleteMapping("/delete/{idItem}")
 	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
 	{
 	
-		return categories.deleteById(idItem)
+		return articles.deleteById(idItem)
                 .map( r -> ResponseEntity.ok().<Void>build())
                 .defaultIfEmpty(ResponseEntity.ok().<Void>build());
 	}
 
 	@PutMapping("/insert/")
-	Mono<Categorie> insert(@RequestBody Categorie categorie)
+	Mono<Article> insert(@RequestBody Article article)
 	{
-		return categories.save(categorie);
+		return articles.save(article);
 	}
 
 	@PutMapping("/update/")
-	Mono<Categorie> update(@RequestBody Categorie categorie)
+	Mono<Article> update(@RequestBody Article article)
 	{
-		return categories.findById(categorie.getId())
+		return articles.findById(article.getId())
 		.map(foundItem -> {
-			foundItem.setName(categorie.getName());
-			foundItem.setOrder(categorie.getOrder());
-			foundItem.setDescription(categorie.getDescription());
-			foundItem.setIconImage(categorie.getIconImage());
-			foundItem.setImage(categorie.getImage());
+            foundItem.setCategorie(article.getCategorie());
+            foundItem.setImage(article.getImage());
+            foundItem.setOnTop(article.isOnTop());
+            foundItem.setVisible(article.isVisible());
+            foundItem.setTitle(article.getTitle());
+            foundItem.setResume(article.getResume());
+            foundItem.setContent(article.getContent());
+            foundItem.setDate(article.getDate());
+            foundItem.setAuthor(article.getAuthor());
 			return foundItem;
 		 })
-		.flatMap(categories::save);
+		.flatMap(articles::save);
 	}
-    
+       
 }
