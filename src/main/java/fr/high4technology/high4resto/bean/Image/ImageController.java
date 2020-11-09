@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
+
+import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
+
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 
@@ -27,6 +30,8 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.time.Duration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @RestController
 @RequestMapping("/images")
 @RequiredArgsConstructor
@@ -36,10 +41,12 @@ public class ImageController {
 	private final ReactiveGridFsTemplate gridFsTemplate;
 
     @PostMapping(path = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,@RequestParam("link") String link,@RequestParam("alt") String alt,@RequestParam("description") String description,@RequestParam("fileName") String fileName,@RequestParam("group") String group) {
-        return fileParts
+	public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,@RequestParam("link") String link,@RequestParam("alt") String alt,@RequestParam("description") String description,@RequestParam("fileName") String fileName,@RequestParam("categorie") String categorie) throws Exception
+	  {
+		  final ImageCategorie categorieO=(new ObjectMapper()).readValue(categorie,ImageCategorie.class);
+		return fileParts
             .flatMap(part -> this.gridFsTemplate.store(part.content(), part.filename()))
-            .flatMap(id -> this.images.save(Image.builder().link(link).alt(alt).fileName(fileName).description(description).group(group).gridId(id.toHexString()).build()))
+            .flatMap(id -> this.images.save(Image.builder().link(link).alt(alt).fileName(fileName).description(description).categorie(categorieO).gridId(id.toHexString()).build()))
  			.map( r -> ResponseEntity.ok().<Void>build())
 			.defaultIfEmpty(ResponseEntity.ok().build());
 	}    
@@ -102,7 +109,7 @@ public class ImageController {
 		return images.findById(image.getId())
 		.map(foundItem -> {
 			foundItem.setDescription(image.getDescription());
-			foundItem.setGroup(image.getGroup());
+			foundItem.setCategorie(image.getCategorie());
 			foundItem.setAlt(image.getAlt());
 			foundItem.setLink(image.getLink());
 			return foundItem;
