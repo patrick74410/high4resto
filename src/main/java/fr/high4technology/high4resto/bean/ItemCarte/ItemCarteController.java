@@ -62,6 +62,7 @@ public class ItemCarteController {
 			foundItem.setOptions(itemCarte.getOptions());
 			foundItem.setVisible(itemCarte.isVisible());
 			foundItem.setPromotions(itemCarte.getPromotions());
+			foundItem.setStock(itemCarte.getStock());
 			return foundItem;
 		 })
 		.flatMap(itemCartes::save);

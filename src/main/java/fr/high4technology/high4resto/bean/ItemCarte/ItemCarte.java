@@ -56,5 +56,7 @@ public class ItemCarte {
     @Getter
     @Builder.Default
     private List<Promotion> promotions = new ArrayList<Promotion>();
+    @Getter
+    private int stock;
     
 }
