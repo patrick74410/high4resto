@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/metaTag")
+@RequestMapping("/api/metaTag")
 @RequiredArgsConstructor
 
 public class MetaTagController {

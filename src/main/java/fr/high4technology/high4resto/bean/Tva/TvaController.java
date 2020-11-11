@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/tva")
+@RequestMapping("/api/tva")
 @RequiredArgsConstructor
 public class TvaController {
       @Autowired

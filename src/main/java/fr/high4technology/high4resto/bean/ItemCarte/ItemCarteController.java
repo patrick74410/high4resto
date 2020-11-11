@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/itemCarte")
+@RequestMapping("/api/itemCarte")
 @RequiredArgsConstructor
 public class ItemCarteController {
 	@Autowired

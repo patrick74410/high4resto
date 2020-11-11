@@ -15,7 +15,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/ingredient")
+@RequestMapping("/api/ingredient")
 @RequiredArgsConstructor
 public class IngredientController {
     @Autowired

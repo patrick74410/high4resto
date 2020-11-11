@@ -25,7 +25,7 @@ import fr.high4technology.high4resto.web.AuthenticationRequest;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 
 public class UserController {
 

@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 
 
 @RestController
-@RequestMapping("/config")
+@RequestMapping("/api/config")
 @RequiredArgsConstructor
 public class ConfigController {
     @Autowired

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/identite")
+@RequestMapping("/api/identite")
 @RequiredArgsConstructor
 public class IdentiteController {
 	@Autowired

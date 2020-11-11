@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import fr.high4technology.high4resto.bean.Struct.BetweenTime;
 
 @RestController
-@RequestMapping("/horaire")
+@RequestMapping("/api/horaire")
 @RequiredArgsConstructor
 public class HoraireController {
 
