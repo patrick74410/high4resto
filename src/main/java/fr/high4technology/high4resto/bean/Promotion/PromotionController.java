@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/promotions")
+@RequestMapping("/api/promotions")
 @RequiredArgsConstructor
 public class PromotionController {
     @Autowired
