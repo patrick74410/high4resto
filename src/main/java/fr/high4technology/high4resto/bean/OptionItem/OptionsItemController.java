@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/optionsItem")
+@RequestMapping("/api/optionsItem")
 @RequiredArgsConstructor
 public class OptionsItemController {
     @Autowired
