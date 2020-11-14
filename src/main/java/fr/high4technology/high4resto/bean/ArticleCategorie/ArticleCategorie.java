@@ -26,5 +26,7 @@ public class ArticleCategorie {
 	@Getter
 	private Image iconImage;
 	@Getter
-	private Image image;    
+	private Image image;
+	@Getter
+	private boolean visible;
 }

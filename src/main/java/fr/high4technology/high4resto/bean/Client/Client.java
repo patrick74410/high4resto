@@ -1,33 +1,30 @@
-package fr.high4technology.high4resto.bean.Album;
+package fr.high4technology.high4resto.bean.Client;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
-import java.util.List;
-import java.util.ArrayList;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import fr.high4technology.high4resto.bean.Image.Image;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Album {
+public class Client {
     @Id
     private String id;
     @Getter
-    private String name;
-    @Getter 
-    private String description;
-    @Builder.Default
+    String username;
     @Getter
-    private List<Image> photos=new ArrayList<Image>();   
+    String name;
     @Getter
-    private boolean visible;
+    String lastName;
+    @Getter
+    String email;
+    @Getter
+    String apiSecurity;   
 }

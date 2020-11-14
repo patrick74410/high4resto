@@ -57,6 +57,7 @@ public class ArticleCategorieController {
 			foundItem.setDescription(articleCategorie.getDescription());
 			foundItem.setIconImage(articleCategorie.getIconImage());
 			foundItem.setImage(articleCategorie.getImage());
+			foundItem.setVisible(articleCategorie.isVisible());
 			return foundItem;
 		 })
 		.flatMap(articleCategories::save);

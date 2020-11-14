@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import fr.high4technology.high4resto.bean.Album.Album;
 import fr.high4technology.high4resto.bean.Image.Image;
+import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
 
 @Data
 @Builder
@@ -24,11 +24,5 @@ public class Config {
     @Getter
     private Image logo;
     @Getter
-    private String description;
-    @Getter
-    private Album banniere;
-    @Getter
-    private String mapApiKey;        
-    @Getter
-    private String payementApiKey;        
+    private ImageCategorie banniere;   
 }

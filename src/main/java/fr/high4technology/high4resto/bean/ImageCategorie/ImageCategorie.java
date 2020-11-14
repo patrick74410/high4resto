@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import fr.high4technology.high4resto.bean.Image.Image;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,4 +24,6 @@ public class ImageCategorie {
     private String description;
     @Getter
     private boolean visible;
+    @Getter 
+    private Image onTop;
 }

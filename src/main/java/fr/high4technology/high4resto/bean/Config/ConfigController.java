@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.high4technology.high4resto.bean.Album.Album;
 import fr.high4technology.high4resto.bean.Image.Image;
+import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,8 +27,8 @@ public class ConfigController {
 	public Flux<Config> getAllAll() {
 		return configs.findAll()
 				.switchIfEmpty(configs
-                        .save(Config.builder().banniere(new Album()).title("").description("").
-                        logo(new Image()).mapApiKey("").payementApiKey("").build()))
+                        .save(Config.builder().banniere(new ImageCategorie()).title("").
+                        logo(new Image()).build()))
 				.flatMap(t -> configs.findAll());
 	}
 
@@ -52,11 +52,8 @@ public class ConfigController {
 	@PutMapping("/update/")
 	Mono<Config> update(@RequestBody Config config) {
 		return configs.findById(config.getId()).map(foundItem -> {
-            foundItem.setDescription(config.getDescription());
             foundItem.setLogo(config.getLogo());
             foundItem.setTitle(config.getTitle());
-            foundItem.setMapApiKey(config.getMapApiKey());
-            foundItem.setPayementApiKey(config.getMapApiKey());
             foundItem.setBanniere(config.getBanniere());
 			return foundItem;
 		}).flatMap(configs::save);
