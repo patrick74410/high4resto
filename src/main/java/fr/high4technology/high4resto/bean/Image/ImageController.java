@@ -1,6 +1,9 @@
 package fr.high4technology.high4resto.bean.Image;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.buffer.DefaultDataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.data.mongodb.gridfs.ReactiveGridFsTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
 import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
+import io.github.biezhi.webp.WebpIO;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -28,6 +32,8 @@ import reactor.core.publisher.Mono;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,17 +42,35 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/api/images")
 @RequiredArgsConstructor
 public class ImageController {
-    @Autowired
-    private ImageRepository images;
+	@Autowired
+	private ImageRepository images;
 	private final ReactiveGridFsTemplate gridFsTemplate;
 
-    @PostMapping(path = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,@RequestParam("link") String link,@RequestParam("alt") String alt,@RequestParam("description") String description,@RequestParam("fileName") String fileName,@RequestParam("categorie") String categorie) throws Exception
-	  {
-		  final ImageCategorie categorieO=(new ObjectMapper()).readValue(categorie,ImageCategorie.class);
-		return fileParts
-            .flatMap(part -> this.gridFsTemplate.store(part.content(), part.filename()))
-            .flatMap(id -> this.images.save(Image.builder().link(link).alt(alt).fileName(fileName).description(description).categorie(categorieO).gridId(id.toHexString()).build()))
+	@PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,
+			@RequestParam("link") String link, @RequestParam("alt") String alt,
+			@RequestParam("description") String description, @RequestParam("fileName") String fileName,
+			@RequestParam("categorie") String categorie) throws Exception {
+		final ImageCategorie categorieO = (new ObjectMapper()).readValue(categorie, ImageCategorie.class);
+		return fileParts.flatMap(part -> {
+			File src = new File("/tmp/"+part.filename());
+			File dest = new File("/tmp/"+part.filename() + ".webp");
+			part.transferTo(src);
+
+			WebpIO.create().toWEBP(src, dest);
+
+			DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+			DefaultDataBuffer finalFile;
+			try {
+				finalFile = factory.wrap(FileUtils.readFileToByteArray(dest));
+				FileUtils.deleteQuietly(src);
+				FileUtils.deleteQuietly(dest);
+				return this.gridFsTemplate.store(Flux.just(finalFile), part.filename());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}				
+			return this.gridFsTemplate.store(part.content(), part.filename());})
+            .flatMap(id -> this.images.save(Image.builder().link(link).alt(alt).fileName(fileName+".webp").description(description).categorie(categorieO).gridId(id.toHexString()).build()))
  			.map( r -> ResponseEntity.ok().<Void>build())
 			.defaultIfEmpty(ResponseEntity.ok().build());
 	}    
@@ -67,10 +91,6 @@ public class ImageController {
        return this.gridFsTemplate.findOne(query(where("_id").is(id)))
             .flatMap(gridFsTemplate::getResource)
             .flatMapMany(r -> {
-				if(name.contains(".png"))
-					exchange.getResponse().getHeaders().setContentType(MediaType.IMAGE_PNG);
-				else if(name.contains(".jpg")||name.contains(".jpeg"))
-					exchange.getResponse().getHeaders().setContentType(MediaType.IMAGE_JPEG);
 				exchange.getResponse().getHeaders().setCacheControl(CacheControl.maxAge(Duration.ofSeconds(3600)).cachePrivate());		
 				return exchange.getResponse().writeWith(r.getDownloadStream());
 			});

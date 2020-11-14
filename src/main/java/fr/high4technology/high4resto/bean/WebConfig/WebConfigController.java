@@ -27,7 +27,7 @@ public class WebConfigController {
 	public Flux<WebConfig> getAllAll() {
 		return configs.findAll()
 				.switchIfEmpty(configs
-                        .save(WebConfig.builder().caroussel(new ImageCategorie()).title("").qty(true).
+                        .save(WebConfig.builder().caroussel(new ImageCategorie()).title("").googleMapApi("").qty(true).
                         logo(new Image()).build()))
 				.flatMap(t -> configs.findAll());
 	}
