@@ -54,7 +54,7 @@ public class ImageCategorieController {
             foundItem.setName(imageCategorie.getName());
             foundItem.setDescription(imageCategorie.getDescription());
             foundItem.setVisible(imageCategorie.isVisible());
-            foundItem.setOnTop(imageCategorie.getOnTop());
+            foundItem.setTopImage(imageCategorie.getTopImage());
              return foundItem;
           })
          .flatMap(imageCategories::save);

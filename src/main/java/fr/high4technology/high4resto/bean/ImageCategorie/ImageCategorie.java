@@ -25,5 +25,5 @@ public class ImageCategorie {
     @Getter
     private boolean visible;
     @Getter 
-    private Image onTop;
+    private Image topImage;
 }
