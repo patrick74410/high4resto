@@ -1,4 +1,4 @@
-package fr.high4technology.high4resto.bean.Config;
+package fr.high4technology.high4resto.bean.WebConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,22 +18,22 @@ import reactor.core.publisher.Mono;
 
 
 @RestController
-@RequestMapping("/api/config")
+@RequestMapping("/api/webConfig")
 @RequiredArgsConstructor
-public class ConfigController {
+public class WebConfigController {
     @Autowired
-    private ConfigRespository configs;
+    private WebConfigRespository configs;
     @GetMapping("/find/")
-	public Flux<Config> getAllAll() {
+	public Flux<WebConfig> getAllAll() {
 		return configs.findAll()
 				.switchIfEmpty(configs
-                        .save(Config.builder().banniere(new ImageCategorie()).title("").
+                        .save(WebConfig.builder().caroussel(new ImageCategorie()).title("").qty(true).
                         logo(new Image()).build()))
 				.flatMap(t -> configs.findAll());
 	}
 
 	@GetMapping("/find/{idItem}")
-	public Mono<Config> getById(@PathVariable String idItem) {
+	public Mono<WebConfig> getById(@PathVariable String idItem) {
 		return configs.findById(idItem);
 	}
 
@@ -45,16 +45,17 @@ public class ConfigController {
 	}
 
 	@PutMapping("/insert/")
-	Mono<Config> insert(@RequestBody Config config) {
+	Mono<WebConfig> insert(@RequestBody WebConfig config) {
 		return configs.save(config);
 	}
 
 	@PutMapping("/update/")
-	Mono<Config> update(@RequestBody Config config) {
+	Mono<WebConfig> update(@RequestBody WebConfig config) {
 		return configs.findById(config.getId()).map(foundItem -> {
             foundItem.setLogo(config.getLogo());
             foundItem.setTitle(config.getTitle());
-            foundItem.setBanniere(config.getBanniere());
+			foundItem.setCaroussel(config.getCaroussel());
+			foundItem.setQty(config.isQty());
 			return foundItem;
 		}).flatMap(configs::save);
 	}

@@ -1,4 +1,4 @@
-package fr.high4technology.high4resto.bean.Config;
+package fr.high4technology.high4resto.bean.WebConfig;
 
 import lombok.Builder;
 import lombok.Data;
@@ -13,10 +13,10 @@ import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
 
 @Data
 @Builder
+@Document
 @NoArgsConstructor
 @AllArgsConstructor
-@Document
-public class Config {
+public class WebConfig {
     @Id
     private String id;
     @Getter
@@ -24,5 +24,9 @@ public class Config {
     @Getter
     private Image logo;
     @Getter
-    private ImageCategorie banniere;   
+    private ImageCategorie caroussel;
+    @Getter
+    private String googleMapApi;
+    @Getter
+    private boolean qty; 
 }
