@@ -1,4 +1,4 @@
-package fr.high4technology.high4resto.bean.Categorie;
+package fr.high4technology.high4resto.bean.ItemCategorie;
 
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +15,7 @@ import fr.high4technology.high4resto.bean.Image.Image;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Categorie {
+public class ItemCategorie {
 	@Id
 	private String id;
 	@Getter

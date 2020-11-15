@@ -13,8 +13,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import fr.high4technology.high4resto.bean.Allergene.Allergene;
-import fr.high4technology.high4resto.bean.Categorie.Categorie;
 import fr.high4technology.high4resto.bean.Image.Image;
+import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorie;
 import fr.high4technology.high4resto.bean.OptionItem.OptionsItem;
 import fr.high4technology.high4resto.bean.Promotion.Promotion;
 import fr.high4technology.high4resto.bean.Tva.Tva;
@@ -43,7 +43,7 @@ public class ItemCarte {
     private Tva tva =new Tva();
     @Getter
     @Builder.Default
-    private Categorie categorie =new Categorie();
+    private ItemCategorie categorie =new ItemCategorie();
     @Getter
     @Builder.Default
     private List<Allergene> allergenes = new ArrayList<Allergene>();

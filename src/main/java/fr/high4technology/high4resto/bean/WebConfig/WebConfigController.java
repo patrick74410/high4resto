@@ -52,12 +52,15 @@ public class WebConfigController {
 	@PutMapping("/update/")
 	Mono<WebConfig> update(@RequestBody WebConfig config) {
 		return configs.findById(config.getId()).map(foundItem -> {
-            foundItem.setLogo(config.getLogo());
+			foundItem.setLogo(config.getLogo());
+			foundItem.setGoogleMapApi(config.getGoogleMapApi());
             foundItem.setTitle(config.getTitle());
 			foundItem.setCaroussel(config.getCaroussel());
 			foundItem.setQty(config.isQty());
 			return foundItem;
-		}).flatMap(configs::save);
+		}).flatMap(item->{	
+			return configs.save(item);
+		});
 	}
    
     
