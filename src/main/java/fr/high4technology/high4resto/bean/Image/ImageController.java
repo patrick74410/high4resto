@@ -40,9 +40,12 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 
 @RestController
 @RequestMapping("/api/images")
@@ -64,21 +67,46 @@ public class ImageController {
 
 	private final ReactiveGridFsTemplate gridFsTemplate;
 
+	final String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
+
+	final java.util.Random rand = new java.util.Random();
+	
+	final Set<String> identifiers = new HashSet<String>();
+	
+	public String randomIdentifier() {
+		StringBuilder builder = new StringBuilder();
+		while(builder.toString().length() == 0) {
+			int length = rand.nextInt(5)+5;
+			for(int i = 0; i < length; i++) {
+				builder.append(lexicon.charAt(rand.nextInt(lexicon.length())));
+			}
+			if(identifiers.contains(builder.toString())) {
+				builder = new StringBuilder();
+			}
+		}
+		return builder.toString();
+	}
+
+
 	@PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public Mono<ResponseEntity<Void>> upload(@RequestPart("file") Mono<FilePart> fileParts,
 			@RequestParam("link") String link, @RequestParam("alt") String alt,
 			@RequestParam("description") String description, @RequestParam("fileName") String fileName,
 			@RequestParam("categorie") String categorie) throws Exception {
 		final ImageCategorie categorieO = (new ObjectMapper()).readValue(categorie, ImageCategorie.class);
+		Image finalImage= Image.builder().link(link).alt(alt).fileName(fileName+".webp").description(description).categorie(categorieO).build();
+		
 		return fileParts.flatMap(part -> {
 			File src = new File("/tmp/"+part.filename());
 			File dest = new File("/tmp/"+part.filename() + ".webp");
+			File thumbFileSrc = new File("/tmp/"+"x"+fileName);
 			part.transferTo(src);
+			part.transferTo(thumbFileSrc);
 
 			WebpIO.create().toWEBP(src, dest);
-
 			DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
 			DefaultDataBuffer finalFile;
+
 			try {
 				finalFile = factory.wrap(FileUtils.readFileToByteArray(dest));
 				FileUtils.deleteQuietly(src);
@@ -88,8 +116,32 @@ public class ImageController {
 				e.printStackTrace();
 			}				
 			return this.gridFsTemplate.store(part.content(), part.filename());})
-            .flatMap(id -> this.images.save(Image.builder().link(link).alt(alt).fileName(fileName+".webp").description(description).categorie(categorieO).gridId(id.toHexString()).build()))
- 			.map( r -> ResponseEntity.ok().<Void>build())
+			.flatMap(id ->{
+				finalImage.setGridId(id.toHexString());
+				File thumbFileSrc = new File("/tmp/"+"x"+fileName);
+				File thumbFileResize = new File("/tmp/r"+"x"+fileName);
+				File thumbFileDest = new File("/tmp/"+"x"+fileName+".webp");	
+				try {
+					Thumbnails.of(thumbFileSrc).size(320, 200).toFile(thumbFileResize);
+					WebpIO.create().toWEBP(thumbFileResize, thumbFileDest);
+					DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+					DefaultDataBuffer finalFile;
+					finalFile = factory.wrap(FileUtils.readFileToByteArray(thumbFileDest));
+					FileUtils.deleteQuietly(thumbFileSrc);
+					FileUtils.deleteQuietly(thumbFileResize);
+					FileUtils.deleteQuietly(thumbFileDest);
+					return this.gridFsTemplate.store(Flux.just(finalFile),fileName);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}				
+				return this.gridFsTemplate.store(Flux.just(),fileName+".webp");
+			})
+            .flatMap(id -> {
+				finalImage.setMiniGridId(id.toHexString());
+
+				return this.images.save(finalImage);
+				}) 
+			.map( r -> ResponseEntity.ok().<Void>build())
 			.defaultIfEmpty(ResponseEntity.ok().build());
 	}    
 

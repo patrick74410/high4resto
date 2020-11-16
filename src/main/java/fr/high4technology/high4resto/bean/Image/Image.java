@@ -22,6 +22,8 @@ public class Image {
     private String description;
 	@Getter
     private String gridId;
+    @Getter 
+    String miniGridId;
     @Getter
     private String fileName;
     @Getter 
