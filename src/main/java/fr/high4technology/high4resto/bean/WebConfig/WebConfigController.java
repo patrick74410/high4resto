@@ -57,6 +57,8 @@ public class WebConfigController {
             foundItem.setTitle(config.getTitle());
 			foundItem.setCaroussel(config.getCaroussel());
 			foundItem.setQty(config.isQty());
+			foundItem.setAuth0Domain(config.getAuth0Domain());
+			foundItem.setAuth0Key(config.getAuth0Key());
 			return foundItem;
 		}).flatMap(item->{	
 			return configs.save(item);

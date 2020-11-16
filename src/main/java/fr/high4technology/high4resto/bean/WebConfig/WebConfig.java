@@ -28,5 +28,9 @@ public class WebConfig {
     @Getter
     private String googleMapApi;
     @Getter
+    private String auth0Key;
+    @Getter
+    private String auth0Domain;
+    @Getter
     private boolean qty; 
 }
