@@ -19,7 +19,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
+import fr.high4technology.high4resto.bean.Article.ArticleRepository;
+import fr.high4technology.high4resto.bean.ArticleCategorie.ArticleCategorieRepository;
+import fr.high4technology.high4resto.bean.Identite.IdentiteRepository;
 import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
+import fr.high4technology.high4resto.bean.ItemCarte.ItemCarteRepository;
+import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorieRepository;
 import io.github.biezhi.webp.WebpIO;
 
 import org.springframework.http.CacheControl;
@@ -37,13 +42,26 @@ import java.io.IOException;
 import java.time.Duration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/images")
 @RequiredArgsConstructor
+@Slf4j
 public class ImageController {
 	@Autowired
 	private ImageRepository images;
+	@Autowired
+	private ItemCarteRepository items;
+	@Autowired
+	private ItemCategorieRepository itemsCategorie;
+	@Autowired
+	private ArticleCategorieRepository articleCategories;
+	@Autowired
+	private ArticleRepository articles;
+	@Autowired
+	private IdentiteRepository identites;
+
 	private final ReactiveGridFsTemplate gridFsTemplate;
 
 	@PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -134,7 +152,126 @@ public class ImageController {
 			foundItem.setLink(image.getLink());
 			return foundItem;
 		 })
-		.flatMap(images::save);
-	}	
+		 .flatMap(imageItem -> {
+			
+			this.items.findAll().subscribe(article -> {
+				boolean change=false;
+				try
+				{
+					if(article.getSourceImage().getId().equals(imageItem.getId()))
+					{
+						article.setSourceImage(imageItem);
+						change=true;
+					}	
+				}
+				catch(Exception e){}
+				if(change)
+				{
+					var flux = items.save(article);
+					flux.doOnSubscribe(data -> log.info("data:" + data)).thenMany(flux).subscribe(
+							data -> log.info("data:" + data), err -> log.error("error:" + err),
+							() -> log.info("done initialization..."));
+				}
+			});
+
+			this.itemsCategorie.findAll().subscribe(itemCategorie->{
+				boolean change=false;
+				try
+				{
+					if(itemCategorie.getIconImage().getId().equals(imageItem.getId()))
+					{
+						itemCategorie.setIconImage(imageItem);
+						change=true;
+					}
+				}
+				catch(Exception e){}
+				try
+				{
+					if(itemCategorie.getImage().getId().equals(imageItem.getId()))
+					{
+						itemCategorie.setImage(imageItem);
+					}	
+				}
+				catch(Exception e){}
+				if(change)
+				{
+					var flux = itemsCategorie.save(itemCategorie);
+					flux.doOnSubscribe(data -> log.info("data:" + data)).thenMany(flux).subscribe(
+							data -> log.info("data:" + data), err -> log.error("error:" + err),
+							() -> log.info("done initialization..."));
+				}
+			});
+
+			this.identites.findAll().subscribe(identite->{
+				boolean change=false;
+				try{
+					if(identite.getLogo().getId().equals(imageItem.getId()))
+					{
+						identite.setLogo(imageItem);
+						change=true;
+					}						
+				}
+				catch(Exception e){}
+				if(change)
+				{
+					var flux=this.identites.save(identite);
+					flux.doOnSubscribe(data -> log.info("data:" + data)).thenMany(flux).subscribe(
+							data -> log.info("data:" + data), err -> log.error("error:" + err),
+							() -> log.info("done initialization..."));				
+				}
+			});
+
+			this.articleCategories.findAll().subscribe(articleCategorie->
+			{
+				boolean change=false;
+				try {
+					if(articleCategorie.getIconImage().getId().equals(imageItem.getId()))
+					{
+						articleCategorie.setIconImage(imageItem);
+						change=true;
+					}
+				} 
+				catch (Exception e) {}
+				try {
+					if(articleCategorie.getImage().getId().equals(imageItem.getId()))
+					{
+						articleCategorie.setImage(imageItem);
+						change=true;
+					}	
+				}
+				catch (Exception e) {}
+				if(change)
+				{
+					var flux =this.articleCategories.save(articleCategorie);
+					flux.doOnSubscribe(data -> log.info("data:" + data)).thenMany(flux).subscribe(
+							data -> log.info("data:" + data), err -> log.error("error:" + err),
+							() -> log.info("done initialization..."));				
+						
+				}
+
+			});
+
+			this.articles.findAll().subscribe(article->{
+				boolean change=false;
+				try
+				{
+					if(article.getImage().getId().equals(imageItem.getId()))
+					{
+						article.setImage(imageItem);
+						change=true;
+					}
+				}
+				catch (Exception e) {}
+				if(change)
+				{
+					var flux=this.articles.save(article);
+					flux.doOnSubscribe(data -> log.info("data:" + data)).thenMany(flux).subscribe(
+							data -> log.info("data:" + data), err -> log.error("error:" + err),
+							() -> log.info("done initialization..."));										
+				}
+			});
+
+			return this.images.save(imageItem);
+		});	}	
 
 }
