@@ -23,7 +23,7 @@ public class Image {
 	@Getter
     private String gridId;
     @Getter 
-    String miniGridId;
+    private String miniGridId;
     @Getter
     private String fileName;
     @Getter 
