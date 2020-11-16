@@ -18,9 +18,7 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-
 public class User {
-
     @Id
     private String id;
 
