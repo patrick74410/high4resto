@@ -5,8 +5,15 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 
 
 @Data
@@ -18,13 +25,26 @@ public class Client {
     @Id
     private String id;
     @Getter
-    String username;
+    private String name;
     @Getter
-    String name;
+    private String lastName;
     @Getter
-    String lastName;
+    private String email;
     @Getter
-    String email;
+    private String adresseL1;
     @Getter
-    String apiSecurity;   
+    private String adresseL2;
+    @Getter
+    private String zip;
+    @Getter
+    private String city;
+    @Getter
+    private boolean sendInfo;
+    @Getter
+    private Date firstConnexion;
+    @Getter
+    private Date lastConnexion;
+    @Getter
+    @Builder.Default
+    private List<ItemCarte>currentPanier=new ArrayList<ItemCarte>();
 }

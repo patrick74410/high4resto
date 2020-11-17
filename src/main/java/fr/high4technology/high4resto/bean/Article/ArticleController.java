@@ -1,4 +1,10 @@
 package fr.high4technology.high4resto.bean.Article;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +33,42 @@ public class ArticleController {
 		return articles.findAll();
 	}
 
+	@GetMapping("/findOnTop/")
+	public Flux<Article> getonTop()
+	{
+		return articles.findAll().filter(article->
+			article.isOnTop()
+		).sort((articleA,articleB)->{
+			try{
+				Date articleADate=new SimpleDateFormat("dd/MM/yyyy").parse(articleA.getDate()); 
+				Date articleBDate=new SimpleDateFormat("dd/MM/yyyy").parse(articleB.getDate());
+				return articleADate.compareTo(articleBDate);
+			}
+			catch(Exception e)
+			{
+				return 0;
+			}
+		});
+	}
+
+	@GetMapping("/filter/{categorieName}")
+	public Flux<Article> filter(@PathVariable String categorieName)
+	{
+		return articles.findAll().filter(article->article.isVisible()).filter(article->article.getCategorie().getName().equals(categorieName))
+		.sort((articleA,articleB)->{
+			try{
+				Date articleADate=new SimpleDateFormat("dd/MM/yyyy").parse(articleA.getDate()); 
+				Date articleBDate=new SimpleDateFormat("dd/MM/yyyy").parse(articleB.getDate());
+				return articleADate.compareTo(articleBDate);
+			}
+			catch(Exception e)
+			{
+				return 0;
+			}
+		});
+	}
+
+
 	@GetMapping("/find/{idItem}")
 	public Mono<Article> getById(@PathVariable String idItem){
 		return articles.findById(idItem);
@@ -44,6 +86,9 @@ public class ArticleController {
 	@PutMapping("/insert/")
 	Mono<Article> insert(@RequestBody Article article)
 	{
+		Date date = Calendar.getInstance().getTime();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");  
+		article.setDate(dateFormat.format(date));
 		return articles.save(article);
 	}
 

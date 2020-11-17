@@ -1,0 +1,1327 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-CuOF+2SnTUfTwSZjCXf01h7uYhfOBuxIhGKPbfEJ3+FqH/s6cIFN9bGr1HmAg4fQ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-popRpmFF9JQgExhfw5tZT4I9/CI5e2QcuUZPOVXb1m7qUmeR2b50u+YFEYe1wgzy"
+        crossorigin="anonymous"></script>
+    <title>Documentation API High4Resto</title>
+    <style>
+        .card {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="container">
+        <h1 class="text-center mt-5">Documentation API High4Resto</h1>
+        <h2>Interface des données</h2>
+
+        <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+            <a class="navbar-brand" href="#">Menu</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#Menu" aria-controls="Menu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="Menu">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="interface" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Interfaces
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="interface">
+                            <a class="dropdown-item" href="#BetweenTime">BetweenTime</a>
+                            <a class="dropdown-item" href="#Gps">Gps</a>
+                            <a class="dropdown-item" href="#KeyMap">Keymap</a>
+                            <a class="dropdown-item" href="#ImageCategorie">ImageCategorie</a>
+                            <a class="dropdown-item" href="#Image">Image</a>
+                            <a class="dropdown-item" href="#WebConfig">WebConfig</a>                            
+                            <a class="dropdown-item" href="#Identite">Identite</a>
+                            <a class="dropdown-item" href="#MetaTag">MetaTag</a>
+                            <a class="dropdown-item" href="#Horaire">Horaire</a>                            
+                            <a class="dropdown-item" href="#Allergene">Allergene</a>                            
+                            <a class="dropdown-item" href="#Tva">Tva</a>                            
+                            <a class="dropdown-item" href="#OptionItem">OptionItem</a>                            
+                            <a class="dropdown-item" href="#OptionsItem">OptionsItem</a>                            
+                            <a class="dropdown-item" href="#Promotion">Promotion</a>                            
+                            <a class="dropdown-item" href="#ItemCategorie">ItemCategorie</a>
+                            <a class="dropdown-item" href="#ItemCarte">ItemCarte</a>                            
+                            <a class="dropdown-item" href="#SecurityUser">SecurityUser</a>                            
+                            <a class="dropdown-item" href="#Client">Client</a>                            
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="api" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Api
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="api">
+                            <a class="dropdown-item" href="#apiUrl">Introduction</a>
+                            <a class="dropdown-item" href="#chemin">Chemin</a>
+                            <a class="dropdown-item" href="#simple">Un simple exemple</a>
+                            <a class="dropdown-item" href="#objetClient">L'objet client</a>                           
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+api
+chemin
+simple
+objetClient
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card" id="BetweenTime">
+                    <h3 class="card-title card-header">BetweenTime</h3>
+                    <div class="card-body">
+                        <p>Une simple structure pour indiqué un interval de temps (hh:mm)</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>debut</td>
+                                    <td>string</td>
+                                    <td>Heure de début</td>
+                                </tr>
+                                <tr>
+                                    <td>fin</td>
+                                    <td>string</td>
+                                    <td>Heure de fin</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface BetweenTimeI { <br>
+                                debut:String; <br>
+                                fin:String;<br>
+                            }                   
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="Gps">
+                    <h3 class="card-title card-header">Gps</h3>
+                    <div class="card-body">
+                        <p>Une simple structure pour indiqué une position gps</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>longitude</td>
+                                    <td>number</td>
+                                    <td>Longitude</td>
+                                </tr>
+                                <tr>
+                                    <td>latitude</td>
+                                    <td>number</td>
+                                    <td>latitude</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface GpsI {<br>
+                                longitude:number;<br>
+                                latitude:number;<br>
+                            }                 
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="KeyMap">
+                    <h3 class="card-title card-header">KeyMap</h3>
+                    <div class="card-body">
+                        <p>Une simple structure pour créer une clef-valeur</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>key</td>
+                                    <td>string</td>
+                                    <td>Clef</td>
+                                </tr>
+                                <tr>
+                                    <td>value</td>
+                                    <td>string</td>
+                                    <td>valeur</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface KeyMapI {<br/>
+                                key:String;<br/>
+                                value:String;<br/>
+                            }
+                        </p>
+                    </div>
+                </div>        
+        
+                <div class="card" id="ImageCategorie">
+                    <h3 class="card-title card-header">ImageCategorie</h3>
+                    <div class="card-body">
+                        <p>Catégorie d'image qui sert a trié les images</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>name</td>
+                                    <td>string</td>
+                                    <td>Nom de la catégorie</td>
+                                </tr>
+        
+                                <tr>
+                                    <td>description</td>
+                                    <td>string</td>
+                                    <td>Description de la catégorie</td>
+                                </tr>
+        
+                                <tr>
+                                    <td>visible</td>
+                                    <td>boolean</td>
+                                    <td>La catégorie doit-elle être un album ?</td>
+                                </tr>
+        
+                                <tr>
+                                    <td>topImage</td>
+                                    <td>Image</td>
+                                    <td>L'image mis en avant si album</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface ImageCategorieI { <br/>
+                                    id?:string; <br>
+                                    name:string;<br>
+                                    description:string;<br>
+                                    visible:boolean;<br>
+                                    topImage?:ImageI;<br>
+                                }<br>                   
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="Image">
+                    <h3 class="card-title card-header">Image</h3>
+                    <div class="card-body">
+                        <p>Une interface qui décrit ce qu'est une image. Les images sont toutes au format webp</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>description</td>
+                                    <td>string</td>
+                                    <td>Description de l'image</td>
+                                </tr>
+                                <tr>
+                                    <td>gridId</td>
+                                    <td>string</td>
+                                    <td>Partie du lien source de l'image(taille originale) le lien final ressemble à ceci:
+                                        https://mon-super-site.fr/api/images/download/{{gridId}}/{{fileName}}</td>
+                                </tr>
+                                <tr>
+                                    <td>miniGrid</td>
+                                    <td>string</td>
+                                    <td>Même type de lien que gridId mais pour la miniature</td>
+                                </tr>
+                                <tr>
+                                    <td>fileName</td>
+                                    <td>string</td>
+                                    <td>Nom du fichier</td>
+                                </tr>
+                                <tr>
+                                    <td>categorie</td>
+                                    <td>ImageCategorie</td>
+                                    <td>Catégorie a laquelle l'image appartient</td>
+                                </tr>
+                                <tr>
+                                    <td>alt</td>
+                                    <td>string</td>
+                                    <td>Attribut alt de l'image</td>
+                                </tr>
+                                <tr>
+                                    <td>link</td>
+                                    <td>string</td>
+                                    <td>lien cliquable de l'image</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface ImageI {<br>
+                                 id?: string;<br>
+                                 description: string;<br>
+                                 gridId?: string;<br>
+                                 miniGridId: string;<br>
+                                 fileName: string;<br>
+                                 categorie:ImageCategorieI;<br>
+                                 alt: string;<br>
+                                 link: string;<br>
+                              }                   <br> 
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="WebConfig">
+                    <h3 class="card-title card-header">WebConfig</h3>
+                    <div class="card-body">
+                        <p>Configuration générale du site</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>title</td>
+                                    <td>string</td>
+                                    <td>Titre principal du site</td>
+                                </tr>
+                                <tr>
+                                    <td>logo</td>
+                                    <td>Image</td>
+                                    <td>Favicon du site</td>
+                                </tr>
+                                <tr>
+                                    <td>caroussel</td>
+                                    <td>ImageCategorie</td>
+                                    <td>Catégorie d'image a prendre comme caroussel pour la page d'accueil</td>
+                                </tr> 
+                                <tr>
+                                    <td>googleMapApi</td>
+                                    <td>string</td>
+                                    <td>Clef de l'api googleMap</td>
+                                </tr>
+                                <tr>
+                                    <td>auth0Key</td>
+                                    <td>string</td>
+                                    <td>Clef d Auth0</td>
+                                </tr>
+                                <tr>
+                                    <td>auth0Domain</td>
+                                    <td>string</td>
+                                    <td>Domaine Auth0</td>
+                                </tr>
+                                <tr>
+                                    <td>qty</td>
+                                    <td>boolean</td>
+                                    <td>Doit on laissé l'utilisateur choisir la quantité d'un item?</td>
+                                </tr>                     
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface  WebConfigI {<br>
+                                id?: string;<br>
+                                title:string;<br>
+                                logo:ImageI;<br>
+                                caroussel:ImageCategorieI<br>
+                                googleMapApi:string;<br>
+                                auth0Key;<br>
+                                auth0Domain;<br>
+                                qty:boolean;<br>
+                            }                    
+                        </p>
+                    </div>
+                </div>  
+        
+                <div class="card" id="Identite">
+                    <h3 class="card-title card-header">Identite</h3>
+                    <div class="card-body">
+                        <p>Identité de l'établissement</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>nomEtablissement</td>
+                                    <td>string</td>
+                                    <td>Nom de l'enseigne public de l'établissement</td>
+                                </tr>
+                                <tr>
+                                    <td>description</td>
+                                    <td>string</td>
+                                    <td>Description de l'établissement</td>
+                                </tr>
+                                <tr>
+                                    <td>zip</td>
+                                    <td>string</td>
+                                    <td>Code postal de l'établissement</td>
+                                </tr>
+                                <tr>
+                                    <td>city</td>
+                                    <td>string</td>
+                                    <td>Nom de la ville de l'établissement</td>
+                                </tr>
+                                <tr>
+                                    <td>number</td>
+                                    <td>string</td>
+                                    <td>Numéro cedex</td>
+                                </tr>
+                                <tr>
+                                    <td>adresse</td>
+                                    <td>string</td>
+                                    <td>1ere ligne de l'adresse</td>
+                                </tr>
+                                <tr>
+                                    <td>complement</td>
+                                    <td>string</td>
+                                    <td>Complement d'adresse</td>
+                                </tr>
+                                <tr>
+                                    <td>contact</td>
+                                    <td>KeyMap[]</td>
+                                    <td>Ensemble clefs-valeurs des données de contact ex: "email":"monemail@test.fr"</td>
+                                </tr>
+                                <tr>
+                                    <td>siret</td>
+                                    <td>string</td>
+                                    <td>Numéro siret de l'établissement</td>
+                                </tr>
+                                <tr>
+                                    <td>coordonee</td>
+                                    <td>Gps</td>
+                                    <td>Coordonee Gps de l'établissement</td>
+                                </tr>
+                                <tr>
+                                    <td>logo</td>
+                                    <td>Image</td>
+                                    <td>Logo de l'établissement</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface IdentiteI {<br>
+                                id:String;<br>
+                                nomEtablissement:String;<br>
+                                siret:String;<br>
+                                logo:ImageI;<br>
+                                zip:String;<br>
+                                city:String;<br>
+                                number:String;<br>
+                                adresse:String;<br>
+                                complement:String;<br>
+                                contact:KeyMapI[];<br>
+                                coordonnee:GpsI;<br>
+                                description:String;<br>
+                            }                   
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="MetaTag">
+                    <h3 class="card-title card-header">MetaTag</h3>
+                    <div class="card-body">
+                        <p>Balise métas pour la page d'accueil</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>description</td>
+                                    <td>string</td>
+                                    <td>Description</td>
+                                </tr>
+                                <tr>
+                                    <td>keywords</td>
+                                    <td>string</td>
+                                    <td>Mot clefs</td>
+                                </tr>
+                                <tr>
+                                    <td>author</td>
+                                    <td>string</td>
+                                    <td>Auteur de la page</td>
+                                </tr>
+                                <tr>
+                                    <td>facebookTitle</td>
+                                    <td>string</td>
+                                    <td>Titre pour l'aperçu Facebook</td>
+                                </tr>
+                                <tr>
+                                    <td>facebookDescription</td>
+                                    <td>string</td>
+                                    <td>Description pour l'aperçu Facebook</td>
+                                </tr>
+                                <tr>
+                                    <td>facebookImage</td>
+                                    <td>string</td>
+                                    <td>lien de l'image complet pour Facebook</td>
+                                </tr>
+                                <tr>
+                                    <td>twitterTitle</td>
+                                    <td>string</td>
+                                    <td>Titre pour l'aperçu Twitter</td>
+                                </tr>
+                                <tr>
+                                    <td>twitterDescription</td>
+                                    <td>string</td>
+                                    <td>Description pour l'aperçu Twitter</td>
+                                </tr>
+                                <tr>
+                                    <td>twitterImage</td>
+                                    <td>string</td>
+                                    <td>lien de l'image complet pour Twitter</td>
+                                </tr>
+                                <tr>
+                                    <td>twitterAuthor</td>
+                                    <td>string</td>
+                                    <td>Compte twitter de l'auteur</td>
+                                </tr>
+                                <tr>
+                                    <td>other</td>
+                                    <td>Keymap[]</td>
+                                    <td>Liste clefs valeurs pour autres tags.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface MetaTagI {<br>
+                                id?:string;<br>
+                                description:string;<br>
+                                keywords:string;<br>
+                                author:string;<br>
+                                facebookTitle:string;<br>
+                                facebookDescription:string;<br>
+                                facebookImage:string;<br>
+                                twitterTitle:string;<br>
+                                twitterDescription:string;<br>
+                                twitterImage:string;<br>
+                                twitterAuthor:string;<br>
+                                other:KeyMapI[];<br>
+                            }                    <br>
+                        </p>      
+                    </div>
+                </div>
+        
+                <div class="card" id="Horaire">
+                    <h3 class="card-title card-header">Horaire</h3>
+                    <div class="card-body">
+                        <p>Horaire d'ouverture de l'établissement</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>lundi</td>
+                                    <td>BetweenTime[]</td>
+                                    <td>Horaire de la journée composé de divers élément de tel à tel heure</td>
+                                </tr>
+                                <tr>
+                                    <td>mardi</td>
+                                    <td>BetweenTime[]</td>
+                                    <td>Horaire de la journée composé de divers élément de tel à tel heure</td>
+                                </tr>
+                                <tr>
+                                    <td>mercredi</td>
+                                    <td>BetweenTime[]</td>
+                                    <td>Horaire de la journée composé de divers élément de tel à tel heure</td>
+                                </tr>
+                                <tr>
+                                    <td>jeudi</td>
+                                    <td>BetweenTime[]</td>
+                                    <td>Horaire de la journée composé de divers élément de tel à tel heure</td>
+                                </tr>
+                                <tr>
+                                    <td>vendredi</td>
+                                    <td>BetweenTime[]</td>
+                                    <td>Horaire de la journée composé de divers élément de tel à tel heure</td>
+                                </tr>
+                                <tr>
+                                    <td>samedi</td>
+                                    <td>BetweenTime[]</td>
+                                    <td>Horaire de la journée composé de divers élément de tel à tel heure</td>
+                                </tr>
+                                <tr>
+                                    <td>dimanche</td>
+                                    <td>BetweenTime[]</td>
+                                    <td>Horaire de la journée composé de divers élément de tel à tel heure</td>
+                                </tr>
+                                <tr>
+                                    <td>ferie</td>
+                                    <td>BetweenTime[]</td>
+                                    <td>Horaire des jours fériés composé de divers élément de tel à tel heure</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        export interface HoraireI{<br>
+                            id:String;<br>
+                            lundi:BetweenTimeI[];<br>
+                            mardi:BetweenTimeI[];<br>
+                            mercredi:BetweenTimeI[];<br>
+                            jeudi:BetweenTimeI[];<br>
+                            vendredi:BetweenTimeI[];<br>
+                            samedi:BetweenTimeI[];<br>
+                            dimanche:BetweenTimeI[];<br>
+                            ferie:BetweenTimeI[];<br>
+                        }<br>
+                    </div>
+                </div>
+        
+        
+                <div class="card" id="Allergene">
+                    <h3 class="card-title card-header">Allergene</h3>
+                    <div class="card-body">
+                        <p>Un simple allergène</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>name</td>
+                                    <td>string</td>
+                                    <td>Nom de l'allergène</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface AllergeneI {<br>
+                                id?: String;<br>
+                                name: String; <br>
+                             }<br>
+                        </p>
+                    </div>
+                </div>
+        
+        
+                <div class="card" id="Tva">
+                    <h3 class="card-title card-header">Tva</h3>
+                    <div class="card-body">
+                        <p>Une simple structure pour indiqué un taux de TVA</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>taux</td>
+                                    <td>number</td>
+                                    <td>Taux de la Tva</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface TvaI {<br>
+                                id?: String;<br>
+                                taux: Number;<br>
+                            }<br>                    
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="OptionItem">
+                    <h3 class="card-title card-header">OptionItem</h3>
+                    <div class="card-body">
+                        <p>Un choix simple de la carte</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>label</td>
+                                    <td>string</td>
+                                    <td>Nom du choix (ex:A point .... Grande ....</td>
+                                </tr>
+                                <tr>
+                                    <td>price</td>
+                                    <td>number</td>
+                                    <td>Prix du choix</td>
+                                </tr>
+                                <tr>
+                                    <td>selected</td>
+                                    <td>boolean</td>
+                                    <td>Le choix est-il sélectionné ?</td>
+                                </tr>
+        
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface OptionItemI {<br>
+                                label:string;<br>
+                                price:number;<br>
+                                selected:boolean;<br>
+                            }                   <br>
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="OptionsItem">
+                    <h3 class="card-title card-header">OptionsItem</h3>
+                    <div class="card-body">
+                        <p>Un ensemble de choix pour l'item de carte ex: Cuisson, suplléments, entrée, ...</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>label</td>
+                                    <td>string</td>
+                                    <td>Nom de l'option (ex: cuisson)</td>
+                                </tr>
+                                <tr>
+                                    <td>options</td>
+                                    <td>OptionItem[]</td>
+                                    <td>Liste des choix possibles</td>
+                                </tr>
+                                <tr>
+                                    <td>unique</td>
+                                    <td>boolean</td>
+                                    <td>Est-ce que les choix peuvent se cummuler (checkbox ou radio)</td>
+                                </tr>
+        
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface OptionsItemI {<br>
+                                id?: String;<br>
+                                 label:string;<br>
+                                options: OptionItemI[];<br>
+                                unique: boolean;<br>
+                            }                   <br>
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="Promotion">
+                    <h3 class="card-title card-header">Promotion</h3>
+                    <div class="card-body">
+                        <p>Description de ce qu'est une promotion, sert au calcul du cout total pour le client lors de la fin de
+                            commande</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>name</td>
+                                    <td>string</td>
+                                    <td>Nom de la promotion, ex: Happy Hour</td>
+                                </tr>
+                                <tr>
+                                    <td>reduction</td>
+                                    <td>number</td>
+                                    <td>Montant de la réduction</td>
+                                </tr>
+                                <tr>
+                                    <td>pourcentage</td>
+                                    <td>boolean</td>
+                                    <td>La réduction est-elle en pourcentage ou en euro ?</td>
+                                </tr>
+                                <tr>
+                                    <td>heureDebut</td>
+                                    <td>string</td>
+                                    <td>Heure a laquelle la réduction commence</td>
+                                </tr>
+                                <tr>
+                                    <td>heureFin</td>
+                                    <td>string</td>
+                                    <td>Heure a laquelle la réduction termine</td>
+                                </tr>
+                                <tr>
+                                    <td>dateDebut</td>
+                                    <td>string</td>
+                                    <td>Date de début de la promotion</td>
+                                </tr>
+                                <tr>
+                                    <td>dateFin</td>
+                                    <td>string</td>
+                                    <td>Date a laquelle la réduction se termine</td>
+                                </tr>
+                                <tr>
+                                    <td>jourValide</td>
+                                    <td>boolean[]</td>
+                                    <td>Jour ou la promotion est appliquée ou l'index tu tableau représente le jour de la
+                                        semaine</td>
+                                </tr>
+                                <tr>
+                                    <td>jourFerie</td>
+                                    <td>boolean</td>
+                                    <td>La réduction est-elle valable les jours férié ?</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface PromotionI {
+                                    id?:String;<br>
+                                    name:String;<br>
+                                    reduction:Number;<br>
+                                    heureDebut:String;<br>
+                                    heureFin:String;<br>
+                                    dateDebut:String;<br>
+                                    dateFin:String;<br>
+                                    jourValide:boolean[];<br>
+                                    jourFerie:boolean;<br>
+                                    pourcentage:boolean;<br>
+                                }                    <br>
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="ItemCategorie">
+                    <h3 class="card-title card-header">ItemCategorie</h3>
+                    <div class="card-body">
+                        <p>Les catégories des éléments de menu (entrée, plat, dessert, boisson, ...)</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>name</td>
+                                    <td>string</td>
+                                    <td>Nom de la catégorie ex: entrée</td>
+                                </tr>
+                                <tr>
+                                    <td>description</td>
+                                    <td>string</td>
+                                    <td>Description de la catégorie pour la présentation</td>
+                                </tr>
+                                <tr>
+                                    <td>order</td>
+                                    <td>int</td>
+                                    <td>Sert a tri de l'ordre d'affichage</td>
+                                </tr>
+                                <tr>
+                                    <td>iconImage</td>
+                                    <td>Image</td>
+                                    <td>Image de l'icone de la catégorie</td>
+                                </tr>
+                                <tr>
+                                    <td>image</td>
+                                    <td>Image</td>
+                                    <td>Image pour la présentation de la catégorie</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface ItemCategorieI {<br>
+                                id?: String;<br>
+                                name: String;<br>
+                                description: String;<br>
+                                order?: Number;<br>
+                                iconImage?: ImageI;<br>
+                                image?:ImageI; <br>
+                             }                   <br>
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="ItemCarte">
+                    <h3 class="card-title card-header">ItemCarte</h3>
+                    <div class="card-body">
+                        <p>Un simple allergène</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>name</td>
+                                    <td>string</td>
+                                    <td>Nom de l'item (ex Salade du maraicher)</td>
+                                </tr>
+                                <tr>
+                                    <td>description</td>
+                                    <td>string</td>
+                                    <td>Description complète de l'item</td>
+                                </tr>
+        
+                                <tr>
+                                    <td>price</td>
+                                    <td>number</td>
+                                    <td>Prix de l'item</td>
+                                </tr>
+                                <tr>
+                                    <td>order</td>
+                                    <td>number</td>
+                                    <td>Nombre destiné au tri pour l'ordre d'affichage</td>
+                                </tr>
+                                <tr>
+                                    <td>sourceImage</td>
+                                    <td>Image</td>
+                                    <td>Image de l'item</td>
+                                </tr>
+                                <tr>
+                                    <td>tva</td>
+                                    <td>Tva</td>
+                                    <td>Taux de tva (pour facture)</td>
+                                </tr>
+                                <tr>
+                                    <td>categorie</td>
+                                    <td>ItemCategorie</td>
+                                    <td>Catégorie dans laquelle l'item se trouve(ex: entrée)</td>
+                                </tr>
+                                <tr>
+                                    <td>allergene</td>
+                                    <td>allergenes[]</td>
+                                    <td>Liste d'allergènes dans l'item</td>
+                                </tr>
+                                <tr>
+                                    <td>options</td>
+                                    <td>OptionsItem[]</td>
+                                    <td>Option de cet item: ex pour la cuisson, les choix du menu, ...</td>
+                                </tr>
+                                <tr>
+                                    <td>visible</td>
+                                    <td>boolean</td>
+                                    <td>L'item est-il visible (lié au stock par exemple)</td>
+                                </tr>
+                                <tr>
+                                    <td>promotions</td>
+                                    <td>Promotion[]</td>
+                                    <td>Liste de promotion appliquée</td>
+                                </tr>
+                                <tr>
+                                    <td>stock</td>
+                                    <td>number</td>
+                                    <td>Quantité disponible</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface ItemCarteI {<br>
+                                id: String;<br>
+                                name: String; <br>
+                                description: String;<br>
+                                price: Number;<br>
+                                order: Number;<br>
+                                sourceImage: ImageI;<br>
+                                categorie: ItemCategorieI;<br>
+                                allergenes: AllergeneI[];<br>
+                                tva:TvaI;<br>
+                                options:OptionsItemI[];<br>
+                                visible:boolean;<br>
+                                promotions:PromotionI[];<br>
+                                stock:number;<br>
+                             }                   <br>
+                        </p>
+                    </div>
+                </div>
+        
+                <div class="card" id="SecurityUser">
+                    <h3 class="card-title card-header">SecurityUser</h3>
+                    <div class="card-body">
+                        <p>Un éléments servant a la sécurité de l'api, cet élément est mis a jour lors de chaque connexion, quand l'utilisateur demande son profil les vérifications sont efferctuée grâce a ce composant coté back-end</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique</td>
+                                </tr>
+                                <tr>
+                                    <td>email</td>
+                                    <td>string</td>
+                                    <td>email de l'utilisateur connecté</td>
+                                </tr>
+                                <tr>
+                                    <td>generateKeyl</td>
+                                    <td>string</td>
+                                    <td>La clef générée par la rêgle appliquée a Auth0</td>
+                                </tr>
+                                <tr>
+                                    <td>identity</td>
+                                    <td>string</td>
+                                    <td>La clef de sécurité (jwt authorization style) pour empêcher connexion externe a Auth0-High4restoApi </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        
+                <div class="card" id="Client">
+                    <h3 class="card-title card-header">Client</h3>
+                    <div class="card-body">
+                        <p>Une fiche client qui contient les données de profils ainsi que le panier, le client se crée à la
+                            première connexion</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom de la propriété</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>string</td>
+                                    <td>Identifiant unique du client (donné par Auth0 lors de la première connexion)</td>
+                                </tr>
+                                <tr>
+                                    <td>name</td>
+                                    <td>string</td>
+                                    <td>Nom du client</td>
+                                </tr>
+                                <tr>
+                                    <td>lastName</td>
+                                    <td>string</td>
+                                    <td>Nom de famille du client</td>
+                                </tr>
+                                <tr>
+                                    <td>email</td>
+                                    <td>string</td>
+                                    <td>Email du client </td>
+                                </tr>
+                                <tr>
+                                    <td>adresseL1</td>
+                                    <td>string</td>
+                                    <td>1ere ligne de l'adresse</td>
+                                </tr>
+                                <tr>
+                                    <td>adresseL2</td>
+                                    <td>string</td>
+                                    <td>2eme ligne de l'adresse</td>
+                                </tr>
+                                <tr>
+                                    <td>zip</td>
+                                    <td>string</td>
+                                    <td>Code postal</td>
+                                </tr>
+                                <tr>
+                                    <td>city</td>
+                                    <td>string</td>
+                                    <td>Ville</td>
+                                </tr>
+                                <tr>
+                                    <td>sendInfo</td>
+                                    <td>boolean</td>
+                                    <td>Est-il abonné à la news-letter ?</td>
+                                </tr>
+                                <tr>
+                                    <td>firstConnexion</td>
+                                    <td>date</td>
+                                    <td>Date de la première connexion</td>
+                                </tr>
+                                <tr>
+                                    <td>lastConnexion</td>
+                                    <td>date</td>
+                                    <td>Date de la derniere connexion</td>
+                                </tr>
+                                <tr>
+                                    <td>currentPanier</td>
+                                    <td>ItemCarte[]</td>
+                                    <td>Item dans le panier</td>
+                                </tr>
+        
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <p>
+                            export interface ClientI {<br>
+                                id?:string;<br>
+                                name: string;<br>
+                                lastName: string;<br>
+                                email: string;<br>
+                                adresseL1: string;<br>
+                                adresseL2: string;<br>
+                                zip: string;<br>
+                                city: string;<br>
+                                sendInfo:boolean;<br>
+                                currentPanier:ItemCarteI[];<br>
+                            }                    
+                        </p>
+                    </div>
+                </div>
+        
+            </div>
+        </div>
+        <div id="apiUrl">
+            <h2>Api</h2>
+            <p>L'api est dévellopée avec Spring Reactive, elle se veut non bloquante. La sécurité ce fait avec le protocol JWT HS256, mais dans le cadre du dévellopement Front End nous n'avons pas besoin d'avoir un header spécial</p>
+            <p>La majorité des éléments peuvent s'obtenir de la même façon avec une simple requete Get, il n'y a que les imformations concernant la manipulation de l'objet Client qui a besoin d'une spécificité</p>
+            <h3 >Les chemins</h3>
+            <div class="card" id="chemin">
+                <h3 class="card-title card-header">Les chemins de l'API</h3>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom de l'objet</th>
+                                <th scope="col">Chemin de l'API</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Allergene</td>
+                                <td>environment.apiUrl+'/allergene/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>Article</td>
+                                <td>environment.apiUrl+'/article/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>ArticleCategorie</td>
+                                <td>environment.apiUrl+'/articleCategorie/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>Horaire</td>
+                                <td>environment.apiUrl+'/horaire/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>Identite</td>
+                                <td>environment.apiUrl+'/identites/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>Image</td>
+                                <td>environment.apiUrl+'/article/images/'</td>
+                            </tr>
+                            <tr>
+                                <td>ImageCategorie</td>
+                                <td>environment.apiUrl+'/imageCategorie/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>ItemCarte</td>
+                                <td>environment.apiUrl+'/itemCarte/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>ItemCategorie</td>
+                                <td>environment.apiUrl+'/categorie/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>MetaTag</td>
+                                <td>environment.apiUrl+'/metaTag/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>OptionsItem</td>
+                                <td>environment.apiUrl+'/options/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>Promotion</td>
+                                <td>environment.apiUrl+'/promotions/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>Tva</td>
+                                <td>environment.apiUrl+'/tva/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>WebConfig</td>
+                                <td>environment.apiUrl+'/webConfig/find/'</td>
+                            </tr>
+                            <tr>
+                                <td>Article</td>
+                                <td>environment.apiUrl+'/article/find/'</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <p>Par les chemins indiqués on obtient toute les occurrences des objets spécifiés. Si on y ajoute l'id (ex:<b>environment.apiUrl+'/{{objet}}/find/{{id}}</b>) Alors on obtient uniquement l'objet ayant pour id.</p>
+                    <p>Il y a une alternative a find c'est d'utiliser filter comme ceci <b>environment.apiUrl+'/{{objet}}/filter/{{categorieName}}</b>} <- le nom de la catégorie</p>
+                    <p>Filter n'affichera que les éléments visibles et n'est que pour Image, Article, ItemCarte</p>
+                    <p>L'objet Article contien un chemin findOnTop qui recherchera les article mis en avant</p>
+                    <p>Les objet émis par filter sont dans le bon ordre</p>
+                </div>
+            </div>
+            <h3 id="simple">Exemple d'une simple requête</h3>
+            <code>
+                const allergenesFindUrl = environment.apiUrl+'/allergene/find/';<br>
+                test():void{<br/>
+                    this.http.get<AllergeneI[]>(this.allergenesFindUrl).pipe(take(1)).subscribe(allergenes=>{<br/>
+                        for(let allergene:allergenes)<br/>
+                        {<br/>
+                            console.log(allergene.name);<br/>
+                        }<br/>
+                    });<br/>
+                }<br/>
+                constructor(private http: HttpClient) { } <br/>
+            
+            </code>
+            <h3 id="objetClient">L'objet client</h3>
+            <p>Pour obtenir l'objet client, contenant les imformations ainsi que le panier. Il faut faire une requete get sur <b>environment.apiUrl+'/client/get/{{idClient}}/{{securityKey}}'</b>. 
+                Security key etant la clef reçue lors de l'authentication</p>
+            <p>Pour faire une mise a jour des imformations du client ou de son panier il faut faire une requête put avec dans le body un objet Client (json)
+                a l'adresse <b>environment.apiUrl+'/client/update/{securityKey}</b>
+            </p>
+        </div>
+
+    </div>
+</body>
+
+</html>

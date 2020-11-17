@@ -43,5 +43,6 @@ public class Horaire {
     @Builder.Default
     private List<BetweenTime> dimanche=new ArrayList<BetweenTime>();
     @Getter
+    @Builder.Default
     private List<BetweenTime> ferie=new ArrayList<BetweenTime>();
 }

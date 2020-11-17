@@ -31,6 +31,18 @@ public class ItemCarteController {
 		return itemCartes.findById(idItem);
 	}
 
+	@GetMapping("/filter/{categorieName}")
+	public Flux<ItemCarte> getByFilter(@PathVariable String categorieName){
+		return itemCartes.findAll().filter(item->item.isVisible()).filter(item->item.getCategorie().getName().equals(categorieName)).sort((itemA,itemB)->{
+			if(itemA.getOrder()>itemB.getOrder())
+				return 1;
+			else if(itemA.getOrder()<itemB.getOrder())
+				return -1;
+			else
+				return 0;
+		});
+	}
+
 	@DeleteMapping("/delete/{idItem}")
 	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
 	{

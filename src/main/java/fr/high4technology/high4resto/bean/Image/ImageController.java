@@ -172,6 +172,13 @@ public class ImageController {
 		return images.findAll();
 	}
 
+	@GetMapping("/filter/{categorieName}")
+	public Flux<Image> filter(@PathVariable String categorieName)
+	{
+		return images.findAll().filter(image->image.getCategorie().getName().equals(categorieName));
+	}
+
+
 	@GetMapping("/find/{idItem}")
 	public Mono<Image> getById(@PathVariable String idItem){
 		return images.findById(idItem);

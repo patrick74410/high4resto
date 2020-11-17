@@ -18,7 +18,7 @@ public class SecurityUser {
     private String id;
 
     @Getter
-    private String userName;
+    private String email;
 
     @Getter
     private String generateKey;
