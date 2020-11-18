@@ -23,34 +23,26 @@ public class ClientController {
     private SecurityUserRepository security;
 
     @GetMapping("/get/{idClient}/{securityKey}")
-	public Mono<Client> getById(@PathVariable String idClient,@PathVariable String securityKey){
-        return this.security.findById(idClient).flatMap(security_user->{
-            if(security_user.getGenerateKey().equals(securityKey))
-            {
+    public Mono<Client> getById(@PathVariable String idClient, @PathVariable String securityKey) {
+        return this.security.findById(idClient).flatMap(security_user -> {
+            if (security_user.getGenerateKey().equals(securityKey)) {
                 return clients.findById(idClient);
-            }
-            else
-            {
+            } else {
                 return Mono.just(Client.builder().build());
             }
         });
     }
 
     @PutMapping("/update/{securityKey}")
-    Mono<Client> update(@RequestBody Client client,@PathVariable String securityKey)
-    {
-        return this.security.findById(client.getId()).flatMap(security_user->{
-            if(security_user.getGenerateKey().equals(securityKey))
-            {
+    Mono<String> update(@RequestBody Client client, @PathVariable String securityKey) {
+        return this.security.findById(client.getId()).flatMap(security_user -> {
+            if (security_user.getGenerateKey().equals(securityKey)) {
                 return clients.findById(client.getId());
+            } else {
+                return Mono.just(Client.builder().id("anonymous").build());
             }
-            else
-            {
-                return Mono.just(Client.builder().id("anonymous").build());               
-            }
-        }).map(foundItem->{
-            if(!foundItem.getId().equals("anonymous"))
-            {
+        }).map(foundItem -> {
+            if (!foundItem.getId().equals("anonymous")) {
                 foundItem.setAdresseL1(client.getAdresseL1());
                 foundItem.setAdresseL2(client.getAdresseL2());
                 foundItem.setCity(client.getCity());
@@ -58,8 +50,14 @@ public class ClientController {
                 foundItem.setEmail(client.getEmail());
                 foundItem.setName(client.getName());
                 foundItem.setSendInfo(client.isSendInfo());
-            }   
+            }
             return foundItem;
-        }).flatMap(clients::save);
+        }).flatMap(clients::save).flatMap(fclient -> {
+            if (fclient.getId() != "anonymous")
+                return Mono.just("ok");
+            else
+                return Mono.just("erreur: Mauvaise clef de sécurité");
+        });
     }
+
 }
