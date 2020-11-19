@@ -37,6 +37,9 @@ public class HomePageController {
     {
         final HomePage result=HomePage.builder().build();   
         return configs.findAll().flatMap(config->{
+            config.getCaroussel().setDescription("");
+            config.getLogo().setCategorie(null);
+            config.getLogo().setDescription("");
             result.setWebConfig(config);
             return Flux.empty();
         }).thenMany(metas.findAll())
@@ -45,11 +48,14 @@ public class HomePageController {
             return Flux.empty();
         }).thenMany(identites.findAll())
         .flatMap(idntite->{
+            idntite.getLogo().setDescription("");
+            idntite.getLogo().setCategorie(null);
             result.setIdentite(idntite);
             return Flux.empty();
         }).thenMany(articleCategories.findAll().filter(articleCategorie->articleCategorie.isVisible()))
         .flatMap(articleCategorie->{
             articleCategorie.setDescription("");
+            articleCategorie.setImage(null);
             result.getArticleCategorie().add(articleCategorie);
             return Flux.empty();
         }).thenMany(images.findAll().filter(image->image.getCategorie().getName().equals(result.getWebConfig().getCaroussel().getName())))
