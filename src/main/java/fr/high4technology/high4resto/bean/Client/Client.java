@@ -49,9 +49,9 @@ public class Client {
     @Builder.Default
     private boolean sendInfo=false;
     @Getter
-    private Date firstConnexion="";
+    private Date firstConnexion;
     @Getter
-    private Date lastConnexion="";
+    private Date lastConnexion;
     @Getter
     @Builder.Default
     private List<ItemCarte>currentPanier=new ArrayList<ItemCarte>();
