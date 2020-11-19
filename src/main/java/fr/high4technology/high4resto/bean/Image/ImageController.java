@@ -122,7 +122,7 @@ public class ImageController {
 				File thumbFileResize = new File("/tmp/r"+"x"+fileName);
 				File thumbFileDest = new File("/tmp/"+"x"+fileName+".webp");	
 				try {
-					Thumbnails.of(thumbFileSrc).size(320, 200).toFile(thumbFileResize);
+					Thumbnails.of(thumbFileSrc).size(300, 300).toFile(thumbFileResize);
 					WebpIO.create().toWEBP(thumbFileResize, thumbFileDest);
 					DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
 					DefaultDataBuffer finalFile;
