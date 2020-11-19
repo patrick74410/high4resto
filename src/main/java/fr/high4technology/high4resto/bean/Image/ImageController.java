@@ -37,8 +37,10 @@ import reactor.core.publisher.Mono;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
@@ -99,11 +101,33 @@ public class ImageController {
 		return fileParts.flatMap(part -> {
 			File src = new File("/tmp/"+part.filename());
 			File dest = new File("/tmp/"+part.filename() + ".webp");
-			File thumbFileSrc = new File("/tmp/"+"x"+fileName);
+			File thumDest= new File("/tmp/"+"thumb"+fileName+".webp");
 			part.transferTo(src);
-			part.transferTo(thumbFileSrc);
 
-			WebpIO.create().toWEBP(src, dest);
+			String s;
+			Process p;
+			try {
+				p = Runtime.getRuntime().exec("cwebp "+src.getName()+" -o "+dest.getName(),null,new File("/tmp/"));
+				BufferedReader br = new BufferedReader(
+					new InputStreamReader(p.getInputStream()));
+				while ((s = br.readLine()) != null)
+					log.info("line: " + s);
+				p.waitFor();
+				log.info("exit: " + p.exitValue());
+				p.destroy();
+			} catch (Exception e) {e.printStackTrace();}
+
+			try {
+				p = Runtime.getRuntime().exec("cwebp -resize 300 0 "+src.getName()+" -o "+thumDest.getName(),null,new File("/tmp/"));
+				BufferedReader br = new BufferedReader(
+					new InputStreamReader(p.getInputStream()));
+				while ((s = br.readLine()) != null)
+					log.info("line: " + s);
+				p.waitFor();
+				log.info("exit: " + p.exitValue());
+				p.destroy();
+			} catch (Exception e) {log(e.getMessage())}
+
 			DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
 			DefaultDataBuffer finalFile;
 
@@ -113,26 +137,20 @@ public class ImageController {
 				FileUtils.deleteQuietly(dest);
 				return this.gridFsTemplate.store(Flux.just(finalFile), part.filename());
 			} catch (IOException e) {
-				e.printStackTrace();
+				log(e.getMessage());
 			}				
 			return this.gridFsTemplate.store(part.content(), part.filename());})
 			.flatMap(id ->{
 				finalImage.setGridId(id.toHexString());
-				File thumbFileSrc = new File("/tmp/"+"x"+fileName);
-				File thumbFileResize = new File("/tmp/r"+"x"+fileName);
-				File thumbFileDest = new File("/tmp/"+"x"+fileName+".webp");	
+				File thumDest= new File("/tmp/"+"thumb"+fileName+".webp");
 				try {
-					Thumbnails.of(thumbFileSrc).size(300, 300).toFile(thumbFileResize);
-					WebpIO.create().toWEBP(thumbFileResize, thumbFileDest);
 					DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
 					DefaultDataBuffer finalFile;
-					finalFile = factory.wrap(FileUtils.readFileToByteArray(thumbFileDest));
-					FileUtils.deleteQuietly(thumbFileSrc);
-					FileUtils.deleteQuietly(thumbFileResize);
-					FileUtils.deleteQuietly(thumbFileDest);
+					finalFile = factory.wrap(FileUtils.readFileToByteArray(thumDest));
+					FileUtils.deleteQuietly(thumDest);
 					return this.gridFsTemplate.store(Flux.just(finalFile),fileName);
 				} catch (IOException e) {
-					e.printStackTrace();
+					log(e.getMessage());
 				}				
 				return this.gridFsTemplate.store(Flux.just(),fileName+".webp");
 			})
