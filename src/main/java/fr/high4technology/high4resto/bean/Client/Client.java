@@ -25,25 +25,33 @@ public class Client {
     @Id
     private String id;
     @Getter
-    private String name;
+    @Builder.Default
+    private String name="";
     @Getter
-    private String lastName;
+    @Builder.Default
+    private String lastName="";
     @Getter
-    private String email;
+    @Builder.Default
+    private String email="";
     @Getter
-    private String adresseL1;
+    @Builder.Default
+    private String adresseL1="";
     @Getter
-    private String adresseL2;
+    @Builder.Default
+    private String adresseL2="";
     @Getter
-    private String zip;
+    @Builder.Default
+    private String zip="";
     @Getter
-    private String city;
+    @Builder.Default
+    private String city="";
     @Getter
-    private boolean sendInfo;
+    @Builder.Default
+    private boolean sendInfo=false;
     @Getter
-    private Date firstConnexion;
+    private Date firstConnexion="";
     @Getter
-    private Date lastConnexion;
+    private Date lastConnexion="";
     @Getter
     @Builder.Default
     private List<ItemCarte>currentPanier=new ArrayList<ItemCarte>();
