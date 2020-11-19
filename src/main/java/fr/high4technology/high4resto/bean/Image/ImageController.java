@@ -25,7 +25,6 @@ import fr.high4technology.high4resto.bean.Identite.IdentiteRepository;
 import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarteRepository;
 import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorieRepository;
-import io.github.biezhi.webp.WebpIO;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -47,7 +46,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnails;
 
 @RestController
 @RequestMapping("/api/images")
@@ -126,7 +124,9 @@ public class ImageController {
 				p.waitFor();
 				log.info("exit: " + p.exitValue());
 				p.destroy();
-			} catch (Exception e) {log(e.getMessage())}
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
 
 			DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
 			DefaultDataBuffer finalFile;
@@ -137,7 +137,7 @@ public class ImageController {
 				FileUtils.deleteQuietly(dest);
 				return this.gridFsTemplate.store(Flux.just(finalFile), part.filename());
 			} catch (IOException e) {
-				log(e.getMessage());
+				log.error(e.getMessage());
 			}				
 			return this.gridFsTemplate.store(part.content(), part.filename());})
 			.flatMap(id ->{
@@ -150,7 +150,7 @@ public class ImageController {
 					FileUtils.deleteQuietly(thumDest);
 					return this.gridFsTemplate.store(Flux.just(finalFile),fileName);
 				} catch (IOException e) {
-					log(e.getMessage());
+					log.error(e.getMessage());
 				}				
 				return this.gridFsTemplate.store(Flux.just(),fileName+".webp");
 			})
