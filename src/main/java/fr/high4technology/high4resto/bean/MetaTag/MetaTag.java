@@ -22,25 +22,35 @@ public class MetaTag {
     @Id
     private String id;
     @Getter
-    private String description;
+    @Builder.Default
+    private String description="";
     @Getter
-    private String keywords;
+    @Builder.Default
+    private String keywords="";
     @Getter
-    private String author;
+    @Builder.Default
+    private String author="";
     @Getter
-    private String facebookTitle;
+    @Builder.Default
+    private String facebookTitle="";
     @Getter
-    private String facebookDescription;
+    @Builder.Default
+    private String facebookDescription="";
     @Getter
-    private String facebookImage;
+    @Builder.Default
+    private String facebookImage="";
     @Getter
-    private String twitterTitle;
+    @Builder.Default
+    private String twitterTitle="";
     @Getter
-    private String twitterDescription;
+    @Builder.Default
+    private String twitterDescription="";
     @Getter
-    private String twitterImage;
+    @Builder.Default
+    private String twitterImage="";
     @Getter
-    private String twitterAuthor;
+    @Builder.Default
+    private String twitterAuthor="";
     @Getter
     @Builder.Default
     private List<KeyMap> other=new ArrayList<KeyMap>();

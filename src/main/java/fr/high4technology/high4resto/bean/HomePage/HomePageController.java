@@ -49,6 +49,7 @@ public class HomePageController {
             return Flux.empty();
         }).thenMany(articleCategories.findAll().filter(articleCategorie->articleCategorie.isVisible()))
         .flatMap(articleCategorie->{
+            articleCategorie.setDescription("");
             result.getArticleCategorie().add(articleCategorie);
             return Flux.empty();
         }).thenMany(images.findAll().filter(image->image.getCategorie().getName().equals(result.getWebConfig().getCaroussel().getName())))
@@ -57,6 +58,7 @@ public class HomePageController {
             return Flux.empty(); 
         }).thenMany(articles.findAll().filter(article->article.isOnTop()))
         .flatMap(article->{
+            article.setContent("");
             result.getOnTop().add(article);
             return Flux.empty();
         })

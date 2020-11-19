@@ -28,13 +28,17 @@ public class Article {
     @Getter
     private boolean visible;
     @Getter
-    private String title;
+    @Builder.Default
+    private String title="";
     @Getter
-    private String resume;
+    @Builder.Default
+    private String resume="";
     @Getter
-    private String content;
+    @Builder.Default
+    private String content="";
     @Getter
     private String date;
     @Getter
-    private String author;
+    @Builder.Default
+    private String author="";
 }

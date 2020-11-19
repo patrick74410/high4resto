@@ -18,8 +18,9 @@ import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
 public class Image {
 	@Id
     private String id;
-	@Getter
-    private String description;
+    @Getter
+    @Builder.Default
+    private String description="";
 	@Getter
     private String gridId;
     @Getter 
@@ -29,7 +30,9 @@ public class Image {
     @Getter 
     private ImageCategorie categorie;
     @Getter
-    private String alt;
+    @Builder.Default
+    private String alt="";
     @Getter
-    private String link;
+    @Builder.Default
+    private String link="";
 }

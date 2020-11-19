@@ -25,17 +25,23 @@ public class Identite {
     @Id
     private String id;
     @Getter
-    private String nomEtablissement;
+    @Builder.Default
+    private String nomEtablissement="";
     @Getter
-    private String zip;
+    @Builder.Default
+    private String zip="";
     @Getter
-    private String city;
+    @Builder.Default
+    private String city="";
     @Getter
-    private String number;
+    @Builder.Default
+    private String number="";
     @Getter
-    private String adresse;
+    @Builder.Default
+    private String adresse="";
     @Getter
-    private String complement;
+    @Builder.Default
+    private String complement="";
     @Getter
     @Builder.Default
     private List<KeyMap> contact=new ArrayList<KeyMap>();
@@ -47,5 +53,6 @@ public class Identite {
     @Getter
     private Image logo;
     @Getter
-    private String description;
+    @Builder.Default
+    private String description="";
 }

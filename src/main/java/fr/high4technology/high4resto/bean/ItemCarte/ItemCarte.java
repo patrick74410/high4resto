@@ -28,11 +28,14 @@ public class ItemCarte {
     @Id
     private String id;
     @Getter
-    private String name;
+    @Builder.Default
+    private String name="";
     @Getter
-    private String description;
+    @Builder.Default
+    private String description="";
     @Getter
-    private double price;
+    @Builder.Default
+    private double price=0;
     @Getter
     private int order;
     @Getter
@@ -57,6 +60,7 @@ public class ItemCarte {
     @Builder.Default
     private List<Promotion> promotions = new ArrayList<Promotion>();
     @Getter
-    private int stock;
+    @Builder.Default
+    private int stock=5;
     
 }

@@ -20,7 +20,8 @@ public class OptionsItem {
     @Id
     private String id;
     @Getter
-    private String label;
+    @Builder.Default
+    private String label="";
     @Getter
     @Builder.Default
     private List<OptionItem> options = new ArrayList<OptionItem>();

@@ -19,17 +19,23 @@ public class Promotion{
     @Id
     private String id;
     @Getter
-    private String name;
+    @Builder.Default
+    private String name="";
     @Getter
-    private Double reduction;
+    @Builder.Default
+    private Double reduction=0.0;
     @Getter
-    private String heureDebut;
+    @Builder.Default
+    private String heureDebut="";
     @Getter
-    private String heureFin;
+    @Builder.Default
+    private String heureFin="";
     @Getter
-    private String dateDebut;
+    @Builder.Default
+    private String dateDebut="";
     @Getter
-    private String dateFin;
+    @Builder.Default
+    private String dateFin="";
     @Getter
     private boolean[] jourValide;
     @Getter

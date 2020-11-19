@@ -19,9 +19,11 @@ public class ImageCategorie {
     @Id
 	private String id;
     @Getter 
-    private String name;
+    @Builder.Default
+    private String name="";
     @Getter
-    private String description;
+    @Builder.Default
+    private String description="";
     @Getter
     private boolean visible;
     @Getter 
