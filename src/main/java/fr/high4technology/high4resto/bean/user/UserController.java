@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +34,7 @@ public class UserController {
     private final UserRepository users;
     private final JwtTokenProvider tokenProvider;
     private final ReactiveAuthenticationManager authenticationManager;
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public Mono<ResponseEntity<Map<String,String>>> login(@Valid @RequestBody Mono<AuthenticationRequest> authRequest) {
@@ -52,6 +55,27 @@ public class UserController {
     @GetMapping("/find/{username}")
     public Mono<User> get(@PathVariable() String username) {
         return this.users.findByUsername(username);
-    }  
+    }
+ 
+    @PutMapping("/updatePassword/")
+    Mono<User> updatePassword(@RequestBody User user)
+    {
+        return this.users.findById(user.getId())
+        .map(foundItem -> {
+            foundItem.setPassword(passwordEncoder.encode(user.getPassword()));
+            return foundItem;
+         })
+        .flatMap(users::save);
+    }
+    @PutMapping("/updateRole/")
+    Mono<User> updateRole(@RequestBody User user)
+    {
+        return this.users.findById(user.getId())
+        .map(foundItem -> {
+            foundItem.setRoles(user.getRoles());;
+            return foundItem;
+         })
+        .flatMap(users::save);
+    }    
 
 }

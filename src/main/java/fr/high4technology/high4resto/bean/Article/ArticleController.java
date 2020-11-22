@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -86,7 +87,7 @@ public class ArticleController {
 	@PutMapping("/insert/")
 	Mono<Article> insert(@RequestBody Article article)
 	{
-		Date date = Calendar.getInstance().getTime();
+		Date date = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris")).getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");  
 		article.setDate(dateFormat.format(date));
 		return articles.save(article);
