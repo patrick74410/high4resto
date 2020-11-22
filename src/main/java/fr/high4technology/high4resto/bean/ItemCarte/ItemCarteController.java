@@ -50,12 +50,12 @@ public class ItemCarteController {
 		return itemCartes.findById(idItem);
 	}
 
-	@GetMapping("/filter/{categorieName}")
-	public Flux<ItemCarte> getByFilter(@PathVariable String categorieName){
+	@GetMapping("/filter/{categorieId}")
+	public Flux<ItemCarte> getByFilter(@PathVariable String categorieId){
 		// Je prends les items visible
 		return itemCartes.findAll().filter(item->item.isVisible())
 		// Je ne sélectionne que les items qui font partie de la catégorie demandée
-		.filter(item->item.getCategorie().getName().equals(categorieName))
+		.filter(item->item.getCategorie().getId().equals(categorieId))
 		/*
 		// Je vais cherché dans le stock
 		.flatMap(itemCartes->{
