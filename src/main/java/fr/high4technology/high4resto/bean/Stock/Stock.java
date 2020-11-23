@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import fr.high4technology.high4resto.bean.Struct.Disponibility;
+import fr.high4technology.high4resto.bean.Horaire.Horaire;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 
 
@@ -24,8 +24,7 @@ public class Stock {
     @Getter
     private ItemCarte item;
     @Getter
-    @Builder.Default
-    private Disponibility disponibility=new Disponibility();
+    private Horaire disponibility;
     @Getter
     private String inside;
 }
