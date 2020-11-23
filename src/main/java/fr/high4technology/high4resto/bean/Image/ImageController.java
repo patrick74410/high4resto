@@ -193,7 +193,7 @@ public class ImageController {
 	@GetMapping("/filter/{categorieName}")
 	public Flux<Image> filter(@PathVariable String categorieName)
 	{
-		return images.findAll().filter(image->image.getCategorie().getName().equals(categorieName));
+		return images.findAll().filter(image->image.getCategorie()!=null).filter(image->image.getCategorie().getName().equals(categorieName));
 	}
 
 

@@ -47,8 +47,8 @@ public class StockController {
         return stocks.saveAll(manyStock);
     }
 
-    @DeleteMapping("/move/{idStock}/{destination}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable String idStock,@PathVariable String destination)
+    @DeleteMapping("/move_to_next/{idStock}/")
+    public Mono<ResponseEntity<Void>> move_To_Next(@PathVariable String idStock)
     {
  /*!!!!!!! Reste a ajouter le transfer de l'item)*/ 
             return        
