@@ -53,7 +53,7 @@ public class ItemCarteController {
 	@GetMapping("/filter/{categorieId}")
 	public Flux<ItemCarte> getByFilter(@PathVariable String categorieId){
 		// Je prends les items visible
-		return itemCartes.findAll().filter(item->item.isVisible())
+		return itemCartes.findAll().filter(item->item.isVisible()).filter(item->item.getCategorie()!=null)
 		// Je ne sélectionne que les items qui font partie de la catégorie demandée
 		.filter(item->item.getCategorie().getId().equals(categorieId))
 		/*

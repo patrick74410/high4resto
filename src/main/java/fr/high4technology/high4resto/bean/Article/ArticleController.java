@@ -52,10 +52,10 @@ public class ArticleController {
 		});
 	}
 
-	@GetMapping("/filter/{categorieName}")
-	public Flux<Article> filter(@PathVariable String categorieName)
+	@GetMapping("/filter/{categorieId}")
+	public Flux<Article> filter(@PathVariable String categorieId)
 	{
-		return articles.findAll().filter(article->article.isVisible()).filter(article->article.getCategorie().getName().equals(categorieName))
+		return articles.findAll().filter(article->article.getCategorie()!=null).filter(article->article.isVisible()).filter(article->article.getCategorie().getId().equals(categorieId))
 		.sort((articleA,articleB)->{
 			try{
 				Date articleADate=new SimpleDateFormat("dd/MM/yyyy").parse(articleA.getDate()); 
