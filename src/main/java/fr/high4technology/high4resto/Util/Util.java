@@ -13,7 +13,7 @@ public class Util {
         TimeZone tz1 = TimeZone.getTimeZone("Europe/Paris");
         Calendar cal = GregorianCalendar.getInstance(tz1,locale1);
         if (tz1.inDaylightTime(new Date())) cal.add(Calendar.HOUR,1);
-        return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(cal);
+        return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(cal.getTime());
     }
     public static Date getDateNow()
     {

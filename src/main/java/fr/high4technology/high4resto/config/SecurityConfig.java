@@ -88,6 +88,7 @@ public class SecurityConfig {
                         .pathMatchers("/api/webConfig/delete/**").hasRole("ADMIN")
                         .pathMatchers("/api/webConfig/insert/**").hasRole("ADMIN")
                         .pathMatchers("/api/webConfig/update/**").hasRole("ADMIN")   
+                        .pathMatchers("/api/stock/**").hasRole("ADMIN")   
                         .anyExchange().permitAll()
                 )
                 .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
