@@ -58,7 +58,7 @@ public class HomePageController {
             articleCategorie.setImage(null);
             result.getArticleCategorie().add(articleCategorie);
             return Flux.empty();
-        }).thenMany(images.findAll().filter(image->image.getCategorie().getName().equals(result.getWebConfig().getCaroussel().getName())))
+        }).thenMany(images.findAll().filter(image->image.getCategorie()!= null).filter(image->image.getCategorie().getName().equals(result.getWebConfig().getCaroussel().getName())))
         .flatMap(image->{
             result.getCaroussel().add(image);
             return Flux.empty(); 
