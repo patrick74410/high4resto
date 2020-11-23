@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.high4technology.high4resto.Util.Util;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -87,9 +88,7 @@ public class ArticleController {
 	@PutMapping("/insert/")
 	Mono<Article> insert(@RequestBody Article article)
 	{
-		Date date = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris")).getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");  
-		article.setDate(dateFormat.format(date));
+		article.setDate(Util.getTimeNow());
 		return articles.save(article);
 	}
 

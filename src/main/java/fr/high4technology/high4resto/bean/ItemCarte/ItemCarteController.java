@@ -84,14 +84,14 @@ public class ItemCarteController {
 			{
 				log.error(e.getMessage());
 			}
-			Date now=Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris")).getTime();
+			Date now=Util.getDateNow();
 			return begin.compareTo(now) * now.compareTo(end) > 0;
 		})
 		.filter(stock->{
 			// Est-ce que je suis dans le bon crénau horaire ?
 			for(BetweenTime between:stock.getDisponibility().getDisponible())
 			{
-				LocalTime now = LocalTime.of(Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris")).getTime().getHours(), Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris")).getTime().getMinutes());
+				LocalTime now = LocalTime.of(Util.getDateNow().getHours(), Util.getDateNow().getMinutes());
 				if(now.isAfter(LocalTime.parse(between.getDebut())))
 				{
 					if(now.isBefore(LocalTime.parse(between.getFin())))
