@@ -5,6 +5,7 @@ import java.util.List;
 
 import fr.high4technology.high4resto.bean.Article.Article;
 import fr.high4technology.high4resto.bean.ArticleCategorie.ArticleCategorie;
+import fr.high4technology.high4resto.bean.Horaire.Horaire;
 import fr.high4technology.high4resto.bean.Identite.Identite;
 import fr.high4technology.high4resto.bean.Image.Image;
 import fr.high4technology.high4resto.bean.MetaTag.MetaTag;
@@ -26,5 +27,6 @@ public class HomePage {
     private List<Article> onTop=new ArrayList<Article>();
     @Builder.Default
     private List<Image> caroussel=new ArrayList<Image>();
+    private Horaire horaire;
     
 }

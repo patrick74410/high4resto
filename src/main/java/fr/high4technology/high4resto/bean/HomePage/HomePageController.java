@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.bean.Article.ArticleRepository;
 import fr.high4technology.high4resto.bean.ArticleCategorie.ArticleCategorieRepository;
+import fr.high4technology.high4resto.bean.Horaire.HoraireRepository;
 import fr.high4technology.high4resto.bean.Identite.IdentiteRepository;
 import fr.high4technology.high4resto.bean.Image.ImageRepository;
 import fr.high4technology.high4resto.bean.MetaTag.MetaTagRepository;
@@ -31,6 +32,8 @@ public class HomePageController {
     private ArticleRepository articles;
     @Autowired
     private ImageRepository images;
+    @Autowired
+    private HoraireRepository horaires;
 
     @GetMapping("/get/")
     public Mono<HomePage> get()
@@ -67,6 +70,10 @@ public class HomePageController {
             article.setContent("");
             result.getOnTop().add(article);
             return Flux.empty();
+        }).thenMany(horaires.findAll())
+        .flatMap(horaire->{
+            result.setHoraire(horaire);
+            return Flux.empty();            
         })
         .then(Mono.just(result));
     }
