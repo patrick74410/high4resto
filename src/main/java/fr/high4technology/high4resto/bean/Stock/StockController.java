@@ -33,22 +33,22 @@ public class StockController {
         return stocks.findAll();
     } 
 
-    @PutMapping("/insert/")
-    Mono<Stock> insert(@RequestBody Stock stock)
+    @PutMapping("/insert/{userName}")
+    Mono<Stock> insert(@RequestBody Stock stock,@PathVariable String userName)
     {
         String inside=Util.getTimeNow();
 
-        return stocks.save(Stock.builder().inside(inside).item(stock.getItem()).disponibility(stock.getDisponibility()).build());
+        return stocks.save(Stock.builder().username(userName).inside(inside).item(stock.getItem()).disponibility(stock.getDisponibility()).build());
     }   
 
-    @PutMapping("/insert/{qty}")
-    Flux<Stock> insertMany(@RequestBody Stock stock,@PathVariable int qty)
+    @PutMapping("/insert/{qty}/{userName}")
+    Flux<Stock> insertMany(@RequestBody Stock stock,@PathVariable int qty,@PathVariable String userName)
     {
         String inside=Util.getTimeNow();
         List<Stock> manyStock=new ArrayList<Stock>();
         for(int i=0;i!=qty;i++)
         {
-            manyStock.add(Stock.builder().inside(inside).item(stock.getItem()).disponibility(stock.getDisponibility()).build());
+            manyStock.add(Stock.builder().inside(inside).username(userName).item(stock.getItem()).disponibility(stock.getDisponibility()).build());
         }
         return stocks.saveAll(manyStock);
     }

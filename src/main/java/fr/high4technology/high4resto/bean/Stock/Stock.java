@@ -27,4 +27,6 @@ public class Stock {
     private Horaire disponibility;
     @Getter
     private String inside;
+    @Getter
+    private String username;
 }
