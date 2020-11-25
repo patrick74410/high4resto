@@ -15,9 +15,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.ArrayList;
 
 import fr.high4technology.high4resto.Util.Util;
+import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 
 @RestController
 @RequestMapping("/api/stock")
@@ -28,40 +30,53 @@ public class StockController {
     private StockRepository stocks;
 
     @GetMapping("/find/")
-    public Flux<Stock> getAll()
-    {
+    public Flux<Stock> getAll() {
         return stocks.findAll();
-    } 
+    }
+
+    @GetMapping("/grouped/find/")
+    public Flux<Stock> getGrouped() {
+        return stocks.findAll().sort((a, b) -> {
+            return a.getItem().getId().compareTo(b.getItem().getId());
+        })
+                // Je regroupe le tout et je compte le stock disponible
+                .transformDeferred(source -> {
+                    AtomicReference<Stock> last = new AtomicReference<>(null);
+                    Stock stock=Stock.builder().item(ItemCarte.builder().stock(0).build()).build();
+                    last.set(stock);
+                    return source
+                            .windowUntil(i -> !i.getItem().getId().equals(last.getAndSet(i).getItem().getId()), true)
+                            .flatMap(window -> window.reduce((i1, i2) -> {
+                                i1.getItem().setStock(i1.getItem().getStock() + i2.getItem().getStock());
+                                return i1;
+                            }));
+                });
+    }
 
     @PutMapping("/insert/{userName}")
-    Mono<Stock> insert(@RequestBody Stock stock,@PathVariable String userName)
-    {
-        String inside=Util.getTimeNow();
+    Mono<Stock> insert(@RequestBody Stock stock, @PathVariable String userName) {
+        String inside = Util.getTimeNow();
 
-        return stocks.save(Stock.builder().username(userName).inside(inside).item(stock.getItem()).disponibility(stock.getDisponibility()).build());
-    }   
+        return stocks.save(Stock.builder().username(userName).inside(inside).item(stock.getItem()).build());
+    }
 
     @PutMapping("/insert/{qty}/{userName}")
-    Flux<Stock> insertMany(@RequestBody Stock stock,@PathVariable int qty,@PathVariable String userName)
-    {
-        String inside=Util.getTimeNow();
-        List<Stock> manyStock=new ArrayList<Stock>();
-        for(int i=0;i!=qty;i++)
-        {
-            manyStock.add(Stock.builder().inside(inside).username(userName).item(stock.getItem()).disponibility(stock.getDisponibility()).build());
+    Flux<Stock> insertMany(@RequestBody Stock stock, @PathVariable int qty, @PathVariable String userName) {
+        String inside = Util.getTimeNow();
+        List<Stock> manyStock = new ArrayList<Stock>();
+        for (int i = 0; i != qty; i++) {
+            manyStock.add(Stock.builder().inside(inside).username(userName).item(stock.getItem()).build());
         }
         return stocks.saveAll(manyStock);
     }
 
-    @DeleteMapping("/move_to_next/{idStock}/")
-    public Mono<ResponseEntity<Void>> move_To_Next(@PathVariable String idStock)
-    {
+    @DeleteMapping("/delete/{idStock}/")
+    public Mono<ResponseEntity<Void>> delete(@PathVariable String idStock) {
 
- /*!!!!!!! Reste a ajouter le transfer de l'item)*/ 
-            return        
-            stocks.deleteById(idStock).map(r -> ResponseEntity.ok().<Void>build())
-            .defaultIfEmpty(ResponseEntity.ok().<Void>build());   
+        return stocks.deleteById(idStock).map(r -> ResponseEntity.ok().<Void>build())
+                .defaultIfEmpty(ResponseEntity.ok().<Void>build());
     }
 
+    
 
 }
