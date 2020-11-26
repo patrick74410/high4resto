@@ -36,45 +36,41 @@ public class HomePageController {
     private HoraireRepository horaires;
 
     @GetMapping("/get/")
-    public Mono<HomePage> get()
-    {
-        final HomePage result=HomePage.builder().build();   
-        return configs.findAll().flatMap(config->{
+    public Mono<HomePage> get() {
+        final HomePage result = HomePage.builder().build();
+        return configs.findAll().flatMap(config -> {
             config.getCaroussel().setDescription("");
             config.getLogo().setCategorie(null);
             config.getLogo().setDescription("");
             result.setWebConfig(config);
             return Flux.empty();
-        }).thenMany(metas.findAll())
-        .flatMap(meta->{
+        }).thenMany(metas.findAll()).flatMap(meta -> {
             result.setMetaTag(meta);
             return Flux.empty();
-        }).thenMany(identites.findAll())
-        .flatMap(idntite->{
+        }).thenMany(identites.findAll()).flatMap(idntite -> {
             idntite.getLogo().setDescription("");
             idntite.getLogo().setCategorie(null);
             result.setIdentite(idntite);
             return Flux.empty();
-        }).thenMany(articleCategories.findAll().filter(articleCategorie->articleCategorie.isVisible()))
-        .flatMap(articleCategorie->{
-            articleCategorie.setDescription("");
-            articleCategorie.setImage(null);
-            result.getArticleCategorie().add(articleCategorie);
-            return Flux.empty();
-        }).thenMany(images.findAll().filter(image->image.getCategorie()!= null).filter(image->image.getCategorie().getName().equals(result.getWebConfig().getCaroussel().getName())))
-        .flatMap(image->{
-            result.getCaroussel().add(image);
-            return Flux.empty(); 
-        }).thenMany(articles.findAll().filter(article->article.isOnTop()))
-        .flatMap(article->{
-            article.setContent("");
-            result.getOnTop().add(article);
-            return Flux.empty();
-        }).thenMany(horaires.findAll())
-        .flatMap(horaire->{
-            result.setHoraire(horaire);
-            return Flux.empty();            
-        })
-        .then(Mono.just(result));
+        }).thenMany(articleCategories.findAll().filter(articleCategorie -> articleCategorie.isVisible()))
+                .flatMap(articleCategorie -> {
+                    articleCategorie.setDescription("");
+                    articleCategorie.setImage(null);
+                    result.getArticleCategorie().add(articleCategorie);
+                    return Flux.empty();
+                })
+                .thenMany(images.findAll().filter(image -> image.getCategorie() != null).filter(
+                        image -> image.getCategorie().getName().equals(result.getWebConfig().getCaroussel().getName())))
+                .flatMap(image -> {
+                    result.getCaroussel().add(image);
+                    return Flux.empty();
+                }).thenMany(articles.findAll().filter(article -> article.isOnTop())).flatMap(article -> {
+                    article.setContent("");
+                    result.getOnTop().add(article);
+                    return Flux.empty();
+                }).thenMany(horaires.findAll()).flatMap(horaire -> {
+                    result.setHoraire(horaire);
+                    return Flux.empty();
+                }).then(Mono.just(result));
     }
 }

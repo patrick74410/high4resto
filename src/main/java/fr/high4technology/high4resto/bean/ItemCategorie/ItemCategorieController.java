@@ -27,46 +27,40 @@ public class ItemCategorieController {
 	private ItemCarteRepository items;
 
 	@GetMapping("/find/")
-	public Flux<ItemCategorie> getAllAll()
-	{
+	public Flux<ItemCategorie> getAllAll() {
 		return itemCategories.findAll();
 	}
 
 	@GetMapping("/find/{idItem}")
-	public Mono<ItemCategorie> getById(@PathVariable String idItem){
+	public Mono<ItemCategorie> getById(@PathVariable String idItem) {
 		return itemCategories.findById(idItem);
 	}
 
 	@DeleteMapping("/delete/{idItem}")
-	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
-	{
+	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
 		return itemCategories.deleteById(idItem).and(items.findAll().map(item -> {
 			if (item.getCategorie().getId().equals(idItem))
 				item.setCategorie(null);
-				return item;
+			return item;
 		}).flatMap(items::save)).map(r -> ResponseEntity.ok().<Void>build())
 				.defaultIfEmpty(ResponseEntity.ok().<Void>build());
 	}
 
 	@PutMapping("/insert/")
-	Mono<ItemCategorie> insert(@RequestBody ItemCategorie categorie)
-	{
+	Mono<ItemCategorie> insert(@RequestBody ItemCategorie categorie) {
 		return itemCategories.save(categorie);
 	}
 
 	@PutMapping("/update/")
-	Mono<ItemCategorie> update(@RequestBody ItemCategorie categorie)
-	{
-		return itemCategories.findById(categorie.getId())
-		.map(foundItem -> {
+	Mono<ItemCategorie> update(@RequestBody ItemCategorie categorie) {
+		return itemCategories.findById(categorie.getId()).map(foundItem -> {
 			foundItem.setName(categorie.getName());
 			foundItem.setOrder(categorie.getOrder());
 			foundItem.setDescription(categorie.getDescription());
 			foundItem.setIconImage(categorie.getIconImage());
 			foundItem.setImage(categorie.getImage());
 			return foundItem;
-		 })
-		.flatMap(categorieItem -> {
+		}).flatMap(categorieItem -> {
 			items.findAll().subscribe(article -> {
 				if (article.getCategorie().getId().equals(categorieItem.getId())) {
 					article.setCategorie(categorieItem);
@@ -80,5 +74,5 @@ public class ItemCategorieController {
 			return itemCategories.save(categorieItem);
 		});
 	}
-    
+
 }

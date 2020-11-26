@@ -1,4 +1,5 @@
 package fr.high4technology.high4resto.bean.MetaTag;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -23,36 +24,35 @@ public class MetaTag {
     private String id;
     @Getter
     @Builder.Default
-    private String description="";
+    private String description = "";
     @Getter
     @Builder.Default
-    private String keywords="";
+    private String keywords = "";
     @Getter
     @Builder.Default
-    private String author="";
+    private String author = "";
     @Getter
     @Builder.Default
-    private String facebookTitle="";
+    private String facebookTitle = "";
     @Getter
     @Builder.Default
-    private String facebookDescription="";
+    private String facebookDescription = "";
     @Getter
     @Builder.Default
-    private String facebookImage="";
+    private String facebookImage = "";
     @Getter
     @Builder.Default
-    private String twitterTitle="";
+    private String twitterTitle = "";
     @Getter
     @Builder.Default
-    private String twitterDescription="";
+    private String twitterDescription = "";
     @Getter
     @Builder.Default
-    private String twitterImage="";
+    private String twitterImage = "";
     @Getter
     @Builder.Default
-    private String twitterAuthor="";
+    private String twitterAuthor = "";
     @Getter
     @Builder.Default
-    private List<KeyMap> other=new ArrayList<KeyMap>();
+    private List<KeyMap> other = new ArrayList<KeyMap>();
 }
- 

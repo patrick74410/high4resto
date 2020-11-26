@@ -22,11 +22,11 @@ public class HomePage {
     private MetaTag metaTag;
     private Identite identite;
     @Builder.Default
-    private List<ArticleCategorie> articleCategorie=new ArrayList<ArticleCategorie>();
+    private List<ArticleCategorie> articleCategorie = new ArrayList<ArticleCategorie>();
     @Builder.Default
-    private List<Article> onTop=new ArrayList<Article>();
+    private List<Article> onTop = new ArrayList<Article>();
     @Builder.Default
-    private List<Image> caroussel=new ArrayList<Image>();
+    private List<Image> caroussel = new ArrayList<Image>();
     private Horaire horaire;
-    
+
 }

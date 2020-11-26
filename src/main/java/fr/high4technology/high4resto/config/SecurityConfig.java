@@ -23,109 +23,102 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http,
-                                                JwtTokenProvider tokenProvider,
-                                                ReactiveAuthenticationManager reactiveAuthenticationManager) {
-        return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-                .authenticationManager(reactiveAuthenticationManager)
-                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
-                .authorizeExchange(it -> it
-                        .pathMatchers("/api/users/{user}/**").access(this::currentUserMatchesPath)
-                        .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                        .pathMatchers("/api/allergene/find/**").permitAll()
-                        .pathMatchers("/api/allergene/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/allergene/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/allergene/update/**").hasRole("ADMIN")
-                        .pathMatchers("/api/categorie/find/**").permitAll()
-                        .pathMatchers("/api/categorie/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/categorie/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/categorie/update/**").hasRole("ADMIN")
-                        .pathMatchers("/api/images/find/**").permitAll()
-                        .pathMatchers("/api/images/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/images/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/images/update/**").hasRole("ADMIN")
-                        .pathMatchers("/api/images/upload/**").hasRole("ADMIN")
-                        .pathMatchers("/api/images/download/**").permitAll()
-                        .pathMatchers("/api/ingredient/find/**").permitAll()
-                        .pathMatchers("/api/ingredient/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/ingredient/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/ingredient/update/**").hasRole("ADMIN")
-                        .pathMatchers("/api/itemCarte/find/**").permitAll()
-                        .pathMatchers("/api/itemCarte/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/itemCarte/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/itemCarte/update/**").hasRole("ADMIN")
-                        .pathMatchers("/api/tva/find/**").permitAll()
-                        .pathMatchers("/api/tva/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/tva/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/tva/update/**").hasRole("ADMIN")
-                        .pathMatchers("/api/optionsItem/find/**").permitAll()
-                        .pathMatchers("/api/optionsItem/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/optionsItem/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/optionsItem/update/**").hasRole("ADMIN")
-                        .pathMatchers("/api/promotion/find/**").permitAll()
-                        .pathMatchers("/api/promotion/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/promotion/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/promotion/update/**").hasRole("ADMIN")                       
-                        .pathMatchers("/api/horaire/find/**").permitAll()
-                        .pathMatchers("/api/horaire/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/horaire/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/horaire/update/**").hasRole("ADMIN")
-                        .pathMatchers("/api/identite/find/**").permitAll()
-                        .pathMatchers("/api/identite/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/identite/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/identite/update/**").hasRole("ADMIN")
-                        .pathMatchers("/api/articleCatetegorie/find/**").permitAll()
-                        .pathMatchers("/api/articleCatetegorie/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/articleCatetegorie/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/articleCatetegorie/update/**").hasRole("ADMIN")                                    
-                        .pathMatchers("/api/imageCategorie/find/**").permitAll()
-                        .pathMatchers("/api/imageCategorie/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/imageCategorie/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/imageCategorie/update/**").hasRole("ADMIN")
-                        .pathMatchers("/api/webConfig/find/**").permitAll()
-                        .pathMatchers("/api/webConfig/delete/**").hasRole("ADMIN")
-                        .pathMatchers("/api/webConfig/insert/**").hasRole("ADMIN")
-                        .pathMatchers("/api/webConfig/update/**").hasRole("ADMIN")   
-                        .pathMatchers("/api/stock/**").hasRole("ADMIN")
-                        .pathMatchers("/api/itemDisponibility/**").hasRole("ADMIN")
-                        .anyExchange().permitAll()
-                )
-                .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
-                .build();
+        @Bean
+        SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http, JwtTokenProvider tokenProvider,
+                        ReactiveAuthenticationManager reactiveAuthenticationManager) {
+                return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+                                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+                                .authenticationManager(reactiveAuthenticationManager)
+                                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+                                .authorizeExchange(it -> it
+                                                .pathMatchers(HttpMethod.OPTIONS).permitAll()
+                                                .pathMatchers("/api/config-user/**").hasRole("ADMIN")
+                                                .pathMatchers("/api/config-users/**").hasRole("ADMIN")
+                                                .pathMatchers("/api/allergene/find/**").permitAll()
+                                                .pathMatchers("/api/allergene/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/allergene/insert/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/allergene/update/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/categorie/find/**").permitAll()
+                                                .pathMatchers("/api/categorie/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/categorie/insert/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/categorie/update/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/images/find/**").permitAll()
+                                                .pathMatchers("/api/images/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/images/insert/**").hasRole("EDITOR")
+                                                .pathMatchers("/api/images/update/**").hasRole("EDITOR")
+                                                .pathMatchers("/api/images/upload/**").hasRole("EDITOR")
+                                                .pathMatchers("/api/images/download/**").permitAll()
+                                                .pathMatchers("/api/ingredient/find/**").permitAll()
+                                                .pathMatchers("/api/ingredient/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/ingredient/insert/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/ingredient/update/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/itemCarte/find/**").permitAll()
+                                                .pathMatchers("/api/itemCarte/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/itemCarte/insert/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/itemCarte/update/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/tva/find/**").permitAll()
+                                                .pathMatchers("/api/tva/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/tva/insert/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/tva/update/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/optionsItem/find/**").permitAll()
+                                                .pathMatchers("/api/optionsItem/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/optionsItem/insert/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/optionsItem/update/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/promotion/find/**").permitAll()
+                                                .pathMatchers("/api/promotion/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/promotion/insert/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/promotion/update/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/horaire/find/**").permitAll()
+                                                .pathMatchers("/api/horaire/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/horaire/insert/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/horaire/update/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/identite/find/**").permitAll()
+                                                .pathMatchers("/api/identite/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/identite/insert/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/identite/update/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/articleCategorie/find/**").permitAll()
+                                                .pathMatchers("/api/articleCategorie/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/articleCategorie/insert/**").hasRole("EDITOR")
+                                                .pathMatchers("/api/articleCategorie/update/**").hasRole("EDITOR")
+                                                .pathMatchers("/api/imageCategorie/find/**").permitAll()
+                                                .pathMatchers("/api/imageCategorie/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/imageCategorie/insert/**").hasRole("EDITOR")
+                                                .pathMatchers("/api/imageCategorie/update/**").hasRole("EDITOR")
+                                                .pathMatchers("/api/webConfig/find/**").permitAll()
+                                                .pathMatchers("/api/webConfig/delete/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/webConfig/insert/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/webConfig/update/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/stock/**").hasRole("MANAGER")
+                                                .pathMatchers("/api/itemDisponibility/**").hasRole("MANAGER")
+                                                .anyExchange().permitAll())
+                                .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider),
+                                                SecurityWebFiltersOrder.HTTP_BASIC)
+                                .build();
 
+        }
 
-    }
+        private Mono<AuthorizationDecision> currentUserMatchesPath(Mono<Authentication> authentication,
+                        AuthorizationContext context) {
+                return authentication.map(a -> context.getVariables().get("user").equals(a.getName()))
+                                .map(AuthorizationDecision::new);
+        }
 
-    private Mono<AuthorizationDecision> currentUserMatchesPath(Mono<Authentication> authentication,
-                                                               AuthorizationContext context) {
-        return authentication
-                .map(a -> context.getVariables().get("user").equals(a.getName()))
-                .map(AuthorizationDecision::new);
-    }
+        @Bean
+        public ReactiveUserDetailsService userDetailsService(UserRepository users) {
 
-    @Bean
-    public ReactiveUserDetailsService userDetailsService(UserRepository users) {
+                return username -> users.findByUsername(username)
+                                .map(u -> User.withUsername(u.getUsername()).password(u.getPassword())
+                                                .authorities(u.getRoles().toArray(new String[0]))
+                                                .accountExpired(!u.isActive()).credentialsExpired(!u.isActive())
+                                                .disabled(!u.isActive()).accountLocked(!u.isActive()).build());
+        }
 
-        return username -> users.findByUsername(username)
-                .map(u -> User
-                        .withUsername(u.getUsername()).password(u.getPassword())
-                        .authorities(u.getRoles().toArray(new String[0]))
-                        .accountExpired(!u.isActive())
-                        .credentialsExpired(!u.isActive())
-                        .disabled(!u.isActive())
-                        .accountLocked(!u.isActive())
-                        .build()
-                );
-    }
-
-    @Bean
-    public ReactiveAuthenticationManager reactiveAuthenticationManager(ReactiveUserDetailsService userDetailsService,
-                                                                       PasswordEncoder passwordEncoder) {
-        var authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
-        authenticationManager.setPasswordEncoder(passwordEncoder);
-        return authenticationManager;
-    }
+        @Bean
+        public ReactiveAuthenticationManager reactiveAuthenticationManager(
+                        ReactiveUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+                var authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
+                authenticationManager.setPasswordEncoder(passwordEncoder);
+                return authenticationManager;
+        }
 
 }

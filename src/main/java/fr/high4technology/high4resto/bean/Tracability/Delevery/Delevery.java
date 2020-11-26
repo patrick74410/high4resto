@@ -18,10 +18,10 @@ import fr.high4technology.high4resto.bean.Tracability.ToDelivery.ToDelivery;
 @Document
 public class Delevery {
     @Id
-	private String id;
+    private String id;
     @Getter
     private ToDelivery toDelivery;
     @Getter
     private String inside;
-  
+
 }

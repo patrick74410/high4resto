@@ -28,9 +28,9 @@ public class IdentiteController {
 	@GetMapping("/find/")
 	public Flux<Identite> getAllAll() {
 		return identites.findAll()
-				.switchIfEmpty(identites
-						.save(Identite.builder().adresse("").city("").complement("").contact(new ArrayList<KeyMap>())
-								.coordonnee(Gps.builder().latitude(0).longitude(0).build()).nomEtablissement("").number("").siret("").zip("").build()))
+				.switchIfEmpty(identites.save(Identite.builder().adresse("").city("").complement("")
+						.contact(new ArrayList<KeyMap>()).coordonnee(Gps.builder().latitude(0).longitude(0).build())
+						.nomEtablissement("").number("").siret("").zip("").build()))
 				.flatMap(t -> identites.findAll());
 	}
 

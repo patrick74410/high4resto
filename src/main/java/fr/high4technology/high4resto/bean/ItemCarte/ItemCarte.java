@@ -29,24 +29,24 @@ public class ItemCarte {
     private String id;
     @Getter
     @Builder.Default
-    private String name="";
+    private String name = "";
     @Getter
     @Builder.Default
-    private String description="";
+    private String description = "";
     @Getter
     @Builder.Default
-    private double price=0;
+    private double price = 0;
     @Getter
     private int order;
     @Getter
     @Builder.Default
-    private Image sourceImage=new Image();
+    private Image sourceImage = new Image();
     @Getter
     @Builder.Default
-    private Tva tva =new Tva();
+    private Tva tva = new Tva();
     @Getter
     @Builder.Default
-    private ItemCategorie categorie =new ItemCategorie();
+    private ItemCategorie categorie = new ItemCategorie();
     @Getter
     @Builder.Default
     private List<Allergene> allergenes = new ArrayList<Allergene>();
@@ -55,12 +55,12 @@ public class ItemCarte {
     private List<OptionsItem> options = new ArrayList<OptionsItem>();
     @Getter
     @Builder.Default
-    private boolean visible=true;
+    private boolean visible = true;
     @Getter
     @Builder.Default
     private List<Promotion> promotions = new ArrayList<Promotion>();
     @Getter
     @Builder.Default
-    private int stock=5;
-    
+    private int stock = 5;
+
 }

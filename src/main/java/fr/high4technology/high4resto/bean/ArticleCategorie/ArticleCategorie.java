@@ -18,11 +18,11 @@ public class ArticleCategorie {
 	@Id
 	private String id;
 	@Getter
-    @Builder.Default
-	private String name="";    
+	@Builder.Default
+	private String name = "";
 	@Getter
-    @Builder.Default
-	private String description="";
+	@Builder.Default
+	private String description = "";
 	@Getter
 	private int order;
 	@Getter
@@ -30,6 +30,6 @@ public class ArticleCategorie {
 	@Getter
 	private Image image;
 	@Getter
-    @Builder.Default
-	private boolean visible=true;
+	@Builder.Default
+	private boolean visible = true;
 }

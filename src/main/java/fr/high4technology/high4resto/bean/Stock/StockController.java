@@ -42,7 +42,7 @@ public class StockController {
                 // Je regroupe le tout et je compte le stock disponible
                 .transformDeferred(source -> {
                     AtomicReference<Stock> last = new AtomicReference<>(null);
-                    Stock stock=Stock.builder().item(ItemCarte.builder().stock(0).build()).build();
+                    Stock stock = Stock.builder().item(ItemCarte.builder().stock(0).build()).build();
                     last.set(stock);
                     return source
                             .windowUntil(i -> !i.getItem().getId().equals(last.getAndSet(i).getItem().getId()), true)
@@ -76,7 +76,5 @@ public class StockController {
         return stocks.deleteById(idStock).map(r -> ResponseEntity.ok().<Void>build())
                 .defaultIfEmpty(ResponseEntity.ok().<Void>build());
     }
-
-    
 
 }

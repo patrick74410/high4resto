@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,33 +25,33 @@ public class Client {
     private String id;
     @Getter
     @Builder.Default
-    private String name="";
+    private String name = "";
     @Getter
     @Builder.Default
-    private String lastName="";
+    private String lastName = "";
     @Getter
     @Builder.Default
-    private String email="";
+    private String email = "";
     @Getter
     @Builder.Default
-    private String adresseL1="";
+    private String adresseL1 = "";
     @Getter
     @Builder.Default
-    private String adresseL2="";
+    private String adresseL2 = "";
     @Getter
     @Builder.Default
-    private String zip="";
+    private String zip = "";
     @Getter
     @Builder.Default
-    private String city="";
+    private String city = "";
     @Getter
     @Builder.Default
-    private boolean sendInfo=false;
+    private boolean sendInfo = false;
     @Getter
     private Date firstConnexion;
     @Getter
     private Date lastConnexion;
     @Getter
     @Builder.Default
-    private List<ItemCarte>currentPanier=new ArrayList<ItemCarte>();
+    private List<ItemCarte> currentPanier = new ArrayList<ItemCarte>();
 }

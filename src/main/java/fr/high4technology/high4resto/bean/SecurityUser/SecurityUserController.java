@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/authorize-me")
 @RequiredArgsConstructor
 public class SecurityUserController {
-    private String securityKey="7mvSDB5P@gr4_8A%tNB7wdBeI7YgHwSs47M5EIttjfYFN46tVUY8C1B5za06OzXP8pxinJIwdcK1";
+    private String securityKey = "7mvSDB5P@gr4_8A%tNB7wdBeI7YgHwSs47M5EIttjfYFN46tVUY8C1B5za06OzXP8pxinJIwdcK1";
     @Autowired
     private SecurityUserRepository security;
     @Autowired
@@ -33,10 +33,10 @@ public class SecurityUserController {
     }
 
     @PutMapping("/firstConnexion/")
-    Mono<Client> firstConnexion(@RequestBody SecurityUser user)
-    {
+    Mono<Client> firstConnexion(@RequestBody SecurityUser user) {
         if (user.getIdentity().equals(this.securityKey))
-            return clients.save(Client.builder().email(user.getEmail()).id(user.getId()).firstConnexion(new Date()).build());
+            return clients
+                    .save(Client.builder().email(user.getEmail()).id(user.getId()).firstConnexion(new Date()).build());
         else
             return Mono.just(Client.builder().id("anonymous").build());
     }

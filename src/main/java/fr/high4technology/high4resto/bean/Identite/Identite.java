@@ -26,33 +26,33 @@ public class Identite {
     private String id;
     @Getter
     @Builder.Default
-    private String nomEtablissement="";
+    private String nomEtablissement = "";
     @Getter
     @Builder.Default
-    private String zip="";
+    private String zip = "";
     @Getter
     @Builder.Default
-    private String city="";
+    private String city = "";
     @Getter
     @Builder.Default
-    private String number="";
+    private String number = "";
     @Getter
     @Builder.Default
-    private String adresse="";
+    private String adresse = "";
     @Getter
     @Builder.Default
-    private String complement="";
+    private String complement = "";
     @Getter
     @Builder.Default
-    private List<KeyMap> contact=new ArrayList<KeyMap>();
+    private List<KeyMap> contact = new ArrayList<KeyMap>();
     @Getter
-    private String siret;     
+    private String siret;
     @Getter
     @Builder.Default
-    private Gps coordonnee=Gps.builder().latitude(0).longitude(0).build();
+    private Gps coordonnee = Gps.builder().latitude(0).longitude(0).build();
     @Getter
     private Image logo;
     @Getter
     @Builder.Default
-    private String description="";
+    private String description = "";
 }

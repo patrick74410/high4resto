@@ -20,16 +20,14 @@ public class TrashController {
 	private TrashRepository trashs;
 
 	@GetMapping("/find/")
-	public Flux<Trash> getAllAll()
-	{
+	public Flux<Trash> getAllAll() {
 		return trashs.findAll();
 	}
 
 	@PutMapping("/insert/")
-	Mono<Trash> insert(@RequestBody Trash trash)
-	{
-        System.out.println("xcvxcvxcv"+trash.getDelevery().getToDelivery().getPrepare());
+	Mono<Trash> insert(@RequestBody Trash trash) {
+		System.out.println("xcvxcvxcv" + trash.getDelevery().getToDelivery().getPrepare());
 		trash.setInside(Util.getTimeNow());
 		return trashs.save(trash);
-	}    
+	}
 }

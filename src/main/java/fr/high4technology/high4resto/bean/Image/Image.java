@@ -16,23 +16,23 @@ import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
 @AllArgsConstructor
 @Document
 public class Image {
-	@Id
+    @Id
     private String id;
     @Getter
     @Builder.Default
-    private String description="";
-	@Getter
+    private String description = "";
+    @Getter
     private String gridId;
-    @Getter 
+    @Getter
     private String miniGridId;
     @Getter
     private String fileName;
-    @Getter 
+    @Getter
     private ImageCategorie categorie;
     @Getter
     @Builder.Default
-    private String alt="";
+    private String alt = "";
     @Getter
     @Builder.Default
-    private String link="";
+    private String link = "";
 }

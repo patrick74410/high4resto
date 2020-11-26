@@ -16,12 +16,9 @@ public class PersistentEntityCallback implements ReactiveBeforeConvertCallback<P
     @Override
     public Publisher<PersistentEntity> onBeforeConvert(PersistentEntity entity, String collection) {
 
-        var user = ReactiveSecurityContextHolder.getContext()
-                .map(SecurityContext::getAuthentication)
-                .filter(it -> it != null && it.isAuthenticated())
-                .map(Authentication::getPrincipal)
-                .cast(UserDetails.class)
-                .map(userDetails -> new Username(userDetails.getUsername()))
+        var user = ReactiveSecurityContextHolder.getContext().map(SecurityContext::getAuthentication)
+                .filter(it -> it != null && it.isAuthenticated()).map(Authentication::getPrincipal)
+                .cast(UserDetails.class).map(userDetails -> new Username(userDetails.getUsername()))
                 .switchIfEmpty(Mono.empty());
 
         var currentTime = LocalDateTime.now();

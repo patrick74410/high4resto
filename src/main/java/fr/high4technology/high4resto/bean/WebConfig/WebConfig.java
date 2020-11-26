@@ -21,20 +21,20 @@ public class WebConfig {
     private String id;
     @Getter
     @Builder.Default
-    private String title="";
+    private String title = "";
     @Getter
     private Image logo;
     @Getter
     private ImageCategorie caroussel;
     @Getter
     @Builder.Default
-    private String googleMapApi="";
+    private String googleMapApi = "";
     @Getter
     @Builder.Default
-    private String auth0Key="";
+    private String auth0Key = "";
     @Getter
     @Builder.Default
-    private String auth0Domain="";
+    private String auth0Domain = "";
     @Getter
-    private boolean qty; 
+    private boolean qty;
 }

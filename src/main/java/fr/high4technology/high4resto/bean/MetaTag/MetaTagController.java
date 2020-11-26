@@ -17,68 +17,59 @@ import reactor.core.publisher.Mono;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/api/metaTag")
 @RequiredArgsConstructor
 
 public class MetaTagController {
 
-    @Autowired
-    private MetaTagRepository metaTags;
+	@Autowired
+	private MetaTagRepository metaTags;
 
- 	@GetMapping("/find/")
-	public Flux<MetaTag> getAllAll()
-	{
-		return metaTags.findAll().switchIfEmpty(this.metaTags.save(MetaTag.builder()
-		.author("").description("").facebookDescription("")
-		.facebookImage("").facebookTitle("").keywords("")
-		.other(new ArrayList<KeyMap>()).twitterAuthor("")
-		.twitterDescription("").twitterImage("").twitterTitle("").build())).flatMap(e->{
-			return metaTags.findAll();
-		});
+	@GetMapping("/find/")
+	public Flux<MetaTag> getAllAll() {
+		return metaTags.findAll()
+				.switchIfEmpty(this.metaTags.save(MetaTag.builder().author("").description("").facebookDescription("")
+						.facebookImage("").facebookTitle("").keywords("").other(new ArrayList<KeyMap>())
+						.twitterAuthor("").twitterDescription("").twitterImage("").twitterTitle("").build()))
+				.flatMap(e -> {
+					return metaTags.findAll();
+				});
 	}
 
 	@GetMapping("/find/{idItem}")
-	public Mono<MetaTag> getById(@PathVariable String idItem){
+	public Mono<MetaTag> getById(@PathVariable String idItem) {
 		return metaTags.findById(idItem);
 	}
 
 	@DeleteMapping("/delete/{idItem}")
-	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
-	{
-	
-		return metaTags.deleteById(idItem)
-				.map( r -> ResponseEntity.ok().<Void>build())
-                .defaultIfEmpty(ResponseEntity.ok().<Void>build());
+	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
+
+		return metaTags.deleteById(idItem).map(r -> ResponseEntity.ok().<Void>build())
+				.defaultIfEmpty(ResponseEntity.ok().<Void>build());
 	}
 
 	@PutMapping("/insert/")
-	Mono<MetaTag> insert(@RequestBody MetaTag metaTag)
-	{
+	Mono<MetaTag> insert(@RequestBody MetaTag metaTag) {
 		return metaTags.save(metaTag);
 	}
 
 	@PutMapping("/update/")
-	Mono<MetaTag> update(@RequestBody MetaTag metaTag)
-	{
-		return metaTags.findById(metaTag.getId())
-		.map(foundItem -> {
-            foundItem.setAuthor(metaTag.getAuthor());
-            foundItem.setDescription(metaTag.getDescription());
-            foundItem.setFacebookDescription(metaTag.getFacebookDescription());
-            foundItem.setFacebookImage(metaTag.getFacebookImage());
-            foundItem.setFacebookTitle(metaTag.getFacebookTitle());
-            foundItem.setKeywords(metaTag.getKeywords());
-            foundItem.setOther(metaTag.getOther());
-            foundItem.setTwitterAuthor(metaTag.getTwitterAuthor());
-            foundItem.setTwitterDescription(metaTag.getTwitterDescription());
-            foundItem.setTwitterImage(metaTag.getTwitterImage());
-            foundItem.setTwitterTitle(metaTag.getTwitterTitle());
+	Mono<MetaTag> update(@RequestBody MetaTag metaTag) {
+		return metaTags.findById(metaTag.getId()).map(foundItem -> {
+			foundItem.setAuthor(metaTag.getAuthor());
+			foundItem.setDescription(metaTag.getDescription());
+			foundItem.setFacebookDescription(metaTag.getFacebookDescription());
+			foundItem.setFacebookImage(metaTag.getFacebookImage());
+			foundItem.setFacebookTitle(metaTag.getFacebookTitle());
+			foundItem.setKeywords(metaTag.getKeywords());
+			foundItem.setOther(metaTag.getOther());
+			foundItem.setTwitterAuthor(metaTag.getTwitterAuthor());
+			foundItem.setTwitterDescription(metaTag.getTwitterDescription());
+			foundItem.setTwitterImage(metaTag.getTwitterImage());
+			foundItem.setTwitterTitle(metaTag.getTwitterTitle());
 			return foundItem;
-		 })
-		.flatMap(metaTags::save);
+		}).flatMap(metaTags::save);
 	}
-    
-    
+
 }

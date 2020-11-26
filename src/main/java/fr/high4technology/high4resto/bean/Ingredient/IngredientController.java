@@ -18,43 +18,36 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/ingredient")
 @RequiredArgsConstructor
 public class IngredientController {
-    @Autowired
-    private IngredientRepository ingredients;
+	@Autowired
+	private IngredientRepository ingredients;
 
 	@GetMapping("/find/")
-	public Flux<Ingredient> getAll()
-	{
+	public Flux<Ingredient> getAll() {
 		return ingredients.findAll();
-    }
-    
-    @GetMapping("/find/{idItem}")
-	public Mono<Ingredient> getById(@PathVariable String idItem){
+	}
+
+	@GetMapping("/find/{idItem}")
+	public Mono<Ingredient> getById(@PathVariable String idItem) {
 		return ingredients.findById(idItem);
 	}
 
 	@DeleteMapping("/delete/{idItem}")
-	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
-	{
-	
-		return ingredients.deleteById(idItem)
-                .map( r -> ResponseEntity.ok().<Void>build())
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
+
+		return ingredients.deleteById(idItem).map(r -> ResponseEntity.ok().<Void>build())
+				.defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 
 	@PutMapping("/insert/")
-	Mono<Ingredient> insert(@RequestBody Ingredient ingredient)
-	{
+	Mono<Ingredient> insert(@RequestBody Ingredient ingredient) {
 		return ingredients.save(ingredient);
 	}
 
 	@PutMapping("/update/{idItem}")
-	Mono<Ingredient> update(@RequestBody Ingredient ingredient,@PathVariable String idItem)
-	{
-		return ingredients.findById(idItem)
-		.map(foundItem -> {
+	Mono<Ingredient> update(@RequestBody Ingredient ingredient, @PathVariable String idItem) {
+		return ingredients.findById(idItem).map(foundItem -> {
 			foundItem.setName(ingredient.getName());
 			return foundItem;
-		 })
-		.flatMap(ingredients::save);
-	} 
+		}).flatMap(ingredients::save);
+	}
 }

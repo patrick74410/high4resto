@@ -18,7 +18,7 @@ import fr.high4technology.high4resto.bean.Stock.Stock;
 @Document
 public class PreOrder {
     @Id
-	private String id;
+    private String id;
     @Getter
     private Stock stock;
     @Getter

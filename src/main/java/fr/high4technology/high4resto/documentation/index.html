@@ -43,20 +43,20 @@
                             <a class="dropdown-item" href="#Article">Article</a>
                             <a class="dropdown-item" href="#ImageCategorie">ImageCategorie</a>
                             <a class="dropdown-item" href="#Image">Image</a>
-                            <a class="dropdown-item" href="#WebConfig">WebConfig</a>                            
+                            <a class="dropdown-item" href="#WebConfig">WebConfig</a>
                             <a class="dropdown-item" href="#Identite">Identite</a>
                             <a class="dropdown-item" href="#MetaTag">MetaTag</a>
-                            <a class="dropdown-item" href="#Horaire">Horaire</a>                            
-                            <a class="dropdown-item" href="#Allergene">Allergene</a>                            
-                            <a class="dropdown-item" href="#Tva">Tva</a>                            
-                            <a class="dropdown-item" href="#OptionItem">OptionItem</a>                            
-                            <a class="dropdown-item" href="#OptionsItem">OptionsItem</a>                            
-                            <a class="dropdown-item" href="#Promotion">Promotion</a>                            
+                            <a class="dropdown-item" href="#Horaire">Horaire</a>
+                            <a class="dropdown-item" href="#Allergene">Allergene</a>
+                            <a class="dropdown-item" href="#Tva">Tva</a>
+                            <a class="dropdown-item" href="#OptionItem">OptionItem</a>
+                            <a class="dropdown-item" href="#OptionsItem">OptionsItem</a>
+                            <a class="dropdown-item" href="#Promotion">Promotion</a>
                             <a class="dropdown-item" href="#ItemCategorie">ItemCategorie</a>
-                            <a class="dropdown-item" href="#ItemCarte">ItemCarte</a>                            
-                            <a class="dropdown-item" href="#SecurityUser">SecurityUser</a>                            
-                            <a class="dropdown-item" href="#Client">Client</a>                       
-                            <a class="dropdown-item" href="#HomePage">HomePage</a>                       
+                            <a class="dropdown-item" href="#ItemCarte">ItemCarte</a>
+                            <a class="dropdown-item" href="#SecurityUser">SecurityUser</a>
+                            <a class="dropdown-item" href="#Client">Client</a>
+                            <a class="dropdown-item" href="#HomePage">HomePage</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -67,7 +67,7 @@
                             <a class="dropdown-item" href="#apiUrl">Introduction</a>
                             <a class="dropdown-item" href="#chemin">Chemin</a>
                             <a class="dropdown-item" href="#simple">Un simple exemple</a>
-                            <a class="dropdown-item" href="#objetClient">L'objet client</a>                           
+                            <a class="dropdown-item" href="#objetClient">L'objet client</a>
                         </div>
                     </li>
                 </ul>
@@ -109,11 +109,11 @@
                             export interface BetweenTimeI { <br>
                                 debut:String; <br>
                                 fin:String;<br>
-                            }                   
+                            }
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="Gps">
                     <h3 class="card-title card-header">Gps</h3>
                     <div class="card-body">
@@ -145,11 +145,11 @@
                             export interface GpsI {<br>
                                 longitude:number;<br>
                                 latitude:number;<br>
-                            }                 
+                            }
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="KeyMap">
                     <h3 class="card-title card-header">KeyMap</h3>
                     <div class="card-body">
@@ -184,7 +184,7 @@
                             }
                         </p>
                     </div>
-                </div>        
+                </div>
 
                 <div class="card" id="ArticleCategorie">
                     <h3 class="card-title card-header">ArticleCategorie</h3>
@@ -209,7 +209,7 @@
                                     <td>string</td>
                                     <td>Nom de la catégorie</td>
                                 </tr>
-        
+
                                 <tr>
                                     <td>description</td>
                                     <td>string</td>
@@ -239,7 +239,7 @@
                                     <td>boolean</td>
                                     <td>La catégorie est-elle visible ?</td>
                                 </tr>
-        
+
                             </tbody>
                         </table>
                     </div>
@@ -253,11 +253,11 @@
                                 iconImage?: ImageI;<br>
                                 image?:ImageI;<br>
                                 visible:boolean;<br>
-                            }                       <br>    
+                            }                       <br>
                         </p>
                     </div>
                 </div>
-                
+
                 <div class="card" id="Article">
                     <h3 class="card-title card-header">Article</h3>
                     <div class="card-body">
@@ -281,7 +281,7 @@
                                     <td>ArticleCategorie</td>
                                     <td>A quel catégorie cet article est associé</td>
                                 </tr>
-        
+
                                 <tr>
                                     <td>image</td>
                                     <td>Image</td>
@@ -330,7 +330,7 @@
                                     <td>Nom de l'auteur</td>
                                 </tr>
 
-                                
+
                             </tbody>
                         </table>
                     </div>
@@ -347,11 +347,11 @@
                                 content:string;<br>
                                 date:string;<br>
                                 author:string;<br>
-                            }                     <br>    
+                            }                     <br>
                         </p>
                     </div>
-                </div>  
-                
+                </div>
+
                 <div class="card" id="ImageCategorie">
                     <h3 class="card-title card-header">ImageCategorie</h3>
                     <div class="card-body">
@@ -375,19 +375,19 @@
                                     <td>string</td>
                                     <td>Nom de la catégorie</td>
                                 </tr>
-        
+
                                 <tr>
                                     <td>description</td>
                                     <td>string</td>
                                     <td>Description de la catégorie</td>
                                 </tr>
-        
+
                                 <tr>
                                     <td>visible</td>
                                     <td>boolean</td>
                                     <td>La catégorie doit-elle être un album ?</td>
                                 </tr>
-        
+
                                 <tr>
                                     <td>topImage</td>
                                     <td>Image</td>
@@ -404,11 +404,11 @@
                                     description:string;<br>
                                     visible:boolean;<br>
                                     topImage?:ImageI;<br>
-                                }<br>                   
+                                }<br>
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="Image">
                     <h3 class="card-title card-header">Image</h3>
                     <div class="card-body">
@@ -477,11 +477,11 @@
                                  categorie:ImageCategorieI;<br>
                                  alt: string;<br>
                                  link: string;<br>
-                              }                   <br> 
+                              }                   <br>
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="WebConfig">
                     <h3 class="card-title card-header">WebConfig</h3>
                     <div class="card-body">
@@ -514,7 +514,7 @@
                                     <td>caroussel</td>
                                     <td>ImageCategorie</td>
                                     <td>Catégorie d'image a prendre comme caroussel pour la page d'accueil</td>
-                                </tr> 
+                                </tr>
                                 <tr>
                                     <td>googleMapApi</td>
                                     <td>string</td>
@@ -534,7 +534,7 @@
                                     <td>qty</td>
                                     <td>boolean</td>
                                     <td>Doit on laissé l'utilisateur choisir la quantité d'un item?</td>
-                                </tr>                     
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -549,11 +549,11 @@
                                 auth0Key;<br>
                                 auth0Domain;<br>
                                 qty:boolean;<br>
-                            }                    
+                            }
                         </p>
                     </div>
-                </div>  
-        
+                </div>
+
                 <div class="card" id="Identite">
                     <h3 class="card-title card-header">Identite</h3>
                     <div class="card-body">
@@ -645,11 +645,11 @@
                                 contact:KeyMapI[];<br>
                                 coordonnee:GpsI;<br>
                                 description:String;<br>
-                            }                   
+                            }
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="MetaTag">
                     <h3 class="card-title card-header">MetaTag</h3>
                     <div class="card-body">
@@ -742,10 +742,10 @@
                                 twitterAuthor:string;<br>
                                 other:KeyMapI[];<br>
                             }                    <br>
-                        </p>      
+                        </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="Horaire">
                     <h3 class="card-title card-header">Horaire</h3>
                     <div class="card-body">
@@ -821,8 +821,8 @@
                         }<br>
                     </div>
                 </div>
-        
-        
+
+
                 <div class="card" id="Allergene">
                     <h3 class="card-title card-header">Allergene</h3>
                     <div class="card-body">
@@ -858,8 +858,8 @@
                         </p>
                     </div>
                 </div>
-        
-        
+
+
                 <div class="card" id="Tva">
                     <h3 class="card-title card-header">Tva</h3>
                     <div class="card-body">
@@ -891,11 +891,11 @@
                             export interface TvaI {<br>
                                 id?: String;<br>
                                 taux: Number;<br>
-                            }<br>                    
+                            }<br>
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="OptionItem">
                     <h3 class="card-title card-header">OptionItem</h3>
                     <div class="card-body">
@@ -929,7 +929,7 @@
                                     <td>boolean</td>
                                     <td>Le choix est-il sélectionné ?</td>
                                 </tr>
-        
+
                             </tbody>
                         </table>
                     </div>
@@ -943,7 +943,7 @@
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="OptionsItem">
                     <h3 class="card-title card-header">OptionsItem</h3>
                     <div class="card-body">
@@ -977,7 +977,7 @@
                                     <td>boolean</td>
                                     <td>Est-ce que les choix peuvent se cummuler (checkbox ou radio)</td>
                                 </tr>
-        
+
                             </tbody>
                         </table>
                     </div>
@@ -992,7 +992,7 @@
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="Promotion">
                     <h3 class="card-title card-header">Promotion</h3>
                     <div class="card-body">
@@ -1078,7 +1078,7 @@
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="ItemCategorie">
                     <h3 class="card-title card-header">ItemCategorie</h3>
                     <div class="card-body">
@@ -1138,7 +1138,7 @@
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="ItemCarte">
                     <h3 class="card-title card-header">ItemCarte</h3>
                     <div class="card-body">
@@ -1167,7 +1167,7 @@
                                     <td>string</td>
                                     <td>Description complète de l'item</td>
                                 </tr>
-        
+
                                 <tr>
                                     <td>price</td>
                                     <td>number</td>
@@ -1241,7 +1241,7 @@
                         </p>
                     </div>
                 </div>
-        
+
                 <div class="card" id="SecurityUser">
                     <h3 class="card-title card-header">SecurityUser</h3>
                     <div class="card-body">
@@ -1279,7 +1279,7 @@
                         </table>
                     </div>
                 </div>
-        
+
                 <div class="card" id="Client">
                     <h3 class="card-title card-header">Client</h3>
                     <div class="card-body">
@@ -1354,7 +1354,7 @@
                                     <td>ItemCarte[]</td>
                                     <td>Item dans le panier</td>
                                 </tr>
-        
+
                             </tbody>
                         </table>
                     </div>
@@ -1371,11 +1371,11 @@
                                 city: string;<br>
                                 sendInfo:boolean;<br>
                                 currentPanier:ItemCarteI[];<br>
-                            }                    
+                            }
                         </p>
                     </div>
                 </div>
-  
+
                 <div class="card" id="HomePage">
                     <h3 class="card-title card-header">HomePage</h3>
                     <div class="card-body">
@@ -1436,10 +1436,10 @@
                                 articleCategorie:ArticleCategorieI[];<br>
                                 onTop:ArticleI[];<br>
                                 caroussel:ImageI[];<br>
-                            }                           
+                            }
                         </p>
                     </div>
-                </div>                
+                </div>
 
             </div>
         </div>
@@ -1547,10 +1547,10 @@
                     });<br/>
                 }<br/>
                 constructor(private http: HttpClient) { } <br/>
-            
+
             </code>
             <h3 id="objetClient">L'objet client</h3>
-            <p>Pour obtenir l'objet client, contenant les imformations ainsi que le panier. Il faut faire une requete GET sur <b>environment.apiUrl+'/client/get/{{idClient}}/{{securityKey}}'</b>. 
+            <p>Pour obtenir l'objet client, contenant les imformations ainsi que le panier. Il faut faire une requete GET sur <b>environment.apiUrl+'/client/get/{{idClient}}/{{securityKey}}'</b>.
                 Security key étant la clef reçue lors de l'authentication</p>
             <p>Pour faire une mise a jour des imformations du client ou de son panier il faut faire une requête PUT avec dans le body un objet Client (json)
                 a l'adresse <b>environment.apiUrl+'/client/update/{securityKey}</b> ou securityKey est la clef générée lors de la connexion

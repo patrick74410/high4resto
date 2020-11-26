@@ -26,85 +26,70 @@ public class ArticleController {
 	private ArticleRepository articles;
 
 	@GetMapping("/find/")
-	public Flux<Article> getAllAll()
-	{
+	public Flux<Article> getAllAll() {
 		return articles.findAll();
 	}
 
 	@GetMapping("/findOnTop/")
-	public Flux<Article> getonTop()
-	{
-		return articles.findAll().filter(article->
-			article.isOnTop()
-		).sort((articleA,articleB)->{
-			try{
-				Date articleADate=new SimpleDateFormat("dd/MM/yyyy").parse(articleA.getDate()); 
-				Date articleBDate=new SimpleDateFormat("dd/MM/yyyy").parse(articleB.getDate());
+	public Flux<Article> getonTop() {
+		return articles.findAll().filter(article -> article.isOnTop()).sort((articleA, articleB) -> {
+			try {
+				Date articleADate = new SimpleDateFormat("dd/MM/yyyy").parse(articleA.getDate());
+				Date articleBDate = new SimpleDateFormat("dd/MM/yyyy").parse(articleB.getDate());
 				return articleADate.compareTo(articleBDate);
-			}
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 				return 0;
 			}
 		});
 	}
 
 	@GetMapping("/filter/{categorieId}")
-	public Flux<Article> filter(@PathVariable String categorieId)
-	{
-		return articles.findAll().filter(article->article.getCategorie()!=null).filter(article->article.isVisible()).filter(article->article.getCategorie().getId().equals(categorieId))
-		.sort((articleA,articleB)->{
-			try{
-				Date articleADate=new SimpleDateFormat("dd/MM/yyyy").parse(articleA.getDate()); 
-				Date articleBDate=new SimpleDateFormat("dd/MM/yyyy").parse(articleB.getDate());
-				return articleADate.compareTo(articleBDate);
-			}
-			catch(Exception e)
-			{
-				return 0;
-			}
-		});
+	public Flux<Article> filter(@PathVariable String categorieId) {
+		return articles.findAll().filter(article -> article.getCategorie() != null)
+				.filter(article -> article.isVisible())
+				.filter(article -> article.getCategorie().getId().equals(categorieId)).sort((articleA, articleB) -> {
+					try {
+						Date articleADate = new SimpleDateFormat("dd/MM/yyyy").parse(articleA.getDate());
+						Date articleBDate = new SimpleDateFormat("dd/MM/yyyy").parse(articleB.getDate());
+						return articleADate.compareTo(articleBDate);
+					} catch (Exception e) {
+						return 0;
+					}
+				});
 	}
 
-
 	@GetMapping("/find/{idItem}")
-	public Mono<Article> getById(@PathVariable String idItem){
+	public Mono<Article> getById(@PathVariable String idItem) {
 		return articles.findById(idItem);
 	}
 
 	@DeleteMapping("/delete/{idItem}")
-	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
-	{
-	
-		return articles.deleteById(idItem)
-                .map( r -> ResponseEntity.ok().<Void>build())
-                .defaultIfEmpty(ResponseEntity.ok().<Void>build());
+	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
+
+		return articles.deleteById(idItem).map(r -> ResponseEntity.ok().<Void>build())
+				.defaultIfEmpty(ResponseEntity.ok().<Void>build());
 	}
 
 	@PutMapping("/insert/")
-	Mono<Article> insert(@RequestBody Article article)
-	{
+	Mono<Article> insert(@RequestBody Article article) {
 		article.setDate(Util.getTimeNow());
 		return articles.save(article);
 	}
 
 	@PutMapping("/update/")
-	Mono<Article> update(@RequestBody Article article)
-	{
-		return articles.findById(article.getId())
-		.map(foundItem -> {
-            foundItem.setCategorie(article.getCategorie());
-            foundItem.setImage(article.getImage());
-            foundItem.setOnTop(article.isOnTop());
-            foundItem.setVisible(article.isVisible());
-            foundItem.setTitle(article.getTitle());
-            foundItem.setResume(article.getResume());
-            foundItem.setContent(article.getContent());
-            foundItem.setDate(article.getDate());
-            foundItem.setAuthor(article.getAuthor());
+	Mono<Article> update(@RequestBody Article article) {
+		return articles.findById(article.getId()).map(foundItem -> {
+			foundItem.setCategorie(article.getCategorie());
+			foundItem.setImage(article.getImage());
+			foundItem.setOnTop(article.isOnTop());
+			foundItem.setVisible(article.isVisible());
+			foundItem.setTitle(article.getTitle());
+			foundItem.setResume(article.getResume());
+			foundItem.setContent(article.getContent());
+			foundItem.setDate(article.getDate());
+			foundItem.setAuthor(article.getAuthor());
 			return foundItem;
-		 })
-		.flatMap(articles::save);
+		}).flatMap(articles::save);
 	}
-       
+
 }

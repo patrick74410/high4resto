@@ -41,7 +41,7 @@ public class ArticleCategorieController {
 		return articleCategories.deleteById(idItem).and(articles.findAll().map(article -> {
 			if (article.getCategorie().getId().equals(idItem))
 				article.setCategorie(null);
-				return article;
+			return article;
 		}).flatMap(articles::save)).map(r -> ResponseEntity.ok().<Void>build())
 				.defaultIfEmpty(ResponseEntity.ok().<Void>build());
 	}

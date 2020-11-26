@@ -18,42 +18,36 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/tva")
 @RequiredArgsConstructor
 public class TvaController {
-      @Autowired
-      private TvaRepository tvas;
-      @GetMapping("/find/")
-      public Flux<Tva> getAllAll()
-      {
-          return tvas.findAll();
-      }
-  
-      @GetMapping("/find/{idItem}")
-      public Mono<Tva> getById(@PathVariable String idItem){
-          return tvas.findById(idItem);
-      }
-  
-      @DeleteMapping("/delete/{idItem}")
-      public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
-      {
-      
-          return tvas.deleteById(idItem)
-                  .map( r -> ResponseEntity.ok().<Void>build())
-                  .defaultIfEmpty(ResponseEntity.ok().<Void>build());
-      }
-  
-      @PutMapping("/insert/")
-      Mono<Tva> insert(@RequestBody Tva tva)
-      {
-          return tvas.save(tva);
-      }
-  
-      @PutMapping("/update/")
-      Mono<Tva> update(@RequestBody Tva tva)
-      {
-          return tvas.findById(tva.getId())
-          .map(foundItem -> {
-              foundItem.setTaux(tva.getTaux());
-              return foundItem;
-           })
-          .flatMap(tvas::save);
-      }
+    @Autowired
+    private TvaRepository tvas;
+
+    @GetMapping("/find/")
+    public Flux<Tva> getAllAll() {
+        return tvas.findAll();
     }
+
+    @GetMapping("/find/{idItem}")
+    public Mono<Tva> getById(@PathVariable String idItem) {
+        return tvas.findById(idItem);
+    }
+
+    @DeleteMapping("/delete/{idItem}")
+    public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
+
+        return tvas.deleteById(idItem).map(r -> ResponseEntity.ok().<Void>build())
+                .defaultIfEmpty(ResponseEntity.ok().<Void>build());
+    }
+
+    @PutMapping("/insert/")
+    Mono<Tva> insert(@RequestBody Tva tva) {
+        return tvas.save(tva);
+    }
+
+    @PutMapping("/update/")
+    Mono<Tva> update(@RequestBody Tva tva) {
+        return tvas.findById(tva.getId()).map(foundItem -> {
+            foundItem.setTaux(tva.getTaux());
+            return foundItem;
+        }).flatMap(tvas::save);
+    }
+}

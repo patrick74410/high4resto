@@ -1,6 +1,5 @@
 package fr.high4technology.high4resto.bean.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +24,7 @@ public class User {
     @Getter
     private String username;
 
-    @JsonIgnore
+    @Getter
     private String password;
 
     @Email

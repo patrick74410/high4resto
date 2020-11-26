@@ -1,4 +1,5 @@
 package fr.high4technology.high4resto.bean.Horaire;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -23,26 +24,26 @@ public class Horaire {
     private String id;
     @Getter
     @Builder.Default
-    private List<BetweenTime> lundi=new ArrayList<BetweenTime>();
+    private List<BetweenTime> lundi = new ArrayList<BetweenTime>();
     @Getter
     @Builder.Default
-    private List<BetweenTime> mardi=new ArrayList<BetweenTime>();
+    private List<BetweenTime> mardi = new ArrayList<BetweenTime>();
     @Getter
     @Builder.Default
-    private List<BetweenTime> mercredi=new ArrayList<BetweenTime>();
+    private List<BetweenTime> mercredi = new ArrayList<BetweenTime>();
     @Getter
     @Builder.Default
-    private List<BetweenTime> jeudi=new ArrayList<BetweenTime>();
+    private List<BetweenTime> jeudi = new ArrayList<BetweenTime>();
     @Getter
     @Builder.Default
-    private List<BetweenTime> vendredi=new ArrayList<BetweenTime>();
+    private List<BetweenTime> vendredi = new ArrayList<BetweenTime>();
     @Getter
     @Builder.Default
-    private List<BetweenTime> samedi=new ArrayList<BetweenTime>();
+    private List<BetweenTime> samedi = new ArrayList<BetweenTime>();
     @Getter
     @Builder.Default
-    private List<BetweenTime> dimanche=new ArrayList<BetweenTime>();
+    private List<BetweenTime> dimanche = new ArrayList<BetweenTime>();
     @Getter
     @Builder.Default
-    private List<BetweenTime> ferie=new ArrayList<BetweenTime>();
+    private List<BetweenTime> ferie = new ArrayList<BetweenTime>();
 }

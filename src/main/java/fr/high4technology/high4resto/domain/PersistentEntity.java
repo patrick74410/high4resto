@@ -1,6 +1,5 @@
 package fr.high4technology.high4resto.domain;
 
-
 import java.time.LocalDateTime;
 import fr.high4technology.high4resto.bean.user.Username;
 

@@ -17,15 +17,15 @@ import fr.high4technology.high4resto.bean.Image.Image;
 @Document
 public class ImageCategorie {
     @Id
-	private String id;
-    @Getter 
-    @Builder.Default
-    private String name="";
+    private String id;
     @Getter
     @Builder.Default
-    private String description="";
+    private String name = "";
+    @Getter
+    @Builder.Default
+    private String description = "";
     @Getter
     private boolean visible;
-    @Getter 
+    @Getter
     private Image topImage;
 }

@@ -18,7 +18,7 @@ import fr.high4technology.high4resto.bean.Tracability.toPrepare.ToPrepare;
 @Document
 public class Prepare {
     @Id
-	private String id;
+    private String id;
     @Getter
     private ToPrepare toPrepare;
     @Getter

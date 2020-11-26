@@ -17,6 +17,6 @@ public class Tva {
 	@Id
 	private String id;
 	@Getter
-	private Double taux;    
-    
+	private Double taux;
+
 }

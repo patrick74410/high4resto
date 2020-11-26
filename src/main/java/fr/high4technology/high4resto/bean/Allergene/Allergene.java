@@ -1,6 +1,5 @@
 package fr.high4technology.high4resto.bean.Allergene;
 
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -15,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document
 
-public class Allergene {	 
+public class Allergene {
 	@Id
 	private String id;
 	@Getter

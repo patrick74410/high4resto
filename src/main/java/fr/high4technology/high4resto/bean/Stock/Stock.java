@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,7 +18,7 @@ import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 @Document
 public class Stock {
     @Id
-	private String id;
+    private String id;
     @Getter
     private ItemCarte item;
     @Getter

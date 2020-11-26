@@ -13,8 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Ingredient{
-	@Id
+public class Ingredient {
+    @Id
     private String id;
     @Getter
     private String name;

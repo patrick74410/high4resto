@@ -9,10 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Disponibility {
-    private List<BetweenTime> disponible=new ArrayList<BetweenTime>();
+    private List<BetweenTime> disponible = new ArrayList<BetweenTime>();
     private String DateDebut;
     private String DateFin;
-    private boolean[] jourValide={false,false,false,false,false,false,false};
+    private boolean[] jourValide = { false, false, false, false, false, false, false };
     private boolean ferie;
-   
+
 }

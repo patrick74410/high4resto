@@ -14,46 +14,38 @@ import reactor.core.publisher.Mono;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/api/itemDisponibility")
 @RequiredArgsConstructor
 public class ItemDisponibilityController {
-   @Autowired
-   private ItemDisponibilityRepository itemDisponibilitys;
+    @Autowired
+    private ItemDisponibilityRepository itemDisponibilitys;
 
-   @GetMapping("/find/")
-   public Flux<ItemDisponibility> getAllAll()
-   {
-       return itemDisponibilitys.findAll();
-   }
+    @GetMapping("/find/")
+    public Flux<ItemDisponibility> getAllAll() {
+        return itemDisponibilitys.findAll();
+    }
 
-   @GetMapping("/find/{idItem}")
-   public Mono<ItemDisponibility> getOne(@PathVariable String idItem)
-   {
-       return itemDisponibilitys.findById(idItem);
-   }
+    @GetMapping("/find/{idItem}")
+    public Mono<ItemDisponibility> getOne(@PathVariable String idItem) {
+        return itemDisponibilitys.findById(idItem);
+    }
 
-   @DeleteMapping("/delete/{idItem}")
-   public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem)
-   {
-   
-       return itemDisponibilitys.deleteById(idItem)
-               .map( r -> ResponseEntity.ok().<Void>build())
-               .defaultIfEmpty(ResponseEntity.ok().<Void>build());
-   }
+    @DeleteMapping("/delete/{idItem}")
+    public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
 
-   @PutMapping("/insert/")
-   Mono<ItemDisponibility> insert(@RequestBody ItemDisponibility disponibility)
-    {
+        return itemDisponibilitys.deleteById(idItem).map(r -> ResponseEntity.ok().<Void>build())
+                .defaultIfEmpty(ResponseEntity.ok().<Void>build());
+    }
+
+    @PutMapping("/insert/")
+    Mono<ItemDisponibility> insert(@RequestBody ItemDisponibility disponibility) {
         return itemDisponibilitys.save(disponibility);
     }
 
-	@PutMapping("/update/")
-	Mono<ItemDisponibility> update(@RequestBody ItemDisponibility item)
-	{
-        return itemDisponibilitys.findById(item.getId())
-        .map(foundItem -> {
+    @PutMapping("/update/")
+    Mono<ItemDisponibility> update(@RequestBody ItemDisponibility item) {
+        return itemDisponibilitys.findById(item.getId()).map(foundItem -> {
             foundItem.setDateDebut(item.getDateDebut());
             foundItem.setDateFin(item.getDateFin());
             foundItem.setAlways(item.isAlways());

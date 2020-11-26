@@ -43,18 +43,16 @@ public class AllergeneController {
 	@DeleteMapping("/delete/{idItem}")
 	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
 
-		return allergenes.deleteById(idItem).and(
-			items.findAll().map(item->{
-				List<Allergene> finalAllergene=new ArrayList<Allergene>();
-				for(Allergene allergene:item.getAllergenes())
-				{
-					if(!allergene.getId().equals(idItem))
-						finalAllergene.add(allergene);
-				}
-				item.setAllergenes(finalAllergene);
-				return item;
-			}).flatMap(items::save)).map(r -> ResponseEntity.ok().<Void>build())
-			.defaultIfEmpty(ResponseEntity.ok().<Void>build());
+		return allergenes.deleteById(idItem).and(items.findAll().map(item -> {
+			List<Allergene> finalAllergene = new ArrayList<Allergene>();
+			for (Allergene allergene : item.getAllergenes()) {
+				if (!allergene.getId().equals(idItem))
+					finalAllergene.add(allergene);
+			}
+			item.setAllergenes(finalAllergene);
+			return item;
+		}).flatMap(items::save)).map(r -> ResponseEntity.ok().<Void>build())
+				.defaultIfEmpty(ResponseEntity.ok().<Void>build());
 	}
 
 	@PutMapping("/insert/")

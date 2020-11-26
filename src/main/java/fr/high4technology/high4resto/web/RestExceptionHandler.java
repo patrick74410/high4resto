@@ -52,7 +52,7 @@ public class RestExceptionHandler implements WebExceptionHandler {
                 exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
                 return exchange.getResponse().setComplete();
             }
-        } 
+        }
         return Mono.error(ex);
     }
 

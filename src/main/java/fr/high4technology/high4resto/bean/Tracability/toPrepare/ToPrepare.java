@@ -1,4 +1,5 @@
 package fr.high4technology.high4resto.bean.Tracability.toPrepare;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import fr.high4technology.high4resto.bean.Tracability.Order.Order;
 @Document
 public class ToPrepare {
     @Id
-	private String id;
+    private String id;
     @Getter
     private Order order;
     @Getter

@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,27 +14,27 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Promotion{
+public class Promotion {
     @Id
     private String id;
     @Getter
     @Builder.Default
-    private String name="";
+    private String name = "";
     @Getter
     @Builder.Default
-    private Double reduction=0.0;
+    private Double reduction = 0.0;
     @Getter
     @Builder.Default
-    private String heureDebut="";
+    private String heureDebut = "";
     @Getter
     @Builder.Default
-    private String heureFin="";
+    private String heureFin = "";
     @Getter
     @Builder.Default
-    private String dateDebut="";
+    private String dateDebut = "";
     @Getter
     @Builder.Default
-    private String dateFin="";
+    private String dateFin = "";
     @Getter
     private boolean[] jourValide;
     @Getter

@@ -16,20 +16,17 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-
 @RestController
 @RequestMapping("/api/webConfig")
 @RequiredArgsConstructor
 public class WebConfigController {
-    @Autowired
-    private WebConfigRespository configs;
-    @GetMapping("/find/")
+	@Autowired
+	private WebConfigRespository configs;
+
+	@GetMapping("/find/")
 	public Flux<WebConfig> getAllAll() {
-		return configs.findAll()
-				.switchIfEmpty(configs
-                        .save(WebConfig.builder().caroussel(new ImageCategorie()).title("").googleMapApi("").qty(true).
-                        logo(new Image()).build()))
-				.flatMap(t -> configs.findAll());
+		return configs.findAll().switchIfEmpty(configs.save(WebConfig.builder().caroussel(new ImageCategorie())
+				.title("").googleMapApi("").qty(true).logo(new Image()).build())).flatMap(t -> configs.findAll());
 	}
 
 	@GetMapping("/find/{idItem}")
@@ -54,16 +51,15 @@ public class WebConfigController {
 		return configs.findById(config.getId()).map(foundItem -> {
 			foundItem.setLogo(config.getLogo());
 			foundItem.setGoogleMapApi(config.getGoogleMapApi());
-            foundItem.setTitle(config.getTitle());
+			foundItem.setTitle(config.getTitle());
 			foundItem.setCaroussel(config.getCaroussel());
 			foundItem.setQty(config.isQty());
 			foundItem.setAuth0Domain(config.getAuth0Domain());
 			foundItem.setAuth0Key(config.getAuth0Key());
 			return foundItem;
-		}).flatMap(item->{	
+		}).flatMap(item -> {
 			return configs.save(item);
 		});
 	}
-   
-    
+
 }

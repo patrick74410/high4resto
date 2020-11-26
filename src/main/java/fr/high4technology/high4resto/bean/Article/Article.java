@@ -29,16 +29,16 @@ public class Article {
     private boolean visible;
     @Getter
     @Builder.Default
-    private String title="";
+    private String title = "";
     @Getter
     @Builder.Default
-    private String resume="";
+    private String resume = "";
     @Getter
     @Builder.Default
-    private String content="";
+    private String content = "";
     @Getter
     private String date;
     @Getter
     @Builder.Default
-    private String author="";
+    private String author = "";
 }

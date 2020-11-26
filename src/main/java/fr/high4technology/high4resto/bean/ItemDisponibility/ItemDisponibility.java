@@ -23,8 +23,8 @@ public class ItemDisponibility {
     private Horaire disponibility;
     @Getter
     private String dateDebut;
-    @Getter 
+    @Getter
     private String dateFin;
     @Getter
-    private boolean always; 
+    private boolean always;
 }

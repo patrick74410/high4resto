@@ -19,11 +19,11 @@ public class ItemCategorie {
 	@Id
 	private String id;
 	@Getter
-    @Builder.Default
-	private String name="";    
+	@Builder.Default
+	private String name = "";
 	@Getter
-    @Builder.Default
-	private String description="";
+	@Builder.Default
+	private String description = "";
 	@Getter
 	private int order;
 	@Getter

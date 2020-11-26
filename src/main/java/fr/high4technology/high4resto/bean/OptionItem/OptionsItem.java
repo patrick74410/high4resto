@@ -1,4 +1,5 @@
 package fr.high4technology.high4resto.bean.OptionItem;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class OptionsItem {
     private String id;
     @Getter
     @Builder.Default
-    private String label="";
+    private String label = "";
     @Getter
     @Builder.Default
     private List<OptionItem> options = new ArrayList<OptionItem>();

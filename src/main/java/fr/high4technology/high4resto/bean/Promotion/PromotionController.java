@@ -28,46 +28,39 @@ public class PromotionController {
     private PromotionRepository promotionsR;
     @Autowired
     private ItemCarteRepository items;
-    
+
     @GetMapping("/find/")
-    public Flux<Promotion> getAll()
-    {
+    public Flux<Promotion> getAll() {
         return promotionsR.findAll();
     }
 
-	@GetMapping("/find/{idItem}")
-	public Mono<Promotion> getById(@PathVariable String idItem){
-		return promotionsR.findById(idItem);
+    @GetMapping("/find/{idItem}")
+    public Mono<Promotion> getById(@PathVariable String idItem) {
+        return promotionsR.findById(idItem);
     }
-    
+
     @DeleteMapping("/delete/{idPromotion}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable String idPromotion)
-    {
-		return promotionsR.deleteById(idPromotion).and(
-			items.findAll().map(item->{
-                List<Promotion> finalPromotion=new ArrayList<Promotion>();
-				for(Promotion promotion:item.getPromotions())
-				{
-					if(!promotion.getId().equals(idPromotion))
-						finalPromotion.add(promotion);
-                }
-                item.setPromotions(finalPromotion);
-				return item;
-			}).flatMap(items::save)).map(r -> ResponseEntity.ok().<Void>build())
-			.defaultIfEmpty(ResponseEntity.ok().<Void>build());
+    public Mono<ResponseEntity<Void>> delete(@PathVariable String idPromotion) {
+        return promotionsR.deleteById(idPromotion).and(items.findAll().map(item -> {
+            List<Promotion> finalPromotion = new ArrayList<Promotion>();
+            for (Promotion promotion : item.getPromotions()) {
+                if (!promotion.getId().equals(idPromotion))
+                    finalPromotion.add(promotion);
+            }
+            item.setPromotions(finalPromotion);
+            return item;
+        }).flatMap(items::save)).map(r -> ResponseEntity.ok().<Void>build())
+                .defaultIfEmpty(ResponseEntity.ok().<Void>build());
     }
 
     @PutMapping("/insert/")
-    Mono<Promotion> insert(@RequestBody Promotion promotion)
-    {
+    Mono<Promotion> insert(@RequestBody Promotion promotion) {
         return promotionsR.save(promotion);
     }
 
     @PutMapping("/update/")
-    Mono<Promotion> update(@RequestBody Promotion promotion)
-    {
-        return this.promotionsR.findById(promotion.getId())
-        .map(foundPromotion ->{
+    Mono<Promotion> update(@RequestBody Promotion promotion) {
+        return this.promotionsR.findById(promotion.getId()).map(foundPromotion -> {
             foundPromotion.setDateDebut(promotion.getDateDebut());
             foundPromotion.setDateFin(promotion.getDateFin());
             foundPromotion.setHeureDebut(promotion.getHeureDebut());
@@ -78,22 +71,21 @@ public class PromotionController {
             foundPromotion.setReduction(promotion.getReduction());
             foundPromotion.setPourcentage(promotion.isPourcentage());
             return foundPromotion;
-        })
-        .flatMap(promotionItem -> {
-			items.findAll().subscribe(article -> {
-				int idx = 0;
-				for (Promotion promot : article.getPromotions()) {
-					if (promot.getId().equals(promotion.getId()))
-						article.getPromotions().set(idx, promotion);
-					idx += 1;
-				}
-				var flux = items.save(article);
-				flux.doOnSubscribe(data -> log.info("data:" + data)).thenMany(flux).subscribe(
-						data -> log.info("data:" + data), err -> log.error("error:" + err),
-						() -> log.info("done initialization..."));
+        }).flatMap(promotionItem -> {
+            items.findAll().subscribe(article -> {
+                int idx = 0;
+                for (Promotion promot : article.getPromotions()) {
+                    if (promot.getId().equals(promotion.getId()))
+                        article.getPromotions().set(idx, promotion);
+                    idx += 1;
+                }
+                var flux = items.save(article);
+                flux.doOnSubscribe(data -> log.info("data:" + data)).thenMany(flux).subscribe(
+                        data -> log.info("data:" + data), err -> log.error("error:" + err),
+                        () -> log.info("done initialization..."));
 
-			});
-			return promotionsR.save(promotionItem);
-		});
+            });
+            return promotionsR.save(promotionItem);
+        });
     }
 }
