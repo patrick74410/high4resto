@@ -51,7 +51,7 @@ public class ArticleController {
 					try {
 						Date articleADate = new SimpleDateFormat("dd/MM/yyyy").parse(articleA.getDate());
 						Date articleBDate = new SimpleDateFormat("dd/MM/yyyy").parse(articleB.getDate());
-						return articleADate.compareTo(articleBDate);
+						return articleBDate.compareTo(articleADate);
 					} catch (Exception e) {
 						return 0;
 					}
@@ -72,7 +72,7 @@ public class ArticleController {
 
 	@PutMapping("/insert/")
 	Mono<Article> insert(@RequestBody Article article) {
-		article.setDate(Util.getTimeNow());
+		article.setDate(new SimpleDateFormat("dd/MM/yyyy").format(Util.getTimeNow()));
 		return articles.save(article);
 	}
 
