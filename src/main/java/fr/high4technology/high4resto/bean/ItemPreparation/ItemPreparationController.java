@@ -1,4 +1,4 @@
-package fr.high4technology.high4resto.bean.ItemRoleLink;
+package fr.high4technology.high4resto.bean.ItemPreparation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,40 +15,42 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/itemRoleLink")
+@RequestMapping("/api/itemPreparation")
 @RequiredArgsConstructor
 
-public class ItemRoleLinkController {
+public class ItemPreparationController {
     @Autowired
-    private ItemRoleLinkRepository itemsRoleLinks;
+    private ItemPreparationRepository itemsPreparationLinks;
 	@GetMapping("/find/")
-	public Flux<ItemRoleLink> getAll() {
-		return itemsRoleLinks.findAll();
+	public Flux<ItemPreparation> getAll() {
+		return itemsPreparationLinks.findAll();
 	}
 
 	@GetMapping("/find/{idItem}")
-	public Mono<ItemRoleLink> getById(@PathVariable String idItem) {
-		return itemsRoleLinks.findById(idItem);
+	public Mono<ItemPreparation> getById(@PathVariable String idItem) {
+		return itemsPreparationLinks.findById(idItem);
 	}
 
 	@DeleteMapping("/delete/{idItem}")
 	public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
 
-		return itemsRoleLinks.deleteById(idItem).map(r -> ResponseEntity.ok().<Void>build())
+		return itemsPreparationLinks.deleteById(idItem).map(r -> ResponseEntity.ok().<Void>build())
 				.defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 
 	@PutMapping("/insert/")
-	Mono<ItemRoleLink> insert(@RequestBody ItemRoleLink ingredient) {
-		return itemsRoleLinks.save(ingredient);
+	Mono<ItemPreparation> insert(@RequestBody ItemPreparation ingredient) {
+		return itemsPreparationLinks.save(ingredient);
 	}
 
-	@PutMapping("/update/{idItem}")
-	Mono<ItemRoleLink> update(@RequestBody ItemRoleLink item, @PathVariable String idItem) {
-		return itemsRoleLinks.findById(idItem).map(foundItem -> {
+	@PutMapping("/update/")
+	Mono<ItemPreparation> update(@RequestBody ItemPreparation item) {
+		return itemsPreparationLinks.findById(item.getId()).map(foundItem -> {
             foundItem.setRoleName(item.getRoleName());
-            foundItem.setPart(item.getPart());
+			foundItem.setPart(item.getPart());
+			foundItem.setName(item.getName());
+			foundItem.setTime(item.getTime());
 			return foundItem;
-		}).flatMap(itemsRoleLinks::save);
+		}).flatMap(itemsPreparationLinks::save);
 	}
 }

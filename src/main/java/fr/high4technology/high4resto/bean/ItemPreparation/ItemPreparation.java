@@ -1,4 +1,4 @@
-package fr.high4technology.high4resto.bean.ItemRoleLink;
+package fr.high4technology.high4resto.bean.ItemPreparation;
 
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class ItemRoleLink {
+public class ItemPreparation {
 	@Id
 	private String id;
     @Getter
@@ -25,4 +25,8 @@ public class ItemRoleLink {
     private List<String> roleName=new ArrayList<String>();
     @Getter
     private double part;
+    @Getter
+    private String name;
+    @Getter
+    private int time;
 }

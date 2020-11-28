@@ -90,17 +90,12 @@ public class SecurityConfig {
                                                 .pathMatchers("/api/webConfig/update/**").hasRole("MANAGER")
                                                 .pathMatchers("/api/stock/**").hasRole("MANAGER")
                                                 .pathMatchers("/api/itemDisponibility/**").hasRole("MANAGER")
+                                                .pathMatchers("/api//api/itemPreparation/**").hasRole("MANAGER")
                                                 .anyExchange().permitAll())
                                 .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider),
                                                 SecurityWebFiltersOrder.HTTP_BASIC)
                                 .build();
 
-        }
-
-        private Mono<AuthorizationDecision> currentUserMatchesPath(Mono<Authentication> authentication,
-                        AuthorizationContext context) {
-                return authentication.map(a -> context.getVariables().get("user").equals(a.getName()))
-                                .map(AuthorizationDecision::new);
         }
 
         @Bean
