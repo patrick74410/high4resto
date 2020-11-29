@@ -43,25 +43,21 @@ public class ItemCarteController {
 	@GetMapping("/filter/{id}")
 	public Flux<ItemCarte> getByFilter(@PathVariable String id) {
 
-		return stocks.findAll().filter(stock -> stock.getItem().isVisible())
-				.filter(stock -> stock.getItem().getCategorie().getId().equals(id))
-				// Je trie avec l'id des Items
-				.sort((a, b) -> {
-					return a.getItem().getId().compareTo(b.getItem().getId());
-				})
-				// Je regroupe le tout et je compte le stock disponible
-				.transformDeferred(source -> {
-					AtomicReference<Stock> last = new AtomicReference<>(null);
-					Stock stock = Stock.builder().item(ItemCarte.builder().stock(0).build()).build();
-					last.set(stock);
-					return source
-							.windowUntil(i -> !i.getItem().getId().equals(last.getAndSet(i).getItem().getId()), true)
-							.flatMap(window -> window.reduce((i1, i2) -> {
-								i1.getItem().setStock(i1.getItem().getStock() + i2.getItem().getStock());
-								return i1;
-							}));
-				})
-				// Je convertit l'élément stock en item;
+		return stocks.findAll().filter(stock->stock.getItem().getCategorie().getId().equals(id)).sort((a, b) -> {
+            return a.getItem().getId().compareTo(b.getItem().getId());
+        })
+                // Je regroupe le tout et je compte le stock disponible
+                .transformDeferred(source -> {
+                    AtomicReference<Stock> last = new AtomicReference<>(null);
+                    Stock stock = Stock.builder().item(ItemCarte.builder().stock(0).build()).build();
+                    last.set(stock);
+                    return source
+                            .windowUntil(i -> !i.getItem().getId().equals(last.getAndSet(i).getItem().getId()), true)
+                            .flatMap(window -> window.reduce((i1, i2) -> {
+                                i1.getItem().setStock(i1.getItem().getStock() + i2.getItem().getStock());
+                                return i1;
+                            }));
+                })
 				.flatMap(stock -> Flux.just(stock.getItem()))
 
 				// Je trie en fonction de l'ordre a affiché
