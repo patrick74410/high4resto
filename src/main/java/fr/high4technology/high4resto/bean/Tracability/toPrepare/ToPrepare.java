@@ -24,5 +24,8 @@ public class ToPrepare {
     @Getter
     private String inside;
     @Getter
-    private String executorName;
+    private String executor;
+    @Getter
+    private String messageToNext;
+
 }

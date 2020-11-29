@@ -24,5 +24,9 @@ public class PreOrder {
     @Getter
     private String inside;
     @Getter
+    private String messageToNext;
+    @Getter
+    private String orderNumber;
+    @Getter
     private String idCustomer;
 }

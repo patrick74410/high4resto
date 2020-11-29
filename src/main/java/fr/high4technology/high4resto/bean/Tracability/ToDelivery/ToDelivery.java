@@ -25,4 +25,6 @@ public class ToDelivery {
     private String inside;
     @Getter
     private String deleveryPerson;
+    @Getter
+    private String messageToNext;
 }
