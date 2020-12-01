@@ -18,11 +18,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Document
 public class ItemPreparation {
-	@Id
-	private String id;
+    @Id
+    private String id;
     @Getter
     @Builder.Default
-    private List<String> roleName=new ArrayList<String>();
+    private List<String> roleName = new ArrayList<String>();
     @Getter
     private double part;
     @Getter

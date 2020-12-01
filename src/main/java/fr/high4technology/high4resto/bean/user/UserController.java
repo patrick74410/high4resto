@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.Mono;
 
-
 import fr.high4technology.high4resto.web.AuthenticationRequest;
 
 @RestController
@@ -55,9 +54,9 @@ public class UserController {
 
     @GetMapping("/me")
     public Mono<User> current(@AuthenticationPrincipal Mono<UserDetails> principal) {
-        return principal.flatMap(pri->{
+        return principal.flatMap(pri -> {
             return users.findByUsername(pri.getUsername());
-        }).map(user->{
+        }).map(user -> {
             user.setPassword("");
             return user;
         });

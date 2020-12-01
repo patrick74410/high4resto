@@ -28,5 +28,9 @@ public class Order {
     @Getter
     private String deliveryMode;
     @Getter
-    private String meansOfPayment;
+    private String statusOfPayment;
+    @Getter
+    private String timeToTake;
+    @Getter
+    private boolean toTake;
 }

@@ -16,6 +16,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import fr.high4technology.high4resto.WebSocket.ServerCanalHandler;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarteRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,9 +31,12 @@ public class AllergeneController {
 	private AllergenRepository allergenes;
 	@Autowired
 	private ItemCarteRepository items;
+	@Autowired
+	private ServerCanalHandler socket;
 
 	@GetMapping("/find/")
 	public Flux<Allergene> getAllAll() {
+		socket.sendMessage("mon message");
 		return allergenes.findAll();
 	}
 

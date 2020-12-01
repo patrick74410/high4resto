@@ -26,13 +26,15 @@
 
         <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
             <a class="navbar-brand" href="#">Menu</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#Menu" aria-controls="Menu" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#Menu" aria-controls="Menu"
+                aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="Menu">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="interface" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="interface" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
                             Interfaces
                         </a>
                         <div class="dropdown-menu" aria-labelledby="interface">
@@ -60,7 +62,8 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="api" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="api" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
                             Api
                         </a>
                         <div class="dropdown-menu" aria-labelledby="api">
@@ -107,8 +110,8 @@
                     <div class="card-footer">
                         <p>
                             export interface BetweenTimeI { <br>
-                                debut:String; <br>
-                                fin:String;<br>
+                            debut:String; <br>
+                            fin:String;<br>
                             }
                         </p>
                     </div>
@@ -143,8 +146,8 @@
                     <div class="card-footer">
                         <p>
                             export interface GpsI {<br>
-                                longitude:number;<br>
-                                latitude:number;<br>
+                            longitude:number;<br>
+                            latitude:number;<br>
                             }
                         </p>
                     </div>
@@ -178,9 +181,9 @@
                     </div>
                     <div class="card-footer">
                         <p>
-                            export interface KeyMapI {<br/>
-                                key:String;<br/>
-                                value:String;<br/>
+                            export interface KeyMapI {<br />
+                            key:String;<br />
+                            value:String;<br />
                             }
                         </p>
                     </div>
@@ -246,14 +249,14 @@
                     <div class="card-footer">
                         <p>
                             export interface ArticleCategorieI {<br>
-                                id?: String;<br>
-                                name: String;<br>
-                                description: String;<br>
-                                order?: Number;<br>
-                                iconImage?: ImageI;<br>
-                                image?:ImageI;<br>
-                                visible:boolean;<br>
-                            }                       <br>
+                            id?: String;<br>
+                            name: String;<br>
+                            description: String;<br>
+                            order?: Number;<br>
+                            iconImage?: ImageI;<br>
+                            image?:ImageI;<br>
+                            visible:boolean;<br>
+                            } <br>
                         </p>
                     </div>
                 </div>
@@ -261,7 +264,7 @@
                 <div class="card" id="Article">
                     <h3 class="card-title card-header">Article</h3>
                     <div class="card-body">
-                      <p>Un article</p>
+                        <p>Un article</p>
                         <table class="table">
                             <thead>
                                 <tr>
@@ -336,18 +339,18 @@
                     </div>
                     <div class="card-footer">
                         <p>
-                            export interface ArticleI{<br/>
-                                id?: String;<br>
-                                categorie:ArticleCategorieI;<br>
-                                image?:ImageI;<br>
-                                onTop?:boolean;<br>
-                                visible?:boolean;<br>
-                                title:string;<br>
-                                resume?:string;<br>
-                                content:string;<br>
-                                date:string;<br>
-                                author:string;<br>
-                            }                     <br>
+                            export interface ArticleI{<br />
+                            id?: String;<br>
+                            categorie:ArticleCategorieI;<br>
+                            image?:ImageI;<br>
+                            onTop?:boolean;<br>
+                            visible?:boolean;<br>
+                            title:string;<br>
+                            resume?:string;<br>
+                            content:string;<br>
+                            date:string;<br>
+                            author:string;<br>
+                            } <br>
                         </p>
                     </div>
                 </div>
@@ -398,13 +401,13 @@
                     </div>
                     <div class="card-footer">
                         <p>
-                            export interface ImageCategorieI { <br/>
-                                    id?:string; <br>
-                                    name:string;<br>
-                                    description:string;<br>
-                                    visible:boolean;<br>
-                                    topImage?:ImageI;<br>
-                                }<br>
+                            export interface ImageCategorieI { <br />
+                            id?:string; <br>
+                            name:string;<br>
+                            description:string;<br>
+                            visible:boolean;<br>
+                            topImage?:ImageI;<br>
+                            }<br>
                         </p>
                     </div>
                 </div>
@@ -435,7 +438,8 @@
                                 <tr>
                                     <td>gridId</td>
                                     <td>string</td>
-                                    <td>Partie du lien source de l'image(taille originale) le lien final ressemble à ceci:
+                                    <td>Partie du lien source de l'image(taille originale) le lien final ressemble à
+                                        ceci:
                                         https://mon-super-site.fr/api/images/download/{{gridId}}/{{fileName}}</td>
                                 </tr>
                                 <tr>
@@ -469,15 +473,15 @@
                     <div class="card-footer">
                         <p>
                             export interface ImageI {<br>
-                                 id?: string;<br>
-                                 description: string;<br>
-                                 gridId?: string;<br>
-                                 miniGridId: string;<br>
-                                 fileName: string;<br>
-                                 categorie:ImageCategorieI;<br>
-                                 alt: string;<br>
-                                 link: string;<br>
-                              }                   <br>
+                            id?: string;<br>
+                            description: string;<br>
+                            gridId?: string;<br>
+                            miniGridId: string;<br>
+                            fileName: string;<br>
+                            categorie:ImageCategorieI;<br>
+                            alt: string;<br>
+                            link: string;<br>
+                            } <br>
                         </p>
                     </div>
                 </div>
@@ -540,15 +544,15 @@
                     </div>
                     <div class="card-footer">
                         <p>
-                            export interface  WebConfigI {<br>
-                                id?: string;<br>
-                                title:string;<br>
-                                logo:ImageI;<br>
-                                caroussel:ImageCategorieI<br>
-                                googleMapApi:string;<br>
-                                auth0Key;<br>
-                                auth0Domain;<br>
-                                qty:boolean;<br>
+                            export interface WebConfigI {<br>
+                            id?: string;<br>
+                            title:string;<br>
+                            logo:ImageI;<br>
+                            caroussel:ImageCategorieI<br>
+                            googleMapApi:string;<br>
+                            auth0Key;<br>
+                            auth0Domain;<br>
+                            qty:boolean;<br>
                             }
                         </p>
                     </div>
@@ -610,7 +614,8 @@
                                 <tr>
                                     <td>contact</td>
                                     <td>KeyMap[]</td>
-                                    <td>Ensemble clefs-valeurs des données de contact ex: "email":"monemail@test.fr"</td>
+                                    <td>Ensemble clefs-valeurs des données de contact ex: "email":"monemail@test.fr"
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>siret</td>
@@ -633,18 +638,18 @@
                     <div class="card-footer">
                         <p>
                             export interface IdentiteI {<br>
-                                id:String;<br>
-                                nomEtablissement:String;<br>
-                                siret:String;<br>
-                                logo:ImageI;<br>
-                                zip:String;<br>
-                                city:String;<br>
-                                number:String;<br>
-                                adresse:String;<br>
-                                complement:String;<br>
-                                contact:KeyMapI[];<br>
-                                coordonnee:GpsI;<br>
-                                description:String;<br>
+                            id:String;<br>
+                            nomEtablissement:String;<br>
+                            siret:String;<br>
+                            logo:ImageI;<br>
+                            zip:String;<br>
+                            city:String;<br>
+                            number:String;<br>
+                            adresse:String;<br>
+                            complement:String;<br>
+                            contact:KeyMapI[];<br>
+                            coordonnee:GpsI;<br>
+                            description:String;<br>
                             }
                         </p>
                     </div>
@@ -729,19 +734,19 @@
                     <div class="card-footer">
                         <p>
                             export interface MetaTagI {<br>
-                                id?:string;<br>
-                                description:string;<br>
-                                keywords:string;<br>
-                                author:string;<br>
-                                facebookTitle:string;<br>
-                                facebookDescription:string;<br>
-                                facebookImage:string;<br>
-                                twitterTitle:string;<br>
-                                twitterDescription:string;<br>
-                                twitterImage:string;<br>
-                                twitterAuthor:string;<br>
-                                other:KeyMapI[];<br>
-                            }                    <br>
+                            id?:string;<br>
+                            description:string;<br>
+                            keywords:string;<br>
+                            author:string;<br>
+                            facebookTitle:string;<br>
+                            facebookDescription:string;<br>
+                            facebookImage:string;<br>
+                            twitterTitle:string;<br>
+                            twitterDescription:string;<br>
+                            twitterImage:string;<br>
+                            twitterAuthor:string;<br>
+                            other:KeyMapI[];<br>
+                            } <br>
                         </p>
                     </div>
                 </div>
@@ -809,15 +814,15 @@
                     </div>
                     <div class="card-footer">
                         export interface HoraireI{<br>
-                            id:String;<br>
-                            lundi:BetweenTimeI[];<br>
-                            mardi:BetweenTimeI[];<br>
-                            mercredi:BetweenTimeI[];<br>
-                            jeudi:BetweenTimeI[];<br>
-                            vendredi:BetweenTimeI[];<br>
-                            samedi:BetweenTimeI[];<br>
-                            dimanche:BetweenTimeI[];<br>
-                            ferie:BetweenTimeI[];<br>
+                        id:String;<br>
+                        lundi:BetweenTimeI[];<br>
+                        mardi:BetweenTimeI[];<br>
+                        mercredi:BetweenTimeI[];<br>
+                        jeudi:BetweenTimeI[];<br>
+                        vendredi:BetweenTimeI[];<br>
+                        samedi:BetweenTimeI[];<br>
+                        dimanche:BetweenTimeI[];<br>
+                        ferie:BetweenTimeI[];<br>
                         }<br>
                     </div>
                 </div>
@@ -852,9 +857,9 @@
                     <div class="card-footer">
                         <p>
                             export interface AllergeneI {<br>
-                                id?: String;<br>
-                                name: String; <br>
-                             }<br>
+                            id?: String;<br>
+                            name: String; <br>
+                            }<br>
                         </p>
                     </div>
                 </div>
@@ -889,8 +894,8 @@
                     <div class="card-footer">
                         <p>
                             export interface TvaI {<br>
-                                id?: String;<br>
-                                taux: Number;<br>
+                            id?: String;<br>
+                            taux: Number;<br>
                             }<br>
                         </p>
                     </div>
@@ -936,10 +941,10 @@
                     <div class="card-footer">
                         <p>
                             export interface OptionItemI {<br>
-                                label:string;<br>
-                                price:number;<br>
-                                selected:boolean;<br>
-                            }                   <br>
+                            label:string;<br>
+                            price:number;<br>
+                            selected:boolean;<br>
+                            } <br>
                         </p>
                     </div>
                 </div>
@@ -984,11 +989,11 @@
                     <div class="card-footer">
                         <p>
                             export interface OptionsItemI {<br>
-                                id?: String;<br>
-                                 label:string;<br>
-                                options: OptionItemI[];<br>
-                                unique: boolean;<br>
-                            }                   <br>
+                            id?: String;<br>
+                            label:string;<br>
+                            options: OptionItemI[];<br>
+                            unique: boolean;<br>
+                            } <br>
                         </p>
                     </div>
                 </div>
@@ -996,7 +1001,8 @@
                 <div class="card" id="Promotion">
                     <h3 class="card-title card-header">Promotion</h3>
                     <div class="card-body">
-                        <p>Description de ce qu'est une promotion, sert au calcul du cout total pour le client lors de la fin de
+                        <p>Description de ce qu'est une promotion, sert au calcul du cout total pour le client lors de
+                            la fin de
                             commande</p>
                         <table class="table">
                             <thead>
@@ -1050,7 +1056,8 @@
                                 <tr>
                                     <td>jourValide</td>
                                     <td>boolean[]</td>
-                                    <td>Jour ou la promotion est appliquée ou l'index tu tableau représente le jour de la
+                                    <td>Jour ou la promotion est appliquée ou l'index tu tableau représente le jour de
+                                        la
                                         semaine</td>
                                 </tr>
                                 <tr>
@@ -1064,17 +1071,17 @@
                     <div class="card-footer">
                         <p>
                             export interface PromotionI {
-                                    id?:String;<br>
-                                    name:String;<br>
-                                    reduction:Number;<br>
-                                    heureDebut:String;<br>
-                                    heureFin:String;<br>
-                                    dateDebut:String;<br>
-                                    dateFin:String;<br>
-                                    jourValide:boolean[];<br>
-                                    jourFerie:boolean;<br>
-                                    pourcentage:boolean;<br>
-                                }                    <br>
+                            id?:String;<br>
+                            name:String;<br>
+                            reduction:Number;<br>
+                            heureDebut:String;<br>
+                            heureFin:String;<br>
+                            dateDebut:String;<br>
+                            dateFin:String;<br>
+                            jourValide:boolean[];<br>
+                            jourFerie:boolean;<br>
+                            pourcentage:boolean;<br>
+                            } <br>
                         </p>
                     </div>
                 </div>
@@ -1128,13 +1135,13 @@
                     <div class="card-footer">
                         <p>
                             export interface ItemCategorieI {<br>
-                                id?: String;<br>
-                                name: String;<br>
-                                description: String;<br>
-                                order?: Number;<br>
-                                iconImage?: ImageI;<br>
-                                image?:ImageI; <br>
-                             }                   <br>
+                            id?: String;<br>
+                            name: String;<br>
+                            description: String;<br>
+                            order?: Number;<br>
+                            iconImage?: ImageI;<br>
+                            image?:ImageI; <br>
+                            } <br>
                         </p>
                     </div>
                 </div>
@@ -1224,20 +1231,20 @@
                     <div class="card-footer">
                         <p>
                             export interface ItemCarteI {<br>
-                                id: String;<br>
-                                name: String; <br>
-                                description: String;<br>
-                                price: Number;<br>
-                                order: Number;<br>
-                                sourceImage: ImageI;<br>
-                                categorie: ItemCategorieI;<br>
-                                allergenes: AllergeneI[];<br>
-                                tva:TvaI;<br>
-                                options:OptionsItemI[];<br>
-                                visible:boolean;<br>
-                                promotions:PromotionI[];<br>
-                                stock:number;<br>
-                             }                   <br>
+                            id: String;<br>
+                            name: String; <br>
+                            description: String;<br>
+                            price: Number;<br>
+                            order: Number;<br>
+                            sourceImage: ImageI;<br>
+                            categorie: ItemCategorieI;<br>
+                            allergenes: AllergeneI[];<br>
+                            tva:TvaI;<br>
+                            options:OptionsItemI[];<br>
+                            visible:boolean;<br>
+                            promotions:PromotionI[];<br>
+                            stock:number;<br>
+                            } <br>
                         </p>
                     </div>
                 </div>
@@ -1245,7 +1252,9 @@
                 <div class="card" id="SecurityUser">
                     <h3 class="card-title card-header">SecurityUser</h3>
                     <div class="card-body">
-                        <p>Un éléments servant a la sécurité de l'api, cet élément est mis a jour lors de chaque connexion, quand l'utilisateur demande son profil les vérifications sont efferctuée grâce a ce composant coté back-end</p>
+                        <p>Un éléments servant a la sécurité de l'api, cet élément est mis a jour lors de chaque
+                            connexion, quand l'utilisateur demande son profil les vérifications sont efferctuée grâce a
+                            ce composant coté back-end</p>
                         <table class="table">
                             <thead>
                                 <tr>
@@ -1273,7 +1282,8 @@
                                 <tr>
                                     <td>identity</td>
                                     <td>string</td>
-                                    <td>La clef de sécurité (jwt authorization style) pour empêcher connexion externe a Auth0-High4restoApi </td>
+                                    <td>La clef de sécurité (jwt authorization style) pour empêcher connexion externe a
+                                        Auth0-High4restoApi </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1283,7 +1293,8 @@
                 <div class="card" id="Client">
                     <h3 class="card-title card-header">Client</h3>
                     <div class="card-body">
-                        <p>Une fiche client qui contient les données de profils ainsi que le panier, le client se crée à la
+                        <p>Une fiche client qui contient les données de profils ainsi que le panier, le client se crée à
+                            la
                             première connexion</p>
                         <table class="table">
                             <thead>
@@ -1297,7 +1308,8 @@
                                 <tr>
                                     <td>id</td>
                                     <td>string</td>
-                                    <td>Identifiant unique du client (donné par Auth0 lors de la première connexion)</td>
+                                    <td>Identifiant unique du client (donné par Auth0 lors de la première connexion)
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>name</td>
@@ -1361,16 +1373,16 @@
                     <div class="card-footer">
                         <p>
                             export interface ClientI {<br>
-                                id?:string;<br>
-                                name: string;<br>
-                                lastName: string;<br>
-                                email: string;<br>
-                                adresseL1: string;<br>
-                                adresseL2: string;<br>
-                                zip: string;<br>
-                                city: string;<br>
-                                sendInfo:boolean;<br>
-                                currentPanier:ItemCarteI[];<br>
+                            id?:string;<br>
+                            name: string;<br>
+                            lastName: string;<br>
+                            email: string;<br>
+                            adresseL1: string;<br>
+                            adresseL2: string;<br>
+                            zip: string;<br>
+                            city: string;<br>
+                            sendInfo:boolean;<br>
+                            currentPanier:ItemCarteI[];<br>
                             }
                         </p>
                     </div>
@@ -1430,12 +1442,12 @@
                     <div class="card-footer">
                         <p>
                             export interface HomePageI{<br>
-                                webConfig:WebConfigI;<br>
-                                metaTag:MetaTagI;<br>
-                                identite:IdentiteI;<br>
-                                articleCategorie:ArticleCategorieI[];<br>
-                                onTop:ArticleI[];<br>
-                                caroussel:ImageI[];<br>
+                            webConfig:WebConfigI;<br>
+                            metaTag:MetaTagI;<br>
+                            identite:IdentiteI;<br>
+                            articleCategorie:ArticleCategorieI[];<br>
+                            onTop:ArticleI[];<br>
+                            caroussel:ImageI[];<br>
                             }
                         </p>
                     </div>
@@ -1445,9 +1457,12 @@
         </div>
         <div id="apiUrl">
             <h2>Api</h2>
-            <p>L'api est dévellopée avec Spring Reactive, elle se veut non bloquante. La sécurité ce fait avec le protocol JWT HS256, mais dans le cadre du dévellopement Front End nous n'avons pas besoin d'avoir un header spécial</p>
-            <p>La majorité des éléments peuvent s'obtenir de la même façon avec une simple requete Get, il n'y a que les imformations concernant la manipulation de l'objet Client qui a besoin d'une spécificité</p>
-            <h3 >Les chemins</h3>
+            <p>L'api est dévellopée avec Spring Reactive, elle se veut non bloquante. La sécurité ce fait avec le
+                protocol JWT HS256, mais dans le cadre du dévellopement Front End nous n'avons pas besoin d'avoir un
+                header spécial</p>
+            <p>La majorité des éléments peuvent s'obtenir de la même façon avec une simple requete Get, il n'y a que les
+                imformations concernant la manipulation de l'objet Client qui a besoin d'une spécificité</p>
+            <h3>Les chemins</h3>
             <div class="card" id="chemin">
                 <h3 class="card-title card-header">Les chemins de l'API</h3>
                 <div class="card-body">
@@ -1527,12 +1542,17 @@
                     </table>
                 </div>
                 <div class="card-footer">
-                    <p>Par les chemins indiqués on obtient toute les occurrences des objets spécifiés. Si on y ajoute l'id (ex:<b>environment.apiUrl+'/{{objet}}/find/{{id}}</b>) Alors on obtient uniquement l'objet ayant pour id.</p>
-                    <p>Il y a une alternative a find c'est d'utiliser filter comme ceci <b>environment.apiUrl+'/{{objet}}/filter/{{categorieId}}</b>} <- l'id de la catégorie</p>
-                    <p>Filter n'affichera que les éléments visibles et n'est que pour Image, Article, ItemCarte</p>
-                    <p>L'objet Article contien un chemin findOnTop qui recherchera les article mis en avant</p>
-                    <p>Les objets émis par filter sont dans le bon ordre</p>
-                    <p>L'objet HomePage s'obtient avec une requête Get sur <b>environment.apiUrl+'/gomePage/get/</p>
+                    <p>Par les chemins indiqués on obtient toute les occurrences des objets spécifiés. Si on y ajoute
+                        l'id (ex:<b>environment.apiUrl+'/{{objet}}/find/{{id}}</b>) Alors on obtient uniquement l'objet
+                        ayant pour id.</p>
+                    <p>Il y a une alternative a find c'est d'utiliser filter comme ceci
+                        <b>environment.apiUrl+'/{{objet}}/filter/{{categorieId}}</b>} <- l'id de la catégorie</p>
+                            <p>Filter n'affichera que les éléments visibles et n'est que pour Image, Article, ItemCarte
+                            </p>
+                            <p>L'objet Article contien un chemin findOnTop qui recherchera les article mis en avant</p>
+                            <p>Les objets émis par filter sont dans le bon ordre</p>
+                            <p>L'objet HomePage s'obtient avec une requête Get sur <b>environment.apiUrl+'/gomePage/get/
+                            </p>
                 </div>
             </div>
             <h3 id="simple">Exemple d'une simple requête</h3>
@@ -1550,12 +1570,16 @@
 
             </code>
             <h3 id="objetClient">L'objet client</h3>
-            <p>Pour obtenir l'objet client, contenant les imformations ainsi que le panier. Il faut faire une requete GET sur <b>environment.apiUrl+'/client/get/{{idClient}}/{{securityKey}}'</b>.
+            <p>Pour obtenir l'objet client, contenant les imformations ainsi que le panier. Il faut faire une requete
+                GET sur <b>environment.apiUrl+'/client/get/{{idClient}}/{{securityKey}}'</b>.
                 Security key étant la clef reçue lors de l'authentication</p>
-            <p>Pour faire une mise a jour des imformations du client ou de son panier il faut faire une requête PUT avec dans le body un objet Client (json)
-                a l'adresse <b>environment.apiUrl+'/client/update/{securityKey}</b> ou securityKey est la clef générée lors de la connexion
+            <p>Pour faire une mise a jour des imformations du client ou de son panier il faut faire une requête PUT avec
+                dans le body un objet Client (json)
+                a l'adresse <b>environment.apiUrl+'/client/update/{securityKey}</b> ou securityKey est la clef générée
+                lors de la connexion
             </p>
-            <p>Pour la mise a jour si elle s'est bien déroulée on a en réponse (string) ok sinon (string) un message d'erreur</p>
+            <p>Pour la mise a jour si elle s'est bien déroulée on a en réponse (string) ok sinon (string) un message
+                d'erreur</p>
         </div>
 
     </div>

@@ -8,17 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
-import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
-import reactor.core.publisher.Mono;
 
 @Configuration
 public class SecurityConfig {
@@ -30,8 +26,7 @@ public class SecurityConfig {
                                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                                 .authenticationManager(reactiveAuthenticationManager)
                                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
-                                .authorizeExchange(it -> it
-                                                .pathMatchers(HttpMethod.OPTIONS).permitAll()
+                                .authorizeExchange(it -> it.pathMatchers(HttpMethod.OPTIONS).permitAll()
                                                 .pathMatchers("/api/config-user/**").hasRole("ADMIN")
                                                 .pathMatchers("/api/config-users/**").hasRole("ADMIN")
                                                 .pathMatchers("/api/allergene/find/**").permitAll()

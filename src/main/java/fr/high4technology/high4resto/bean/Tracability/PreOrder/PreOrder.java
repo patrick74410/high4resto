@@ -29,4 +29,6 @@ public class PreOrder {
     private String orderNumber;
     @Getter
     private String idCustomer;
+    @Getter
+    private String destination;
 }
