@@ -62,5 +62,6 @@ public class ItemCarte {
     @Getter
     @Builder.Default
     private int stock = 5;
-
+    @Getter
+    private String remarque;
 }
