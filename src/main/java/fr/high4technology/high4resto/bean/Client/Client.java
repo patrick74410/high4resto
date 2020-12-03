@@ -54,4 +54,7 @@ public class Client {
     @Getter
     @Builder.Default
     private List<ItemCarte> currentPanier = new ArrayList<ItemCarte>();
+    @Getter
+    @Builder.Default
+    private double price= 0.0;
 }

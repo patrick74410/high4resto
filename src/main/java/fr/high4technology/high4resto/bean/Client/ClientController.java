@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
+import fr.high4technology.high4resto.bean.OptionItem.OptionItem;
+import fr.high4technology.high4resto.bean.OptionItem.OptionsItem;
 import fr.high4technology.high4resto.bean.SecurityUser.SecurityUserRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -30,6 +33,24 @@ public class ClientController {
             } else {
                 return Mono.just(Client.builder().build());
             }
+        }).map(client->{
+            double price=0;
+            for(ItemCarte itemCarte:client.getCurrentPanier())
+            {
+                price+=itemCarte.getPrice();
+                for(OptionsItem options:itemCarte.getOptions())
+                {
+                    for(OptionItem choix:options.getOptions())
+                    {
+                        if(choix.isSelected())
+                        {
+                            price+=choix.getPrice();
+                        }
+                    }
+                }
+            }
+            client.setPrice(price);
+            return client;
         });
     }
 
