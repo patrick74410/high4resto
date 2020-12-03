@@ -62,7 +62,19 @@ public class ClientController {
             } else {
                 return Mono.just(Client.builder().id("anonymous").build());
             }
-        }).map(cc->{
+        }).map(foundItem -> {
+            if (!foundItem.getId().equals("anonymous")) {
+                foundItem.setAdresseL1(client.getAdresseL1());
+                foundItem.setAdresseL2(client.getAdresseL2());
+                foundItem.setCity(client.getCity());
+                foundItem.setCurrentPanier(client.getCurrentPanier());
+                foundItem.setEmail(client.getEmail());
+                foundItem.setName(client.getName());
+                foundItem.setSendInfo(client.isSendInfo());
+            }
+            return foundItem;
+        })
+        .map(cc->{
             double price=0;
             for(ItemCarte itemCarte:cc.getCurrentPanier())
             {
@@ -80,17 +92,6 @@ public class ClientController {
             }
             cc.setPrice(price);
             return cc;
-        }).map(foundItem -> {
-            if (!foundItem.getId().equals("anonymous")) {
-                foundItem.setAdresseL1(client.getAdresseL1());
-                foundItem.setAdresseL2(client.getAdresseL2());
-                foundItem.setCity(client.getCity());
-                foundItem.setCurrentPanier(client.getCurrentPanier());
-                foundItem.setEmail(client.getEmail());
-                foundItem.setName(client.getName());
-                foundItem.setSendInfo(client.isSendInfo());
-            }
-            return foundItem;
         }).flatMap(clients::save);
     }
 
