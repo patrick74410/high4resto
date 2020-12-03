@@ -31,6 +31,11 @@ public class ImageCategorieController {
         return imageCategories.findAll();
     }
 
+    @GetMapping("/findAlbum/")
+    public Flux<ImageCategorie> getAlbum() {
+        return imageCategories.findAll().filter(a->{return a.isVisible();});
+    }
+
     @GetMapping("/find/{idItem}")
     public Mono<ImageCategorie> getById(@PathVariable String idItem) {
         return imageCategories.findById(idItem);

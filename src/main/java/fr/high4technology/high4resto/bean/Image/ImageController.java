@@ -173,6 +173,8 @@ public class ImageController {
 				.filter(image -> image.getCategorie().getId().equals(categorieId));
 	}
 
+
+
 	@GetMapping("/find/{idItem}")
 	public Mono<Image> getById(@PathVariable String idItem) {
 		return images.findById(idItem);

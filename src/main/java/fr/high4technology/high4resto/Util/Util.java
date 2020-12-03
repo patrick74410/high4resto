@@ -7,13 +7,13 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
+
 import java.text.SimpleDateFormat;
 
 public class Util {
     private static java.util.Random rand = new java.util.Random();
 	private static String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
     private static Set<String> identifiers = new HashSet<String>();
-
     public static String getTimeNow() {
         Locale locale1 = Locale.FRANCE;
         TimeZone tz1 = TimeZone.getTimeZone("Europe/Paris");
@@ -45,5 +45,6 @@ public class Util {
 			}
 		}
 		return builder.toString();
-	}
+    }
+
 }

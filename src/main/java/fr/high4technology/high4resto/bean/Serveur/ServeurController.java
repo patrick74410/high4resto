@@ -21,6 +21,8 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 import fr.high4technology.high4resto.Util.Util;
@@ -56,7 +58,7 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @RequiredArgsConstructor
 @Slf4j
 public class ServeurController {
-    VoiceSelectionParams voice = VoiceSelectionParams.newBuilder().setName("fr-FR-Wavenet-B").setLanguageCode("fr-FR")
+    VoiceSelectionParams voice = VoiceSelectionParams.newBuilder().setLanguageCode("fr-FR")
     .setSsmlGender(SsmlVoiceGender.MALE).build();
     @Autowired
     private StockRepository stocks;
@@ -84,21 +86,21 @@ public class ServeurController {
     private void sendToCanal(String canal, String message) {
         switch (canal) {
             case "ROLE_WINESTEWARD":
-                this.wineStewardCanal.sendMessage(message);
+                wineStewardCanal.sendMessage(message);
                 break;
             case "ROLE_BARWAITER":
-                this.barWaiterCanal.sendMessage(message);
+                barWaiterCanal.sendMessage(message);
                 break;
             case "ROLE_HOTCOOK":
-                this.hotCookCanal.sendMessage(message);
+                hotCookCanal.sendMessage(message);
                 break;
             case "ROLE_COLDCOOK":
-                this.coldCookCanal.sendMessage(message);
+                coldCookCanal.sendMessage(message);
                 break;
             case "ROLE_COOK":
-                this.cookCanal.sendMessage(message);
+                cookCanal.sendMessage(message);
                 break;
-        }
+            }
     }
 
     @GetMapping("/findCategory/")
@@ -149,12 +151,12 @@ public class ServeurController {
 
     @PutMapping("/moveToOrder/")
     Mono<Order> moveToOrder(@RequestBody Order order) {
-        order.setInside(Util.getTimeNow());
-        order.getPreOrder().getStock().getItem().setStock(1);
-        final List<String> role = new ArrayList<String>();
+        Queue<String> role = new ConcurrentLinkedQueue<String>();
 
         return this.preOrders.deleteById(order.getPreOrder().getId()).then(this.orders.save(order)).then(
                 this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId()).flatMap(result -> {
+                    order.setInside(Util.getTimeNow());
+                    order.getPreOrder().getStock().getItem().setStock(1);
                     role.addAll(result.getRoleName());
                     String fileName=Util.randomIdentifier()+".mp3";
                     try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create())
@@ -169,7 +171,7 @@ public class ServeurController {
                                 {
                                     text.append(" avec comme choix pour ");
                                     text.append(option.getLabel());
-                                    text.append(" "+choix.getLabel());
+                                    text.append(" "+choix.getLabel()+".");
                                 }
                             });
                         });
@@ -196,7 +198,7 @@ public class ServeurController {
                     return this.gridFsTemplate.store(Flux.just(), fileName);
                 })).flatMap(id->{
                     role.forEach(roles->{
-                        this.sendToCanal(roles, id.toHexString());
+                        sendToCanal(roles, "audio:"+id.toHexString());
                     });
                     return Mono.empty();
                 }).then(Mono.just(order));
@@ -260,7 +262,7 @@ public class ServeurController {
                 return this.gridFsTemplate.store(Flux.just(), fileName);
             })).flatMap(id->{
                 role.forEach(roles->{
-                    this.sendToCanal(roles, id.toHexString());
+                    sendToCanal(roles,"audio:"+id.toHexString());
                 });
                 return Mono.empty();
             }).then(Mono.just(order));
