@@ -55,13 +55,31 @@ public class ClientController {
     }
 
     @PutMapping("/update/{securityKey}")
-    Mono<String> update(@RequestBody Client client, @PathVariable String securityKey) {
+    Mono<Client> update(@RequestBody Client client, @PathVariable String securityKey) {
         return this.security.findById(client.getId()).flatMap(security_user -> {
             if (security_user.getGenerateKey().equals(securityKey)) {
                 return clients.findById(client.getId());
             } else {
                 return Mono.just(Client.builder().id("anonymous").build());
             }
+        }).map(cc->{
+            double price=0;
+            for(ItemCarte itemCarte:cc.getCurrentPanier())
+            {
+                price+=itemCarte.getPrice();
+                for(OptionsItem options:itemCarte.getOptions())
+                {
+                    for(OptionItem choix:options.getOptions())
+                    {
+                        if(choix.isSelected())
+                        {
+                            price+=choix.getPrice();
+                        }
+                    }
+                }
+            }
+            cc.setPrice(price);
+            return cc;
         }).map(foundItem -> {
             if (!foundItem.getId().equals("anonymous")) {
                 foundItem.setAdresseL1(client.getAdresseL1());
@@ -73,12 +91,7 @@ public class ClientController {
                 foundItem.setSendInfo(client.isSendInfo());
             }
             return foundItem;
-        }).flatMap(clients::save).flatMap(fclient -> {
-            if (fclient.getId() != "anonymous")
-                return Mono.just("ok");
-            else
-                return Mono.just("erreur: Mauvaise clef de sécurité");
-        });
+        }).flatMap(clients::save);
     }
 
 }
