@@ -33,4 +33,8 @@ public class Order {
     private String timeToTake;
     @Getter
     private boolean toTake;
+    @Getter
+    private String idAnnonce;
+    @Getter
+    private String annonce;
 }

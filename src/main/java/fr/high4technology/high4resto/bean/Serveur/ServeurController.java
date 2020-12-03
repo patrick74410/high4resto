@@ -152,8 +152,8 @@ public class ServeurController {
     @PutMapping("/moveToOrder/")
     Mono<Order> moveToOrder(@RequestBody Order order) {
         Queue<String> role = new ConcurrentLinkedQueue<String>();
-
-        return this.preOrders.deleteById(order.getPreOrder().getId()).then(this.orders.save(order)).then(
+        order.setInside(Util.getTimeNow());
+        return this.preOrders.deleteById(order.getPreOrder().getId()).then(
                 this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId()).flatMap(result -> {
                     order.setInside(Util.getTimeNow());
                     order.getPreOrder().getStock().getItem().setStock(1);
@@ -164,18 +164,27 @@ public class ServeurController {
                     {
                         StringBuilder text=new StringBuilder();
                         text.append("J'annonce pour la table "+order.getPreOrder().getDestination()+".");
-                        text.append(order.getPreOrder().getStock().getItem().getName());
+                        text.append(order.getPreOrder().getStock().getItem().getName()+"!");
+                        StringBuilder ajout=new StringBuilder();
                         order.getPreOrder().getStock().getItem().getOptions().forEach(option->{
+                            StringBuilder options=new StringBuilder();
+                            StringBuilder choixx=new StringBuilder();
+                            options.append("Avec "+option.getLabel()+":");
                             option.getOptions().forEach(choix->{
                                 if(choix.isSelected())
                                 {
-                                    text.append(" avec comme choix pour ");
-                                    text.append(option.getLabel());
-                                    text.append(" "+choix.getLabel()+".");
+                                    choixx.append("-"+choix.getLabel()+".");
                                 }
                             });
+                            if(choixx.length()>0)
+                            {
+                                options.append(choixx.toString());
+                                ajout.append(options.toString());
+                            }
                         });
-                        text.append("."+order.getPreOrder().getMessageToNext());
+                        text.append(ajout.toString());
+                            text.append(order.getPreOrder().getMessageToNext());
+                        order.setAnnonce(text.toString().substring(text.toString().indexOf('!')+1));
                         SynthesisInput input = SynthesisInput.newBuilder().setText(text.toString()).build();
 
                         AudioConfig audioConfig = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();
@@ -197,11 +206,13 @@ public class ServeurController {
 
                     return this.gridFsTemplate.store(Flux.just(), fileName);
                 })).flatMap(id->{
+                    order.setIdAnnonce(id.toHexString());
                     role.forEach(roles->{
-                        sendToCanal(roles, "audio:"+id.toHexString());
+                        this.sendToCanal(roles, "audio:"+id.toHexString());
+                        this.sendToCanal(roles,"update:"+"annonce");
                     });
                     return Mono.empty();
-                }).then(Mono.just(order));
+                }).then(this.orders.save(order)).then(Mono.just(order));
     }
 
 	@GetMapping("/download/{id}")
@@ -229,17 +240,8 @@ public class ServeurController {
                     StringBuilder text=new StringBuilder();
                     text.append("Je demande l'envoie pour la table "+order.getPreOrder().getDestination()+"!");
                     text.append(order.getPreOrder().getStock().getItem().getName());
-                    order.getPreOrder().getStock().getItem().getOptions().forEach(option->{
-                        option.getOptions().forEach(choix->{
-                            if(choix.isSelected())
-                            {
-                                text.append(" avec comme choix pour ");
-                                text.append(option.getLabel());
-                                text.append(" "+choix.getLabel());
-                            }
-                        });
-                    });
-                    text.append("."+order.getPreOrder().getMessageToNext());
+                    text.append(order.getAnnonce());
+
                     SynthesisInput input = SynthesisInput.newBuilder().setText(text.toString()).build();
 
                     AudioConfig audioConfig = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();
@@ -263,6 +265,7 @@ public class ServeurController {
             })).flatMap(id->{
                 role.forEach(roles->{
                     sendToCanal(roles,"audio:"+id.toHexString());
+                    this.sendToCanal(roles,"update:"+"afaire");
                 });
                 return Mono.empty();
             }).then(Mono.just(order));
