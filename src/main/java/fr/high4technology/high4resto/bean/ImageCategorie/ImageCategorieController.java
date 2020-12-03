@@ -24,6 +24,7 @@ public class ImageCategorieController {
     @Autowired
     private ImageCategoryRepository imageCategories;
     @Autowired
+
     private ImageRepository images;
 
     @GetMapping("/find/")
