@@ -149,6 +149,51 @@ public class ServeurController {
         return this.stocks.deleteById(preOrder.getStock().getId()).then(this.preOrders.save(preOrder));
     }
 
+    @GetMapping("/moveManyToOrder/{table}/{mandatory}")
+    Mono<Order> moveManyToOrder(@PathVariable String table,@PathVariable String mandatory)
+    {
+        return this.preOrders.findAll().filter(preorder->preorder.getDestination().equals(table))
+        .sort((a,b)->{
+            int ida=a.getStock().getItem().getCategorie().getOrder();
+            int idb=b.getStock().getItem().getCategorie().getOrder();
+            if(ida>idb)
+                return 1;
+            if(ida<idb)
+                return -1;
+            else
+                return 0;
+        }).flatMap(preorder->{
+            return Mono.just(Order.builder()
+            .deliveryMode("inside")
+            .mandatory(mandatory)
+            .toTake(false)
+            .preOrder(preorder).build());
+        })
+        .delayElements(Duration.ofSeconds(6)).flatMap(this::moveToOrder)
+        .then(Mono.just(Order.builder().build()));
+    }
+
+    @GetMapping("/moveManyToTake/{table}/{idCategory}")
+    Mono<Order> moveManyToTake(@PathVariable String table,@PathVariable String idCategory)
+    {
+        return this.orders.findAll()
+        .filter(order->!order.isToTake())
+        .filter(order->order.getPreOrder().getDestination().equals(table))
+        .filter(order->order.getPreOrder().getStock().getItem().getCategorie().getId().equals(idCategory))
+        .sort((a,b)->{
+            int ida=a.getPreOrder().getStock().getItem().getCategorie().getOrder();
+            int idb=b.getPreOrder().getStock().getItem().getCategorie().getOrder();
+            if(ida>idb)
+                return 1;
+            if(ida<idb)
+                return -1;
+            else
+                return 0;
+        })
+        .delayElements(Duration.ofSeconds(6)).flatMap(this::moveToTake)
+        .then(Mono.just(Order.builder().build()));
+    }
+
     @PutMapping("/moveToOrder/")
     Mono<Order> moveToOrder(@RequestBody Order order) {
         Queue<String> role = new ConcurrentLinkedQueue<String>();
@@ -165,26 +210,10 @@ public class ServeurController {
                         StringBuilder text=new StringBuilder();
                         text.append("J'annonce pour la table "+order.getPreOrder().getDestination()+".");
                         text.append(order.getPreOrder().getStock().getItem().getName()+"!");
-                        StringBuilder ajout=new StringBuilder();
-                        order.getPreOrder().getStock().getItem().getOptions().forEach(option->{
-                            StringBuilder options=new StringBuilder();
-                            StringBuilder choixx=new StringBuilder();
-                            options.append("Avec "+option.getLabel()+":");
-                            option.getOptions().forEach(choix->{
-                                if(choix.isSelected())
-                                {
-                                    choixx.append("-"+choix.getLabel()+".");
-                                }
-                            });
-                            if(choixx.length()>0)
-                            {
-                                options.append(choixx.toString());
-                                ajout.append(options.toString());
-                            }
-                        });
-                        text.append(ajout.toString());
-                            text.append(order.getPreOrder().getMessageToNext());
+                        text.append(Util.generateTextForSpeach(order.getPreOrder().getStock().getItem()));
+                        text.append(order.getPreOrder().getMessageToNext());
                         order.setAnnonce(text.toString().substring(text.toString().indexOf('!')+1));
+
                         SynthesisInput input = SynthesisInput.newBuilder().setText(text.toString()).build();
 
                         AudioConfig audioConfig = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();
@@ -243,9 +272,7 @@ public class ServeurController {
                     text.append(order.getAnnonce());
 
                     SynthesisInput input = SynthesisInput.newBuilder().setText(text.toString()).build();
-
                     AudioConfig audioConfig = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();
-
                     SynthesizeSpeechResponse response = textToSpeechClient.synthesizeSpeech(input, voice,
                             audioConfig);
 

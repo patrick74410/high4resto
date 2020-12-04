@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 
+import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
+
 import java.text.SimpleDateFormat;
 
 public class Util {
@@ -45,6 +47,30 @@ public class Util {
 			}
 		}
 		return builder.toString();
+    }
+
+    public static String generateTextForSpeach(ItemCarte item)
+    {
+        StringBuilder text=new StringBuilder();
+        StringBuilder ajout=new StringBuilder();
+        item.getOptions().forEach(option->{
+            StringBuilder options=new StringBuilder();
+            StringBuilder choixx=new StringBuilder();
+            options.append("Avec "+option.getLabel()+":");
+            option.getOptions().forEach(choix->{
+                if(choix.isSelected())
+                {
+                    choixx.append("-"+choix.getLabel()+".");
+                }
+            });
+            if(choixx.length()>0)
+            {
+                options.append(choixx.toString());
+                ajout.append(options.toString());
+            }
+        });
+        text.append(ajout.toString());
+        return text.toString();
     }
 
 }
