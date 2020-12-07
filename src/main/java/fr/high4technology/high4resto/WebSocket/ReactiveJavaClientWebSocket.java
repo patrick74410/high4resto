@@ -13,7 +13,7 @@ public class ReactiveJavaClientWebSocket {
 
     WebSocketClient client = new ReactorNettyWebSocketClient();
     client
-        .execute(URI.create("ws://localhost:8080/api/canal/coldCook"),
+        .execute(URI.create("ws://localhost:8080/api/canal/server"),
             session -> session.send(Mono.just(session.textMessage("event-spring-reactive-client-websocket")))
                 .thenMany(session.receive().map(WebSocketMessage::getPayloadAsText).log()).then())
         .block(Duration.ofSeconds(100L));

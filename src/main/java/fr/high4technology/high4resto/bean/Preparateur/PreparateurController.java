@@ -18,17 +18,22 @@ import fr.high4technology.high4resto.WebSocket.ServerCanalHandler;
 import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorieRepository;
 import fr.high4technology.high4resto.bean.ItemPreparation.ItemPreparation;
 import fr.high4technology.high4resto.bean.ItemPreparation.ItemPreparationRepository;
+import fr.high4technology.high4resto.bean.Struct.Message;
 import fr.high4technology.high4resto.bean.Tracability.Order.Order;
 import fr.high4technology.high4resto.bean.Tracability.Order.OrderRepository;
+import fr.high4technology.high4resto.bean.Tracability.Prepare.Prepare;
+import fr.high4technology.high4resto.bean.Tracability.Prepare.PrepareRepository;
 import fr.high4technology.high4resto.bean.Tracability.toPrepare.ToPrepare;
 import fr.high4technology.high4resto.bean.Tracability.toPrepare.ToPrepareRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/preparateur")
 @RequiredArgsConstructor
+@Slf4j
 public class PreparateurController {
     @Autowired
     private ItemCategorieRepository itemCategories;
@@ -40,18 +45,34 @@ public class PreparateurController {
     private ItemPreparationRepository preparations;
     @Autowired
     private ToPrepareRepository toPrepares;
-
-
-    private void sendToServer(String message)
-    {
-        serverCanal.sendMessage(message);;
-    }
+    @Autowired
+    private PrepareRepository prepares;
 
     @PutMapping("/moveToPrepare/")
     Mono<ToPrepare> moveToTake(@RequestBody ToPrepare toPrepare)
     {
         toPrepare.setInside(Util.getTimeNow());
         return this.orders.deleteById(toPrepare.getOrder().getId()).then(toPrepares.save(toPrepare));
+    }
+
+    @PutMapping("/moveToPrepared/")
+    Mono<Prepare> moveToPrepared(@RequestBody Prepare prepare)
+    {
+        prepare.setInside(Util.getTimeNow());
+        return this.toPrepares.deleteById(prepare.getToPrepare().getId()).then(this.prepares.save(prepare))
+        .flatMap(prep->{
+            this.serverCanal.sendMessage("message:update");;
+            return Mono.just(prep);
+        });
+    }
+
+    @PutMapping("/callServer/")
+    Mono<Message> callServer(@RequestBody Message message)
+    {
+        this.serverCanal.sendMessage(message.getType()+":"+message.getFunction());
+        log.warn(message.getFunction());
+        log.warn(message.getType());
+        return Mono.just(message);
     }
 
     @GetMapping("/findToPrepare/{role}")

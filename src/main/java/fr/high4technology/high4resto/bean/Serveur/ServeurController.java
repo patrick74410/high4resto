@@ -19,8 +19,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -31,6 +29,8 @@ import fr.high4technology.high4resto.WebSocket.ColdCookCanalHandler;
 import fr.high4technology.high4resto.WebSocket.CookCanalHandler;
 import fr.high4technology.high4resto.WebSocket.HotCookCanalHandler;
 import fr.high4technology.high4resto.WebSocket.WineStewardCanalHandler;
+import fr.high4technology.high4resto.bean.Audio.Audio;
+import fr.high4technology.high4resto.bean.Audio.AudioRepository;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorie;
 import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorieRepository;
@@ -80,6 +80,8 @@ public class ServeurController {
     private ColdCookCanalHandler coldCookCanal;
     @Autowired
     private CookCanalHandler cookCanal;
+    @Autowired
+    private AudioRepository audios;
 
     private final ReactiveGridFsTemplate gridFsTemplate;
 
@@ -169,7 +171,7 @@ public class ServeurController {
             .toTake(false)
             .preOrder(preorder).build());
         })
-        .delayElements(Duration.ofSeconds(6)).flatMap(this::moveToOrder)
+        .delayElements(Duration.ofSeconds(8)).flatMap(this::moveToOrder)
         .then(Mono.just(Order.builder().build()));
     }
 
@@ -190,42 +192,65 @@ public class ServeurController {
             else
                 return 0;
         })
-        .delayElements(Duration.ofSeconds(6)).flatMap(this::moveToTake)
+        .delayElements(Duration.ofSeconds(8)).flatMap(this::moveToTake)
         .then(Mono.just(Order.builder().build()));
     }
 
     @PutMapping("/moveToOrder/")
     Mono<Order> moveToOrder(@RequestBody Order order) {
         Queue<String> role = new ConcurrentLinkedQueue<String>();
+        // Je définis l'heure et redéfinis le stock à 1
         order.setInside(Util.getTimeNow());
-        return this.preOrders.deleteById(order.getPreOrder().getId()).then(
-                this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId()).flatMap(result -> {
-                    order.setInside(Util.getTimeNow());
-                    order.getPreOrder().getStock().getItem().setStock(1);
-                    role.addAll(result.getRoleName());
+        order.getPreOrder().getStock().getItem().setStock(1);
+        // Je génère le texte d'annonce
+        StringBuilder text=new StringBuilder();
+        text.append("J'annonce pour la table "+order.getPreOrder().getDestination()+".");
+        text.append(order.getPreOrder().getStock().getItem().getName()+"!");
+        text.append(Util.generateTextForSpeach(order.getPreOrder().getStock().getItem()));
+        text.append(order.getPreOrder().getMessageToNext());
+        order.setAnnonce(text.toString().substring(text.toString().indexOf('!')+1));
+
+        // Je supprime preorder
+        return this.preOrders.deleteById(order.getPreOrder().getId())
+        // Je cherche qui prend en charge cet item et j'enregistre dans rôle
+        .then
+        (
+            this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId())
+            .flatMap(result->{
+                role.addAll(result.getRoleName());
+                return Mono.empty();
+            })
+        )
+        // Je cherche si l'audio existe dans la base de donnée
+        .then
+        (
+            this.audios.findById(Util.hash(text.toString()))
+            .flatMap(audio->{
+                log.warn("Audio existe je ne le génère pas");
+                order.setIdAnnonce(audio.getGridId());
+                role.forEach(roles->{
+                    this.sendToCanal(roles, "audio:"+audio.getGridId());
+                    this.sendToCanal(roles,"update:"+"annonce");
+                });
+                return this.orders.save(order);
+            })
+        )
+        // si il n'y est pas je le génère
+        .switchIfEmpty(
+                Mono.just("")
+                .flatMap(i->{
+                    log.warn("Audio n'existe pas je le génère");
                     String fileName=Util.randomIdentifier()+".mp3";
                     try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create())
-
                     {
-                        StringBuilder text=new StringBuilder();
-                        text.append("J'annonce pour la table "+order.getPreOrder().getDestination()+".");
-                        text.append(order.getPreOrder().getStock().getItem().getName()+"!");
-                        text.append(Util.generateTextForSpeach(order.getPreOrder().getStock().getItem()));
-                        text.append(order.getPreOrder().getMessageToNext());
-                        order.setAnnonce(text.toString().substring(text.toString().indexOf('!')+1));
-
                         SynthesisInput input = SynthesisInput.newBuilder().setText(text.toString()).build();
-
                         AudioConfig audioConfig = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();
-
                         SynthesizeSpeechResponse response = textToSpeechClient.synthesizeSpeech(input, voice,
                                 audioConfig);
-
                         ByteString audioContents = response.getAudioContent();
                         DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
                         DefaultDataBuffer finalFile;
                         finalFile = factory.wrap(audioContents.toByteArray());
-
                         return this.gridFsTemplate.store(Flux.just(finalFile), fileName);
                     }
                     catch(Exception e)
@@ -234,15 +259,20 @@ public class ServeurController {
                     }
 
                     return this.gridFsTemplate.store(Flux.just(), fileName);
-                })).flatMap(id->{
-                    order.setIdAnnonce(id.toHexString());
-                    role.forEach(roles->{
-                        this.sendToCanal(roles, "audio:"+id.toHexString());
-                        this.sendToCanal(roles,"update:"+"annonce");
-                    });
-                    return Mono.empty();
-                }).then(this.orders.save(order)).then(Mono.just(order));
-    }
+                    }).flatMap(id->{
+                        order.setIdAnnonce(id.toHexString());
+                        role.forEach(roles->{
+                            this.sendToCanal(roles, "audio:"+id.toHexString());
+                            this.sendToCanal(roles,"update:"+"annonce");
+                        });
+                        return audios.save(Audio.builder().gridId(id.toHexString()).id(Util.hash(text.toString())).build());
+                    })
+                .then
+                (
+                    this.orders.save(order)
+                )
+                );
+        }
 
 	@GetMapping("/download/{id}")
 	public Flux<Void> read(@PathVariable String id, ServerWebExchange exchange) {
@@ -257,45 +287,81 @@ public class ServeurController {
     @PutMapping("/moveToTake/")
     Mono<Order> moveToTake(@RequestBody Order order)
     {
-        final List<String> role = new ArrayList<String>();
+        Queue<String> role = new ConcurrentLinkedQueue<String>();
+        // Je définis l'heure et redéfinis le stock à 1 et to Take a true
+        order.setInside(Util.getTimeNow());
+        order.getPreOrder().getStock().getItem().setStock(1);
         order.setToTake(true);
-        return this.orders.save(order).then(
-            this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId()).flatMap(result -> {
+        // Je génère le texte d'annonce
+        StringBuilder text=new StringBuilder();
+        text.append("Je demande l'envoie pour la table "+order.getPreOrder().getDestination()+".");
+        text.append(order.getPreOrder().getStock().getItem().getName()+"!");
+        text.append(Util.generateTextForSpeach(order.getPreOrder().getStock().getItem()));
+        text.append(order.getPreOrder().getMessageToNext());
+
+        // Je supprime preorder
+        return this.preOrders.deleteById(order.getPreOrder().getId())
+        // Je cherche qui prend en charge cet item et j'enregistre dans rôle
+        .then
+        (
+            this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId())
+            .flatMap(result->{
                 role.addAll(result.getRoleName());
-                String fileName=Util.randomIdentifier()+".mp3";
-                try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create())
-
-                {
-                    StringBuilder text=new StringBuilder();
-                    text.append("Je demande l'envoie pour la table "+order.getPreOrder().getDestination()+"!");
-                    text.append(order.getPreOrder().getStock().getItem().getName());
-                    text.append(order.getAnnonce());
-
-                    SynthesisInput input = SynthesisInput.newBuilder().setText(text.toString()).build();
-                    AudioConfig audioConfig = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();
-                    SynthesizeSpeechResponse response = textToSpeechClient.synthesizeSpeech(input, voice,
-                            audioConfig);
-
-                    ByteString audioContents = response.getAudioContent();
-                    DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
-                    DefaultDataBuffer finalFile;
-                    finalFile = factory.wrap(audioContents.toByteArray());
-
-                    return this.gridFsTemplate.store(Flux.just(finalFile), fileName);
-                }
-                catch(Exception e)
-                {
-                    log.warn(e.getMessage());
-                }
-
-                return this.gridFsTemplate.store(Flux.just(), fileName);
-            })).flatMap(id->{
-                role.forEach(roles->{
-                    sendToCanal(roles,"audio:"+id.toHexString());
-                    this.sendToCanal(roles,"update:"+"afaire");
-                });
                 return Mono.empty();
-            }).then(Mono.just(order));
+            })
+        )
+        // Je cherche si l'audio existe dans la base de donnée
+        .then
+        (
+            this.audios.findById(Util.hash(text.toString()))
+            .flatMap(audio->{
+                order.setAnnonce(text.toString().substring(text.toString().indexOf('!')+1));
+                log.warn("Audio existe je ne le génère pas");
+                order.setIdAnnonce(audio.getGridId());
+                role.forEach(roles->{
+                    this.sendToCanal(roles, "audio:"+audio.getGridId());
+                    this.sendToCanal(roles,"update:"+"annonce");
+                });
+                return this.orders.save(order);
+            })
+        )
+        // si il n'y est pas je le génère
+        .switchIfEmpty(
+                Mono.just("")
+                .flatMap(i->{
+                    log.warn("Audio n'existe pas je le génère");
+                    String fileName=Util.randomIdentifier()+".mp3";
+                    try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create())
+                    {
+                        SynthesisInput input = SynthesisInput.newBuilder().setText(text.toString()).build();
+                        AudioConfig audioConfig = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();
+                        SynthesizeSpeechResponse response = textToSpeechClient.synthesizeSpeech(input, voice,
+                                audioConfig);
+                        ByteString audioContents = response.getAudioContent();
+                        DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+                        DefaultDataBuffer finalFile;
+                        finalFile = factory.wrap(audioContents.toByteArray());
+                        return this.gridFsTemplate.store(Flux.just(finalFile), fileName);
+                    }
+                    catch(Exception e)
+                    {
+                        log.warn(e.getMessage());
+                    }
+
+                    return this.gridFsTemplate.store(Flux.just(), fileName);
+                    }).flatMap(id->{
+                        order.setIdAnnonce(id.toHexString());
+                        role.forEach(roles->{
+                            this.sendToCanal(roles, "audio:"+id.toHexString());
+                            this.sendToCanal(roles,"update:"+"annonce");
+                        });
+                        return audios.save(Audio.builder().gridId(id.toHexString()).id(Util.hash(text.toString())).build());
+                    })
+                .then
+                (
+                    this.orders.save(order)
+                )
+                );
     }
 
     @PutMapping("/moveBackToStock/")
