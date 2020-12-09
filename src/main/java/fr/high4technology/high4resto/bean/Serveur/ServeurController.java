@@ -5,11 +5,14 @@ import org.springframework.core.io.buffer.DefaultDataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.data.mongodb.gridfs.ReactiveGridFsTemplate;
 import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -42,6 +45,11 @@ import fr.high4technology.high4resto.bean.Tracability.Order.Order;
 import fr.high4technology.high4resto.bean.Tracability.Order.OrderRepository;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrder;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrderRepository;
+import fr.high4technology.high4resto.bean.commande.Commande;
+import fr.high4technology.high4resto.bean.commande.CommandeRepository;
+import fr.high4technology.high4resto.bean.table.Table;
+import fr.high4technology.high4resto.bean.table.TableRepository;
+
 import com.google.cloud.texttospeech.v1.AudioConfig;
 import com.google.cloud.texttospeech.v1.AudioEncoding;
 import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
@@ -60,6 +68,9 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 public class ServeurController {
     VoiceSelectionParams voice = VoiceSelectionParams.newBuilder().setLanguageCode("fr-FR")
     .setSsmlGender(SsmlVoiceGender.MALE).build();
+
+    @Autowired
+    private CommandeRepository commandes;
     @Autowired
     private StockRepository stocks;
     @Autowired
@@ -82,6 +93,8 @@ public class ServeurController {
     private CookCanalHandler cookCanal;
     @Autowired
     private AudioRepository audios;
+    @Autowired
+    private TableRepository tables;
 
     private final ReactiveGridFsTemplate gridFsTemplate;
 
@@ -144,15 +157,92 @@ public class ServeurController {
                 });
     }
 
-    @PutMapping("/moveToPreorder/")
-    Mono<PreOrder> moveToPreorder(@RequestBody PreOrder preOrder) {
+    @GetMapping("/createCommande/{table}/{mandatory}")
+    public Mono<Commande> generateCommande(@PathVariable String table,@PathVariable String mandatory)
+    {
+        return this.commandes.count()
+        .flatMap(result->{
+            return commandes.save(Commande.builder().finish(false).number(result).inside(Util.getTimeNow()).destination(table).deleveryMode("inside").mandatory(mandatory).build());
+        });
+    }
+
+    @PutMapping("/updateCommande/")
+    public Mono<Commande> updateCommande(@RequestBody Commande commande)
+    {
+        return this.commandes.findById(commande.getId()).map(found->{
+            found.setClient(commande.getClient());
+            found.setFinish(commande.getFinish());
+            found.setItems(commande.getItems());
+            found.setMessage(commande.getMessage());
+            found.setStatus(commande.getStatus());
+            return found;
+        }).flatMap(commandes::save);
+    }
+
+    @GetMapping("/findCommande/{table}/{mandatory}")
+    public Flux<Commande> findCommande(@PathVariable String table,@PathVariable String mandatory)
+    {
+        return (this.commandes.findAll()
+        .filter(a->!a.getFinish())
+        .filter(a->a.getDestination().equals(table)))
+
+        .switchIfEmpty(this.generateCommande(table, mandatory).flatMapMany(result->{
+            return Flux.just(result);
+        }));
+    }
+
+    @GetMapping("/findTable/")
+    public Flux<Table> getAllAll() {
+        return tables.findAll();
+    }
+
+    @GetMapping("/findTable/{idItem}")
+    public Mono<Table> getById(@PathVariable String idItem) {
+        return tables.findById(idItem);
+    }
+
+    @DeleteMapping("/deleteTable/{idItem}")
+    public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
+
+        return tables.deleteById(idItem).map(r -> ResponseEntity.ok().<Void>build())
+                .defaultIfEmpty(ResponseEntity.ok().<Void>build());
+    }
+
+    @PutMapping("/insertTable/")
+    Mono<Table> insert(@RequestBody Table table) {
+        return tables.save(table);
+    }
+
+    @PutMapping("/updateTable/")
+    Mono<Table> update(@RequestBody Table table) {
+        return tables.findById(table.getId()).map(foundItem -> {
+            foundItem.setName(table.getName());
+            foundItem.setPlace(table.getPlace());
+            return foundItem;
+        }).flatMap(tables::save);
+    }
+
+    @PutMapping("/moveToPreorder/{idCommande}")
+    public Mono<PreOrder> moveToPreorder(@RequestBody PreOrder preOrder,@RequestParam String idCommande) {
         preOrder.setInside(Util.getTimeNow());
+        preOrder.setId(preOrder.getStock().getId());
         preOrder.getStock().getItem().setStock(1);
-        return this.stocks.deleteById(preOrder.getStock().getId()).then(this.preOrders.save(preOrder));
+        return this.stocks.deleteById(preOrder.getStock().getId())
+        .then(
+            this.commandes.findById(idCommande)
+            .map(result->{
+                if(result.getItems().size()<1)
+                result.setInside(Util.getTimeNow());
+                result.getItems().add(preOrder);
+                return result;
+            })
+            .flatMap(commandes::save)
+        )
+        .then(this.preOrders.save(preOrder));
     }
 
     @GetMapping("/moveManyToOrder/{table}/{mandatory}")
-    Mono<Order> moveManyToOrder(@PathVariable String table,@PathVariable String mandatory)
+    public Mono<Order> moveManyToOrder(@PathVariable String table,@PathVariable String mandatory)
     {
         return this.preOrders.findAll().filter(preorder->preorder.getDestination().equals(table))
         .sort((a,b)->{
@@ -176,7 +266,7 @@ public class ServeurController {
     }
 
     @GetMapping("/moveManyToTake/{table}/{idCategory}")
-    Mono<Order> moveManyToTake(@PathVariable String table,@PathVariable String idCategory)
+    public Mono<Order> moveManyToTake(@PathVariable String table,@PathVariable String idCategory)
     {
         return this.orders.findAll()
         .filter(order->!order.isToTake())
@@ -197,11 +287,12 @@ public class ServeurController {
     }
 
     @PutMapping("/moveToOrder/")
-    Mono<Order> moveToOrder(@RequestBody Order order) {
+    public Mono<Order> moveToOrder(@RequestBody Order order) {
         Queue<String> role = new ConcurrentLinkedQueue<String>();
         // Je définis l'heure et redéfinis le stock à 1
         order.setInside(Util.getTimeNow());
         order.getPreOrder().getStock().getItem().setStock(1);
+        order.setId(order.getPreOrder().getId());
         // Je génère le texte d'annonce
         StringBuilder text=new StringBuilder();
         text.append("J'annonce pour la table "+order.getPreOrder().getDestination()+".");
@@ -285,13 +376,15 @@ public class ServeurController {
 	}
 
     @PutMapping("/moveToTake/")
-    Mono<Order> moveToTake(@RequestBody Order order)
+    public Mono<Order> moveToTake(@RequestBody Order order)
     {
+
         Queue<String> role = new ConcurrentLinkedQueue<String>();
         // Je définis l'heure et redéfinis le stock à 1 et to Take a true
         order.setInside(Util.getTimeNow());
         order.getPreOrder().getStock().getItem().setStock(1);
         order.setToTake(true);
+        order.setId(order.getPreOrder().getId());
         // Je génère le texte d'annonce
         StringBuilder text=new StringBuilder();
         text.append("Je demande l'envoie pour la table "+order.getPreOrder().getDestination()+".");
@@ -364,10 +457,19 @@ public class ServeurController {
                 );
     }
 
-    @PutMapping("/moveBackToStock/")
-    Mono<Stock> moveBackToStock(@RequestBody PreOrder preOrder) {
+    @PutMapping("/moveBackToStock/{idCommande}")
+    public Mono<Stock> moveBackToStock(@RequestBody PreOrder preOrder,@RequestParam String idCommande) {
         preOrder.getStock().getItem().setStock(1);
-        return this.preOrders.deleteById(preOrder.getId()).then(stocks.save(preOrder.getStock()));
+        return this.preOrders.deleteById(preOrder.getId())
+        .then(
+            this.commandes.findById(idCommande)
+            .map(result->{
+                result.getItems().removeIf(a->a.getId().equals(preOrder.getId()));
+                return result;
+            })
+            .flatMap(this.commandes::save)
+        )
+        .then(stocks.save(preOrder.getStock()));
     }
 
 

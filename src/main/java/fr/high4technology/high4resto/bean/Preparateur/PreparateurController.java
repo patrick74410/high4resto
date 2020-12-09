@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.Util.Util;
 import fr.high4technology.high4resto.WebSocket.ServerCanalHandler;
-import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorieRepository;
 import fr.high4technology.high4resto.bean.ItemPreparation.ItemPreparation;
 import fr.high4technology.high4resto.bean.ItemPreparation.ItemPreparationRepository;
 import fr.high4technology.high4resto.bean.Struct.Message;
@@ -36,8 +35,6 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class PreparateurController {
     @Autowired
-    private ItemCategorieRepository itemCategories;
-    @Autowired
     private OrderRepository orders;
     @Autowired
     private ServerCanalHandler serverCanal;
@@ -52,6 +49,7 @@ public class PreparateurController {
     Mono<ToPrepare> moveToTake(@RequestBody ToPrepare toPrepare)
     {
         toPrepare.setInside(Util.getTimeNow());
+        toPrepare.setId(toPrepare.getOrder().getId());
         return this.orders.deleteById(toPrepare.getOrder().getId()).then(toPrepares.save(toPrepare));
     }
 
@@ -59,6 +57,7 @@ public class PreparateurController {
     Mono<Prepare> moveToPrepared(@RequestBody Prepare prepare)
     {
         prepare.setInside(Util.getTimeNow());
+        prepare.setId(prepare.getToPrepare().getId());
         return this.toPrepares.deleteById(prepare.getToPrepare().getId()).then(this.prepares.save(prepare))
         .flatMap(prep->{
             this.serverCanal.sendMessage("message:update");;

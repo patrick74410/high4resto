@@ -61,7 +61,7 @@ public class Util {
         item.getOptions().forEach(option->{
             StringBuilder options=new StringBuilder();
             StringBuilder choixx=new StringBuilder();
-            options.append("Avec "+option.getLabel()+":");
+            options.append("Avec "+option.getLabel()+" ");
             option.getOptions().forEach(choix->{
                 if(choix.isSelected())
                 {
