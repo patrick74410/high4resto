@@ -19,4 +19,6 @@ public class Audio {
     private String id;
     @Getter
     private String gridId;
+    @Getter
+    private String text;
 }

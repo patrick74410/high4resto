@@ -5,7 +5,19 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.google.cloud.texttospeech.v1.AudioConfig;
+import com.google.cloud.texttospeech.v1.AudioEncoding;
+import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
+import com.google.cloud.texttospeech.v1.SynthesisInput;
+import com.google.cloud.texttospeech.v1.SynthesizeSpeechResponse;
+import com.google.cloud.texttospeech.v1.TextToSpeechClient;
+import com.google.cloud.texttospeech.v1.VoiceSelectionParams;
+import com.google.protobuf.ByteString;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.buffer.DefaultDataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import org.springframework.data.mongodb.gridfs.ReactiveGridFsTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.Util.Util;
 import fr.high4technology.high4resto.WebSocket.ServerCanalHandler;
+import fr.high4technology.high4resto.bean.Audio.Audio;
+import fr.high4technology.high4resto.bean.Audio.AudioRepository;
 import fr.high4technology.high4resto.bean.ItemPreparation.ItemPreparation;
 import fr.high4technology.high4resto.bean.ItemPreparation.ItemPreparationRepository;
 import fr.high4technology.high4resto.bean.Struct.Message;
@@ -34,6 +48,10 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Slf4j
 public class PreparateurController {
+
+    VoiceSelectionParams voice = VoiceSelectionParams.newBuilder().setLanguageCode("fr-FR")
+    .setSsmlGender(SsmlVoiceGender.MALE).build();
+
     @Autowired
     private OrderRepository orders;
     @Autowired
@@ -44,6 +62,39 @@ public class PreparateurController {
     private ToPrepareRepository toPrepares;
     @Autowired
     private PrepareRepository prepares;
+    @Autowired
+    private AudioRepository audios;
+
+    private final ReactiveGridFsTemplate gridFsTemplate;
+
+    @PutMapping("/speak/")
+    public Mono<Audio> speak(@RequestBody Audio audio)
+    {
+        return this.audios.findById(Util.hash(audio.getText()))
+        .switchIfEmpty(Mono.just("").flatMap(i -> {
+            log.warn("Audio n'existe pas je le génère");
+            String fileName = Util.randomIdentifier() + ".mp3";
+            try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+                SynthesisInput input = SynthesisInput.newBuilder().setText(audio.getText()).build();
+                AudioConfig audioConfig = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();
+                SynthesizeSpeechResponse response = textToSpeechClient.synthesizeSpeech(input, voice,
+                        audioConfig);
+                ByteString audioContents = response.getAudioContent();
+                DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+                DefaultDataBuffer finalFile;
+                finalFile = factory.wrap(audioContents.toByteArray());
+                return this.gridFsTemplate.store(Flux.just(finalFile), fileName);
+            } catch (Exception e) {
+                log.warn(e.getMessage());
+            }
+            return Mono.empty();
+        }).flatMap(id->{
+            audio.setGridId(id.toHexString());
+            audio.setId(Util.hash(audio.getText()));
+            return this.audios.save(audio);
+        }))
+        .switchIfEmpty(Mono.just(Audio.builder().gridId("error").build()));
+    }
 
     @PutMapping("/moveToPrepare/")
     Mono<ToPrepare> moveToTake(@RequestBody ToPrepare toPrepare)
