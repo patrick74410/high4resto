@@ -111,7 +111,6 @@ public class PreparateurController {
         prepare.setId(prepare.getToPrepare().getId());
         return this.toPrepares.deleteById(prepare.getToPrepare().getId()).then(this.prepares.save(prepare))
         .flatMap(prep->{
-            this.serverCanal.sendMessage("message:update");;
             return Mono.just(prep);
         });
     }
@@ -120,8 +119,6 @@ public class PreparateurController {
     Mono<Message> callServer(@RequestBody Message message)
     {
         this.serverCanal.sendMessage(message.getType()+":"+message.getFunction());
-        log.warn(message.getFunction());
-        log.warn(message.getType());
         return Mono.just(message);
     }
 
@@ -152,7 +149,19 @@ public class PreparateurController {
             return false;
         }).sort((a,b)->{
             return a.getOrder().getPreOrder().getDestination().compareTo(b.getOrder().getPreOrder().getDestination());
-        });
+        }).sort((a,b)->{
+            int aa=a.getOrder().getPreOrder().getStock().getItem().getCategorie().getOrder();
+            int bb=b.getOrder().getPreOrder().getStock().getItem().getCategorie().getOrder();
+            if(aa>bb)
+            return 1;
+            else if(aa<bb)
+            return -1;
+            else return 0;
+        }).sort((a,b)->{
+            return a.getOrder().getPreOrder().getStock().getItem().getName().compareTo(b.getOrder().getPreOrder().getStock().getItem().getName());
+        })
+
+        ;
     }
 
     @GetMapping("/findSignalOrder/{role}")
@@ -182,6 +191,16 @@ public class PreparateurController {
             return false;
         }).sort((a,b)->{
             return a.getPreOrder().getDestination().compareTo(b.getPreOrder().getDestination());
+        }).sort((a,b)->{
+            int aa=a.getPreOrder().getStock().getItem().getCategorie().getOrder();
+            int bb=b.getPreOrder().getStock().getItem().getCategorie().getOrder();
+            if(aa>bb)
+            return 1;
+            else if(aa<bb)
+            return -1;
+            else return 0;
+        }).sort((a,b)->{
+            return a.getPreOrder().getStock().getItem().getName().compareTo(b.getPreOrder().getStock().getItem().getName());
         });
     }
 
@@ -212,6 +231,16 @@ public class PreparateurController {
             return false;
         }).sort((a,b)->{
             return a.getPreOrder().getDestination().compareTo(b.getPreOrder().getDestination());
+        }).sort((a,b)->{
+            int aa=a.getPreOrder().getStock().getItem().getCategorie().getOrder();
+            int bb=b.getPreOrder().getStock().getItem().getCategorie().getOrder();
+            if(aa>bb)
+            return 1;
+            else if(aa<bb)
+            return -1;
+            else return 0;
+        }).sort((a,b)->{
+            return a.getPreOrder().getStock().getItem().getName().compareTo(b.getPreOrder().getStock().getItem().getName());
         });
     }
 }

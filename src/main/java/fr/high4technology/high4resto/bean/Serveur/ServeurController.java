@@ -40,10 +40,20 @@ import fr.high4technology.high4resto.bean.OptionItem.OptionsItem;
 import fr.high4technology.high4resto.bean.Stock.Stock;
 import fr.high4technology.high4resto.bean.Stock.StockRepository;
 import fr.high4technology.high4resto.bean.Struct.Annonce;
+import fr.high4technology.high4resto.bean.Tracability.Delevery.Delevery;
+import fr.high4technology.high4resto.bean.Tracability.Delevery.DeleveryRepository;
+import fr.high4technology.high4resto.bean.Tracability.Histrory.History;
+import fr.high4technology.high4resto.bean.Tracability.Histrory.HistoryRepository;
 import fr.high4technology.high4resto.bean.Tracability.Order.Order;
 import fr.high4technology.high4resto.bean.Tracability.Order.OrderRepository;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrder;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrderRepository;
+import fr.high4technology.high4resto.bean.Tracability.Prepare.Prepare;
+import fr.high4technology.high4resto.bean.Tracability.Prepare.PrepareRepository;
+import fr.high4technology.high4resto.bean.Tracability.ToDelivery.ToDelivery;
+import fr.high4technology.high4resto.bean.Tracability.ToDelivery.ToDeliveryRepository;
+import fr.high4technology.high4resto.bean.Tracability.Trash.Trash;
+import fr.high4technology.high4resto.bean.Tracability.Trash.TrashRepository;
 import fr.high4technology.high4resto.bean.commande.Commande;
 import fr.high4technology.high4resto.bean.commande.CommandeRepository;
 import fr.high4technology.high4resto.bean.table.Table;
@@ -82,6 +92,16 @@ public class ServeurController {
     private CookCanalHandler cookCanal;
     @Autowired
     private TableRepository tables;
+    @Autowired
+    private PrepareRepository prepares;
+    @Autowired
+    private ToDeliveryRepository toDeliverys;
+    @Autowired
+    private DeleveryRepository deleverys;
+    @Autowired
+    private HistoryRepository historys;
+    @Autowired
+    private TrashRepository trashs;
 
     private final ReactiveGridFsTemplate gridFsTemplate;
 
@@ -103,6 +123,24 @@ public class ServeurController {
                 cookCanal.sendMessage(message);
                 break;
         }
+    }
+
+    @GetMapping("/findPrepared/{mandatory}")
+    public Flux<Prepare> findPrepared(@PathVariable String mandatory)
+    {
+        return this.prepares.findAll().filter(a->a.getToPrepare().getOrder().getMandatory().equals(mandatory));
+    }
+
+    @GetMapping("/findToDelevery/{mandatory}")
+    public Flux<ToDelivery> findToDelevery(@PathVariable String mandatory)
+    {
+        return this.toDeliverys.findAll().filter(a->a.getPrepare().getToPrepare().getOrder().getMandatory().equals(mandatory));
+    }
+
+    @GetMapping("/findDelevery/{mandatory}")
+    public Flux<Delevery> findDelevery(@PathVariable String mandatory)
+    {
+        return this.deleverys.findAll().filter(a->a.getToDelivery().getPrepare().getToPrepare().getOrder().getMandatory().equals(mandatory));
     }
 
     @GetMapping("/findCategory/")
@@ -140,6 +178,25 @@ public class ServeurController {
         });
     }
 
+    @GetMapping("/findCommande/{table}/{mandatory}")
+    public Flux<Commande> findCommande(@PathVariable String table, @PathVariable String mandatory) {
+        return (this.commandes.findAll().filter(a -> !a.getFinish()).filter(a -> a.getDestination().equals(table)))
+
+                .switchIfEmpty(this.generateCommande(table, mandatory).flatMapMany(result -> {
+                    return Flux.just(result);
+                }));
+    }
+
+    @GetMapping("/findTable/")
+    public Flux<Table> getAllAll() {
+        return tables.findAll();
+    }
+
+    @GetMapping("/findTable/{idItem}")
+    public Mono<Table> getById(@PathVariable String idItem) {
+        return tables.findById(idItem);
+    }
+
     @GetMapping("/findStocks/{idCategorie}")
     public Flux<Stock> getGrouped(@PathVariable String idCategorie) {
         return stocks.findAll().filter(stock -> stock.getItem().getCategorie().getId().equals(idCategorie))
@@ -168,6 +225,11 @@ public class ServeurController {
         });
     }
 
+    @PutMapping("/insertTable/")
+    Mono<Table> insert(@RequestBody Table table) {
+        return tables.save(table);
+    }
+
     @PutMapping("/updateCommande/")
     public Mono<Commande> updateCommande(@RequestBody Commande commande) {
         return this.commandes.findById(commande.getId()).map(found -> {
@@ -180,24 +242,15 @@ public class ServeurController {
         }).flatMap(commandes::save);
     }
 
-    @GetMapping("/findCommande/{table}/{mandatory}")
-    public Flux<Commande> findCommande(@PathVariable String table, @PathVariable String mandatory) {
-        return (this.commandes.findAll().filter(a -> !a.getFinish()).filter(a -> a.getDestination().equals(table)))
-
-                .switchIfEmpty(this.generateCommande(table, mandatory).flatMapMany(result -> {
-                    return Flux.just(result);
-                }));
+    @PutMapping("/updateTable/")
+    Mono<Table> update(@RequestBody Table table) {
+        return tables.findById(table.getId()).map(foundItem -> {
+            foundItem.setName(table.getName());
+            foundItem.setPlace(table.getPlace());
+            return foundItem;
+        }).flatMap(tables::save);
     }
 
-    @GetMapping("/findTable/")
-    public Flux<Table> getAllAll() {
-        return tables.findAll();
-    }
-
-    @GetMapping("/findTable/{idItem}")
-    public Mono<Table> getById(@PathVariable String idItem) {
-        return tables.findById(idItem);
-    }
 
     @DeleteMapping("/deleteTable/{idItem}")
     public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
@@ -206,18 +259,13 @@ public class ServeurController {
                 .defaultIfEmpty(ResponseEntity.ok().<Void>build());
     }
 
-    @PutMapping("/insertTable/")
-    Mono<Table> insert(@RequestBody Table table) {
-        return tables.save(table);
-    }
-
-    @PutMapping("/updateTable/")
-    Mono<Table> update(@RequestBody Table table) {
-        return tables.findById(table.getId()).map(foundItem -> {
-            foundItem.setName(table.getName());
-            foundItem.setPlace(table.getPlace());
-            return foundItem;
-        }).flatMap(tables::save);
+    @PutMapping("/moveBackToStock/")
+    public Mono<Stock> moveBackToStock(@RequestBody PreOrder preOrder) {
+        preOrder.getStock().getItem().setStock(1);
+        return this.preOrders.deleteById(preOrder.getId()).then(this.commandes.findById(preOrder.getOrderNumber()).map(result -> {
+            result.getItems().removeIf(a -> a.getId().equals(preOrder.getId()));
+            return result;
+        }).flatMap(this.commandes::save)).then(stocks.save(preOrder.getStock()));
     }
 
     @PutMapping("/moveToPreorder/")
@@ -327,6 +375,30 @@ public class ServeurController {
         return this.orders.save(order);
     }
 
+    @PutMapping("/moveToToDelevery/")
+    public Mono<ToDelivery> moveToToDelevery(@RequestBody ToDelivery toDelivery)
+    {
+        toDelivery.setInside(Util.getTimeNow());
+        toDelivery.setId(toDelivery.getPrepare().getId());
+        return this.prepares.deleteById(toDelivery.getId()).then(this.toDeliverys.save(toDelivery));
+    }
+
+    @PutMapping("/moveToDelevery/")
+    public Mono<Delevery> moveToDelivery(@RequestBody Delevery delevery)
+    {
+        delevery.setId(delevery.getToDelivery().getId());
+        delevery.setInside(Util.getTimeNow());
+        return this.toDeliverys.deleteById(delevery.getId()).then(this.deleverys.save(delevery));
+    }
+
+    @PutMapping("/moveToHistory/")
+    public Mono<History> moveToHistory(@RequestBody History history)
+    {
+        history.setInside(Util.getTimeNow());
+        history.setId(history.getDelevery().getId());
+        return this.deleverys.deleteById(history.getId()).then(this.historys.save(history));
+    }
+
     @GetMapping("/download/{id}")
     public Flux<Void> read(@PathVariable String id, ServerWebExchange exchange) {
         return this.gridFsTemplate.findOne(query(where("_id").is(id))).flatMap(gridFsTemplate::getResource)
@@ -337,13 +409,21 @@ public class ServeurController {
                 });
     }
 
-    @PutMapping("/moveBackToStock/")
-    public Mono<Stock> moveBackToStock(@RequestBody PreOrder preOrder) {
-        preOrder.getStock().getItem().setStock(1);
-        return this.preOrders.deleteById(preOrder.getId()).then(this.commandes.findById(preOrder.getOrderNumber()).map(result -> {
-            result.getItems().removeIf(a -> a.getId().equals(preOrder.getId()));
-            return result;
-        }).flatMap(this.commandes::save)).then(stocks.save(preOrder.getStock()));
+    @PutMapping("/movePreparedToTrash/")
+    public Mono<Trash> movePreparedToTrash(@RequestBody Prepare prepare)
+    {
+        return this.prepares.deleteById(prepare.getId()).then(this.trashs.save(Trash.builder().id(prepare.getId()).delevery(Delevery.builder().id(prepare.getId()).toDelivery(ToDelivery.builder().id(prepare.getId()).prepare(prepare).build()).build()).build()));
     }
 
+    @PutMapping("/moveToDeleveryToTrash/")
+    public Mono<Trash> moveToDeleveryToTrash(@RequestBody ToDelivery toDelivery)
+    {
+        return this.toDeliverys.deleteById(toDelivery.getId()).then(this.trashs.save(Trash.builder().id(toDelivery.getId()).delevery(Delevery.builder().toDelivery(toDelivery).id(toDelivery.getId()).build()).build()));
+    }
+
+    @PutMapping("/moveDeleveryToTrash/")
+    public Mono<Trash> moveDeleveryToTrash(@RequestBody Delevery delevery)
+    {
+        return this.deleverys.deleteById(delevery.getId()).then(this.trashs.save(Trash.builder().id(delevery.getId()).delevery(delevery).build()));
+    }
 }
