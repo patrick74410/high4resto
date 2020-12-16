@@ -59,7 +59,7 @@ public class ClientController {
 
     private Mono<PreOrder> retriveItemFromStock(String item,String destination,String idCustomer,String orderNumber)
     {
-        Queue<PreOrder> preOrderList = new ConcurrentLinkedQueue<PreOrder>();
+        AtomicReference <PreOrder> preOrderList = new AtomicReference<PreOrder>();
         return this.stocks.findAll().filter(s->s.getItem().getName().equals(item)).collectList()
         .flatMap(result->{
             Stock tpStock=result.get(0);
@@ -73,10 +73,10 @@ public class ClientController {
             return preOrders.save(tPreOrder);
         })
         .flatMap(preOrder->{
-            preOrderList.add(preOrder);
+            preOrderList.set(preOrder);
             return this.stocks.deleteById(preOrder.getId());
         })
-        .then(Mono.just(preOrderList.peek()));
+        .then(Mono.just(preOrderList.get()));
     }
 
     @GetMapping("/generateCommande/{idClient}/{securityKey}")
