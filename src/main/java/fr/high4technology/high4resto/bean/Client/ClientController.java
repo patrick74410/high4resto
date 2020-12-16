@@ -75,11 +75,11 @@ public class ClientController {
 
     @GetMapping("/generateCommande/{idClient}/{securityKey}")
     public Mono<Commande> generateCommande(@PathVariable String idClient, @PathVariable String securityKey) {
-        AtomicReference<Client> client= new AtomicReference<Client>();
-        AtomicReference<Commande> coma= new AtomicReference<Commande>();
+        Queue<Client> client = new ConcurrentLinkedQueue<Client>();
+        Queue<Commande> coma= new ConcurrentLinkedQueue<Commande>();
         return
         this.getById(idClient, securityKey).flatMap(result->{
-            client.set(result);
+            client.add(result);
             return Mono.empty();
         })
         .then(
@@ -97,17 +97,16 @@ public class ClientController {
             return commandes.save(commande);
         }))
         .flatMapMany(commande->{
-          coma.set(commande);
-          return Flux.fromIterable(client.get().getCurrentPanier());
+          coma.add(commande);
+          return Flux.fromIterable(client.peek().getCurrentPanier());
         }).flatMap(item->{
-            return this.retriveItemFromStock(item.getName(), "outside", idClient, coma.get().getId());
+            return this.retriveItemFromStock(item.getName(), "outside", idClient, coma.peek().getId());
         }).flatMap(preOrder->{
-            coma.get().getItems().add(preOrder);
+            coma.peek().getItems().add(preOrder);
             return stocks.deleteById(preOrder.getId());
         })
-        .then(Mono.fromRunnable(()->{client.get().getCommandes().add(coma.get());}))
-        .then(clients.save(client.get()))
-        .then(commandes.save(coma.get()));
+        .then(Mono.fromRunnable(()->{client.peek().getCommandes().add(coma.peek());}))
+        .then(commandes.save(coma.peek()));
 
     }
 
