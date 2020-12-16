@@ -54,7 +54,17 @@ public class ClientController {
             // Je met le stock en cache
             currentStock.addAll(list);
             return Mono.empty();
-        }).
+        }).then(this.commandes.count().flatMap(count->{
+            return this.commandes.save(Commande.builder().number(count).client(idClient).deleveryMode("click&collect")
+            .destination("outside").finish(false).inside(Util.getTimeNow()).build());
+        })).flatMap(com->{
+            commande.set(com);
+            return Mono.just(commande.get());
+        });
+
+
+/*
+
         // je compte les commandes pour attribue une nouvelle commande et je la
         // sauvegarde et je la renvoie
                 then(this.commandes.count().flatMap(count -> {
@@ -98,7 +108,7 @@ public class ClientController {
                     cli.get().setCurrentPanier(new ArrayList<ItemCarte>());
                     return clients.save(cli.get());
                 }).then(Mono.just(commande.get()));
-    }
+            */  }
 
     @GetMapping("/get/{idClient}/{securityKey}")
     public Mono<Client> getById(@PathVariable String idClient, @PathVariable String securityKey) {
