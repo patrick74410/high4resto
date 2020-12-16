@@ -106,6 +106,7 @@ public class ClientController {
             clientC.setPrice(client.getPrice());
             clientC.setSendInfo(client.isSendInfo());
             clientC.setZip(client.getZip());
+            clientC.setId(client.getId());
             return Flux.fromIterable(client.getCurrentPanier());
         }).flatMap(item -> {
             return this.retriveItemFromStock(item.getName(), "outside", idClient, commande.getId());
