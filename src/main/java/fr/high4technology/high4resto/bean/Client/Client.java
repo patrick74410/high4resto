@@ -14,6 +14,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
+import fr.high4technology.high4resto.bean.commande.Commande;
 
 @Data
 @Builder
@@ -54,6 +55,9 @@ public class Client {
     @Getter
     @Builder.Default
     private List<ItemCarte> currentPanier = new ArrayList<ItemCarte>();
+    @Getter
+    @Builder.Default
+    private List<Commande> commandes=new ArrayList<Commande>();
     @Getter
     @Builder.Default
     private double price= 0.0;

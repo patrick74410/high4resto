@@ -43,7 +43,7 @@ public class ItemCarteController {
 	@GetMapping("/filter/{id}")
 	public Flux<ItemCarte> getByFilter(@PathVariable String id) {
 
-		return stocks.findAll().filter(stock -> stock.getItem().getCategorie().getId().equals(id)).sort((a, b) -> {
+		return stocks.findAll().filter(stock->stock.getItem().isVisible()).filter(stock -> stock.getItem().getCategorie().getId().equals(id)).sort((a, b) -> {
 			return a.getItem().getId().compareTo(b.getItem().getId());
 		})
 				// Je regroupe le tout et je compte le stock disponible
