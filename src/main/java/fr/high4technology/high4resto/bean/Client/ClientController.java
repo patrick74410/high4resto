@@ -74,7 +74,7 @@ public class ClientController {
         })
         .flatMap(preOrder->{
             preOrderList.set(preOrder);
-            return this.stocks.deleteById(preOrder.getId());
+            return this.stocks.deleteById(preOrder.getStock().getId());
         })
         .then(Mono.just(preOrderList.get()));
     }
