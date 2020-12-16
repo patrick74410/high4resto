@@ -59,24 +59,23 @@ public class ClientController {
 
     private Mono<PreOrder> retriveItemFromStock(String item,String destination,String idCustomer,String orderNumber)
     {
-        AtomicReference <PreOrder> preOrderList = new AtomicReference<PreOrder>();
+        final PreOrder preOrd=new PreOrder();
         return this.stocks.findAll().filter(s->s.getItem().getName().equals(item)).collectList()
         .flatMap(result->{
             Stock tpStock=result.get(0);
-            PreOrder tPreOrder=new PreOrder();
-            tPreOrder.setId(tpStock.getId());
-            tPreOrder.setDestination(destination);
-            tPreOrder.setIdCustomer(idCustomer);
-            tPreOrder.setInside(Util.getTimeNow());
-            tPreOrder.setOrderNumber(orderNumber);
-            tPreOrder.setStock(tpStock);
-            return preOrders.save(tPreOrder);
+            preOrd.setId(tpStock.getId());
+            preOrd.setDestination(destination);
+            preOrd.setIdCustomer(idCustomer);
+            preOrd.setInside(Util.getTimeNow());
+            preOrd.setOrderNumber(orderNumber);
+            preOrd.setStock(tpStock);
+            return preOrders.save(preOrd);
         })
         .flatMap(preOrder->{
-            preOrderList.set(preOrder);
+
             return this.stocks.deleteById(preOrder.getStock().getId());
         })
-        .then(Mono.just(preOrderList.get()));
+        .then(Mono.just(preOrd));
     }
 
     @GetMapping("/generateCommande/{idClient}/{securityKey}")
