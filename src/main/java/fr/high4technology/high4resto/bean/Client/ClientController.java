@@ -1,9 +1,5 @@
 package fr.high4technology.high4resto.bean.Client;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -119,7 +115,21 @@ public class ClientController {
                     commande.setItems(list);
                     return clients.save(clientC);
                 })
-                .then(commandes.save(commande));
+                .then(
+                    commandes.findById(commande.getId())
+                    .map(com->{
+                        com.setClient(clientC.getId());
+                        com.setDeleveryMode("click&collect");
+                        com.setDestination("outside");
+                        com.setFinish(false);
+                        com.setInside(Util.getTimeNow());
+                        com.setItems(commande.getItems());
+                        com.setMandatory(clientC.getLastName()+" "+clientC.getName());
+                        com.setStatus("process");
+                        return com;
+                    })
+                    .flatMap(commandes::save)
+                    );
     }
 
     @GetMapping("/get/{idClient}/{securityKey}")
