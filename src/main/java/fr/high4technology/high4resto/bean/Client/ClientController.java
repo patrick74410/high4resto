@@ -80,17 +80,45 @@ public class ClientController {
 
     @GetMapping("/generateCommande/{idClient}/{securityKey}")
     public Mono<Commande> generateCommande(@PathVariable String idClient, @PathVariable String securityKey) {
-        return this.getById(idClient, securityKey).flatMapMany(client -> {
+        final Commande commande=new Commande();
+        final Client clientC=new Client();
+
+        return this.commandes.count()
+        .flatMap(count->{
+            commande.setNumber(count);
+            return commandes.save(commande);
+        })
+        .flatMap(com->{
+            commande.setId(com.getId());
+            return this.getById(idClient, securityKey);
+        })
+        .flatMapMany(client -> {
+            clientC.setAdresseL1(client.getAdresseL1());
+            clientC.setAdresseL2(client.getAdresseL2());
+            clientC.setCity(client.getCity());
+            clientC.setCommandes(client.getCommandes());
+            clientC.setCurrentPanier(client.getCurrentPanier());
+            clientC.setEmail(client.getEmail());
+            clientC.setFirstConnexion(client.getFirstConnexion());
+            clientC.setLastConnexion(client.getLastConnexion());
+            clientC.setLastName(client.getLastName());
+            clientC.setName(client.getName());
+            clientC.setPrice(client.getPrice());
+            clientC.setSendInfo(client.isSendInfo());
+            clientC.setZip(client.getZip());
             return Flux.fromIterable(client.getCurrentPanier());
         }).flatMap(item -> {
-            return this.retriveItemFromStock(item.getName(), "", "", "");
+            return this.retriveItemFromStock(item.getName(), "outside", idClient, commande.getId());
         }).collectList()
                 .flatMap(list -> {
-                    Commande commande = new Commande();
+                    for(PreOrder preOrder:list)
+                    {
+                        clientC.getCurrentPanier().removeIf((fi)->fi.getName().equals(preOrder.getStock().getItem().getName()));
+                    }
                     commande.setItems(list);
-                    return Mono.just(commande);
-                });
-
+                    return clients.save(clientC);
+                })
+                .then(commandes.save(commande));
     }
 
     @GetMapping("/get/{idClient}/{securityKey}")
