@@ -3,6 +3,7 @@ package fr.high4technology.high4resto.bean.Client;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,63 +44,62 @@ public class ClientController {
     @Autowired
     private StockRepository stocks;
 
-
-
     @GetMapping("/generateCommande/{idClient}/{securityKey}")
-    public Mono<Commande> generateCommande(@PathVariable String idClient, @PathVariable String securityKey)
-    {
-      Queue<Stock> currentStock = new ConcurrentLinkedQueue<Stock>();
-      Queue<Commande> commande = new ConcurrentLinkedQueue<Commande>();
-      Queue<Client> cli=new ConcurrentLinkedQueue<Client>();
+    public Mono<Commande> generateCommande(@PathVariable String idClient, @PathVariable String securityKey) {
+        Queue<Stock> currentStock = new ConcurrentLinkedQueue<Stock>();
+        AtomicReference<Commande> commande = new AtomicReference<Commande>();
+        AtomicReference<Client> cli = new AtomicReference<Client>();
 
-      return
-      this.stocks.findAll().collectList().flatMap(list->{
-          // Je met le stock en cache
-          currentStock.addAll(list);
-          return Mono.empty();
-      }).
-      // je compte les commandes pour attribue une nouvelle commande et je la sauvegarde et je la renvoie
-      then(this.commandes.count().flatMap(count->{
-          return this.commandes.save(Commande.builder().number(count).client(idClient).deleveryMode("click&collect").destination("outside").finish(false).inside(Util.getTimeNow()).build());
-      }).flatMap(com->{
-          commande.add(com);
-          return Mono.empty();
-      })).
-      // je récupère le client et ce qui et ce qui a dans le panier
-      thenMany(this.getById(idClient, securityKey)).flatMap(client->{
-          cli.add(client);
-          return Flux.fromIterable(client.getCurrentPanier());
-      })
-      // Pour chaque élément du panier je récupère l'élément de stock correspondant et j'en construit un Pre order
-      .flatMap(item->{
-        Stock tpStock;
-          for (Stock stock:currentStock)
-          {
-            if(stock.getItem().getName().equals(item.getName()))
-            {
-                tpStock=stock;
-                currentStock.remove(tpStock);
-                return Mono.just(
-                    PreOrder.builder().id(tpStock.getId()).inside(Util.getTimeNow()).destination("outside").orderNumber(commande.peek().getId()).idCustomer(idClient).stock(tpStock).build());
-            }
-          }
-          return Mono.empty();
-       })
-       // Je sauvegarde le Préorder
-      .flatMap(preOrders::save)
-      // Je rajoute à la commande le Préorder et je le supprime de stock
-      .flatMap(preOrder->{
-          commande.peek().getItems().add(preOrder);
-          return this.stocks.deleteById(preOrder.getStock().getId());
-      })
-      // Je sauvegarde la commande
-      .then(commandes.save(commande.peek())).flatMap(com->{
-          cli.peek().getCommandes().add(com);
-          cli.peek().setCurrentPanier(new ArrayList<ItemCarte>());
-          return clients.save(cli.peek());
-      }).then(Mono.just(commande.peek()));
-
+        return this.stocks.findAll().collectList().flatMap(list -> {
+            // Je met le stock en cache
+            currentStock.addAll(list);
+            return Mono.empty();
+        }).
+        // je compte les commandes pour attribue une nouvelle commande et je la
+        // sauvegarde et je la renvoie
+                then(this.commandes.count().flatMap(count -> {
+                    return this.commandes
+                            .save(Commande.builder().number(count).client(idClient).deleveryMode("click&collect")
+                                    .destination("outside").finish(false).inside(Util.getTimeNow()).build());
+                }).flatMap(com -> {
+                    commande.set(com);
+                    return Mono.empty();
+                })).
+                // je récupère le client et ce qui et ce qui a dans le panier
+                thenMany(this.getById(idClient, securityKey)).flatMap(client -> {
+                    cli.set(client);
+                    return Flux.fromIterable(client.getCurrentPanier());
+                })
+                // Pour chaque élément du panier je récupère l'élément de stock correspondant et
+                // j'en construit un Pre order
+                .flatMap(item -> {
+                    Stock tpStock;
+                    for (Stock stock : currentStock) {
+                        if (stock.getItem().getName().equals(item.getName())) {
+                            tpStock = stock;
+                            currentStock.remove(tpStock);
+                            return Mono.just(PreOrder.builder().id(tpStock.getId()).inside(Util.getTimeNow())
+                                    .destination("outside").orderNumber(commande.get().getId()).idCustomer(idClient)
+                                    .stock(tpStock).build());
+                        }
+                    }
+                    return Mono.empty();
+                })
+                // Je sauvegarde le Préorder
+                .flatMap(preOrders::save)
+                // Je rajoute à la commande le Préorder et je le supprime de stock
+                .flatMap(preOrder -> {
+                    commande.get().getItems().add(preOrder);
+                    return this.stocks.deleteById(preOrder.getStock().getId());
+                })
+                // Je sauvegarde la commande
+                .then(commandes.save(commande.get())).flatMap(com -> {
+                    cli.get().getCommandes().add(com);
+                    cli.get().setCurrentPanier(new ArrayList<ItemCarte>());
+                    return clients.save(cli.get());
+                }).then(Mono.just(commande.get()));
     }
+
     @GetMapping("/get/{idClient}/{securityKey}")
     public Mono<Client> getById(@PathVariable String idClient, @PathVariable String securityKey) {
 
@@ -109,18 +109,14 @@ public class ClientController {
             } else {
                 return Mono.just(Client.builder().build());
             }
-        }).map(client->{
-            double price=0;
-            for(ItemCarte itemCarte:client.getCurrentPanier())
-            {
-                price+=itemCarte.getPrice();
-                for(OptionsItem options:itemCarte.getOptions())
-                {
-                    for(OptionItem choix:options.getOptions())
-                    {
-                        if(choix.isSelected())
-                        {
-                            price+=choix.getPrice();
+        }).map(client -> {
+            double price = 0;
+            for (ItemCarte itemCarte : client.getCurrentPanier()) {
+                price += itemCarte.getPrice();
+                for (OptionsItem options : itemCarte.getOptions()) {
+                    for (OptionItem choix : options.getOptions()) {
+                        if (choix.isSelected()) {
+                            price += choix.getPrice();
                         }
                     }
                 }
@@ -151,19 +147,14 @@ public class ClientController {
                 foundItem.setSendInfo(client.isSendInfo());
             }
             return foundItem;
-        })
-        .map(cc->{
-            double price=0;
-            for(ItemCarte itemCarte:cc.getCurrentPanier())
-            {
-                price+=itemCarte.getPrice();
-                for(OptionsItem options:itemCarte.getOptions())
-                {
-                    for(OptionItem choix:options.getOptions())
-                    {
-                        if(choix.isSelected())
-                        {
-                            price+=choix.getPrice();
+        }).map(cc -> {
+            double price = 0;
+            for (ItemCarte itemCarte : cc.getCurrentPanier()) {
+                price += itemCarte.getPrice();
+                for (OptionsItem options : itemCarte.getOptions()) {
+                    for (OptionItem choix : options.getOptions()) {
+                        if (choix.isSelected()) {
+                            price += choix.getPrice();
                         }
                     }
                 }
