@@ -106,7 +106,7 @@ public class ClientController {
             return stocks.deleteById(preOrder.getId());
         })
         .then(Mono.fromRunnable(()->{client.peek().getCommandes().add(coma.peek());}))
-        .then(commandes.save(coma.peek()));
+        .then(Mono.just(coma.peek()));
 
     }
 
