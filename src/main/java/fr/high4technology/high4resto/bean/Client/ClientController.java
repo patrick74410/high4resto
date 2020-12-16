@@ -75,38 +75,16 @@ public class ClientController {
 
     @GetMapping("/generateCommande/{idClient}/{securityKey}")
     public Mono<Commande> generateCommande(@PathVariable String idClient, @PathVariable String securityKey) {
-        Queue<Client> client = new ConcurrentLinkedQueue<Client>();
-        Queue<Commande> coma= new ConcurrentLinkedQueue<Commande>();
-        return
-        this.getById(idClient, securityKey).flatMap(result->{
-            client.add(result);
-            return Mono.empty();
-        })
-        .then(
-        this.commandes.count()
-        .flatMap(count->{
-            Commande commande=new Commande();
-            commande.setClient(idClient);
-            commande.setDeleveryMode("click&collect");
-            commande.setDestination("outside");
-            commande.setFinish(false);
-            commande.setNumber(count);
-            commande.setMandatory(idClient);
-            commande.setStatus("toProssess");
-            commande.setInside(Util.getTimeNow());
-            return commandes.save(commande);
-        }))
-        .flatMapMany(commande->{
-          coma.add(commande);
-          return Flux.fromIterable(client.peek().getCurrentPanier());
-        }).flatMap(item->{
-            return this.retriveItemFromStock(item.getName(), "outside", idClient, coma.peek().getId());
-        }).flatMap(preOrder->{
-            coma.peek().getItems().add(preOrder);
-            return stocks.deleteById(preOrder.getId());
-        })
-        .then(Mono.fromRunnable(()->{client.peek().getCommandes().add(coma.peek());}))
-        .then(Mono.just(coma.peek()));
+        return this.getById(idClient, securityKey).flatMapMany(client -> {
+            return Flux.fromIterable(client.getCurrentPanier());
+        }).flatMap(item -> {
+            return this.retriveItemFromStock(item.getName(), "", "", "");
+        }).collectList()
+                .flatMap(list -> {
+                    Commande commande = new Commande();
+                    commande.setItems(list);
+                    return Mono.just(commande);
+                });
 
     }
 
