@@ -1,6 +1,5 @@
 package fr.high4technology.high4resto.bean.Client;
 
-import java.util.ArrayList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,71 +43,63 @@ public class ClientController {
     @Autowired
     private StockRepository stocks;
 
+    public Mono<PreOrder> moveToPreorder(@RequestBody PreOrder preOrder) {
+        preOrder.setInside(Util.getTimeNow());
+        preOrder.setId(preOrder.getStock().getId());
+        preOrder.getStock().getItem().setStock(1);
+        return this.stocks.deleteById(preOrder.getStock().getId())
+                .then(this.commandes.findById(preOrder.getOrderNumber()).map(result -> {
+                    if (result.getItems().size() < 1)
+                        result.setInside(Util.getTimeNow());
+                    result.getItems().add(preOrder);
+                    return result;
+                }).flatMap(commandes::save)).then(this.preOrders.save(preOrder));
+    }
+
     @GetMapping("/generateCommande/{idClient}/{securityKey}")
     public Mono<Commande> generateCommande(@PathVariable String idClient, @PathVariable String securityKey) {
         Queue<Stock> currentStock = new ConcurrentLinkedQueue<Stock>();
         AtomicReference<Commande> commande = new AtomicReference<Commande>();
-        AtomicReference<Client> cli = new AtomicReference<Client>();
 
         return this.stocks.findAll().collectList().flatMap(list -> {
             // Je met le stock en cache
             currentStock.addAll(list);
             return Mono.empty();
-        }).then(this.commandes.count().flatMap(count->{
+        }).then(this.commandes.count().flatMap(count -> {
             return this.commandes.save(Commande.builder().number(count).client(idClient).deleveryMode("click&collect")
-            .destination("outside").finish(false).inside(Util.getTimeNow()).build());
-        })).flatMap(com->{
+                    .destination("outside").finish(false).inside(Util.getTimeNow()).build());
+        })).flatMap(com -> {
             commande.set(com);
             return Mono.just(commande.get());
-        });
+        }).then(this.stocks.findAll().collectList().flatMap(list -> {
 
-
-/*
-
-        // je compte les commandes pour attribue une nouvelle commande et je la
-        // sauvegarde et je la renvoie
-                then(this.commandes.count().flatMap(count -> {
-                    return this.commandes
-                            .save(Commande.builder().number(count).client(idClient).deleveryMode("click&collect")
-                                    .destination("outside").finish(false).inside(Util.getTimeNow()).build());
-                }).flatMap(com -> {
-                    commande.set(com);
-                    return Mono.empty();
-                })).
-                // je récupère le client et ce qui et ce qui a dans le panier
-                thenMany(this.getById(idClient, securityKey)).flatMap(client -> {
-                    cli.set(client);
-                    return Flux.fromIterable(client.getCurrentPanier());
-                })
-                // Pour chaque élément du panier je récupère l'élément de stock correspondant et
-                // j'en construit un Pre order
-                .flatMap(item -> {
-                    Stock tpStock;
-                    for (Stock stock : currentStock) {
-                        if (stock.getItem().getName().equals(item.getName())) {
-                            tpStock = stock;
-                            currentStock.remove(tpStock);
-                            return Mono.just(PreOrder.builder().id(tpStock.getId()).inside(Util.getTimeNow())
-                                    .destination("outside").orderNumber(commande.get().getId()).idCustomer(idClient)
-                                    .stock(tpStock).build());
-                        }
+            currentStock.addAll(list);
+            return Mono.empty();
+        })).then(this.getById(idClient, securityKey)).flatMap(cli -> {
+            for (ItemCarte item : cli.getCurrentPanier()) {
+                for (Stock stock : currentStock) {
+                    if (item.getName().equals(stock.getItem().getName())) {
+                        currentStock.remove(stock);
+                        PreOrder preOrder = new PreOrder();
+                        preOrder.setDestination("outside");
+                        preOrder.setId(stock.getId());
+                        preOrder.setIdCustomer(idClient);
+                        preOrder.setInside(Util.getTimeNow());
+                        preOrder.setOrderNumber(commande.get().getId());
+                        preOrder.setStock(stock);
+                        commande.get().getItems().add(preOrder);
+                        cli.getCurrentPanier().remove(item);
                     }
-                    return Mono.empty();
-                })
-                // Je sauvegarde le Préorder
-                .flatMap(preOrders::save)
-                // Je rajoute à la commande le Préorder et je le supprime de stock
-                .flatMap(preOrder -> {
-                    commande.get().getItems().add(preOrder);
-                    return this.stocks.deleteById(preOrder.getStock().getId());
-                })
-                // Je sauvegarde la commande
-                .then(commandes.save(commande.get())).flatMap(com -> {
-                    cli.get().getCommandes().add(com);
-                    cli.get().setCurrentPanier(new ArrayList<ItemCarte>());
-                    return clients.save(cli.get());
-                }).then(Mono.just(commande.get()));
-            */  }
+                }
+            }
+            cli.getCommandes().add(commande.get());
+            return Mono.just(cli);
+        }).flatMap(clients::save).flatMapMany(cli -> {
+            return Flux.fromIterable(commande.get().getItems());
+        }).flatMap(preOrders::save).flatMap(preOrder -> {
+            return this.stocks.deleteById(preOrder.getId());
+        }).then(commandes.save(commande.get()));
+    }
 
     @GetMapping("/get/{idClient}/{securityKey}")
     public Mono<Client> getById(@PathVariable String idClient, @PathVariable String securityKey) {
