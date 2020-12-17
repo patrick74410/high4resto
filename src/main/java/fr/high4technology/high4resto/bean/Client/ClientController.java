@@ -89,7 +89,7 @@ public class ClientController {
             clientC.setZip(client.getZip());
             clientC.setId(client.getId());
             return Flux.fromIterable(client.getCurrentPanier());
-        }).delayElements(Duration.ofMillis(100)).flatMap(item -> {
+        }).flatMap(item -> {
             return this.retriveItemFromStock(item.getName(), "outside", idClient, commande.getId());
         }).collectList()
                 .flatMap(list -> {
