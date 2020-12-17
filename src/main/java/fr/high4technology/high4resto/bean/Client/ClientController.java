@@ -75,24 +75,16 @@ public class ClientController {
     }
 
     @GetMapping("/generateCommande/{idClient}/{securityKey}")
-    public Mono<Commande> generateCommande(@PathVariable String idClient, @PathVariable String securityKey) {
+    public Mono<Client> generateCommande(@PathVariable String idClient, @PathVariable String securityKey) {
         final Commande commande=new Commande();
         final Client clientC=new Client();
 
-        return this.commandes.count()
-        .flatMap(count->{
-            commande.setNumber(count);
-            return commandes.save(commande);
-        })
-        .flatMap(com->{
-            commande.setId(com.getId());
-            return this.getById(idClient, securityKey);
-        })
+        return this.getById(idClient, securityKey)
         .flatMapMany(client -> {
             clientC.setAdresseL1(client.getAdresseL1());
             clientC.setAdresseL2(client.getAdresseL2());
             clientC.setCity(client.getCity());
-            clientC.setCommandes(client.getCommandes());
+            clientC.setCommande(client.getCommande());
             clientC.setCurrentPanier(client.getCurrentPanier());
             clientC.setEmail(client.getEmail());
             clientC.setFirstConnexion(client.getFirstConnexion());
@@ -113,23 +105,9 @@ public class ClientController {
                         clientC.getCurrentPanier().removeIf((fi)->fi.getName().equals(preOrder.getStock().getItem().getName()));
                     }
                     commande.setItems(list);
+                    clientC.setCommande(commande);
                     return clients.save(clientC);
-                })
-                .then(
-                    commandes.findById(commande.getId())
-                    .map(com->{
-                        com.setClient(clientC.getId());
-                        com.setDeleveryMode("click&collect");
-                        com.setDestination("outside");
-                        com.setFinish(false);
-                        com.setInside(Util.getTimeNow());
-                        com.setItems(commande.getItems());
-                        com.setMandatory(clientC.getLastName()+" "+clientC.getName());
-                        com.setStatus("process");
-                        return com;
-                    })
-                    .flatMap(commandes::save)
-                    );
+                });
     }
 
     @GetMapping("/get/{idClient}/{securityKey}")
