@@ -77,10 +77,6 @@ public class ClientController {
 
         return
         this.commandes.count().flatMap(count->{
-            while(Concurrency.mapCountCommande.containsKey(count))
-            {
-                count+=1;
-            }
             commande.setNumber(count);
             return this.commandes.save(commande);
         }).flatMap(coma->{
@@ -130,8 +126,7 @@ public class ClientController {
                     commande.setItems(list);
                     clientC.setCommande(commande);
                     return clients.save(clientC);
-                }).then(commandes.save(commande))
-                .then(Mono.just(clientC));
+                });
     }
 
     @GetMapping("/get/{idClient}/{securityKey}")
