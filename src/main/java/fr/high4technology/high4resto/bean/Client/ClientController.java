@@ -67,9 +67,9 @@ public class ClientController {
             preOrd.setInside(Util.getTimeNow());
             preOrd.setOrderNumber(orderNumber);
             preOrd.setStock(tpStock);
-            this.stocks.deleteById(tpStock.getId()).block();
-            return preOrders.save(preOrd);
-        });
+            return this.stocks.deleteById(tpStock.getId());
+        }).then(preOrders.save(preOrd));
+
     }
 
     @GetMapping("/generateCommande/{idClient}/{securityKey}")
