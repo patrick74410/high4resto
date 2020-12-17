@@ -1,6 +1,5 @@
 package fr.high4technology.high4resto.bean.Client;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +20,7 @@ import fr.high4technology.high4resto.bean.Stock.StockRepository;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrder;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrderRepository;
 import fr.high4technology.high4resto.bean.commande.Commande;
+import fr.high4technology.high4resto.bean.commande.CommandeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
@@ -39,6 +39,8 @@ public class ClientController {
     private PreOrderRepository preOrders;
     @Autowired
     private StockRepository stocks;
+    @Autowired
+    private CommandeRepository commandes;
 
 
     private Mono<PreOrder> retriveItemFromStock(ItemCarte item,String destination,String idCustomer,String orderNumber)
@@ -49,9 +51,9 @@ public class ClientController {
 
             for(Stock stock:result)
             {
-                if(!Concurrency.map.containsKey(stock.getId()))
+                if(!Concurrency.mapStock.containsKey(stock.getId()))
                 {
-                    Concurrency.map.put(stock.getId(), 1);
+                    Concurrency.mapStock.put(stock.getId(), 1);
                     preOrd.setId(stock.getId());
                     preOrd.setDestination(destination);
                     preOrd.setIdCustomer(idCustomer);
@@ -73,7 +75,24 @@ public class ClientController {
         final Commande commande=new Commande();
         final Client clientC=new Client();
 
-        return this.getById(idClient, securityKey)
+        return
+        this.commandes.count().flatMap(count->{
+            while(Concurrency.mapCountCommande.containsKey(count))
+            {
+                count+=1;
+            }
+            commande.setNumber(count);
+            return this.commandes.save(commande);
+        }).flatMap(coma->{
+            commande.setId(coma.getId());
+            commande.setClient(idClient);
+            commande.setDestination("outside");
+            commande.setInside(Util.getTimeNow());
+            commande.setMandatory(idClient);
+            commande.setStatus("onProcess");
+            return Mono.empty();
+        }).then(
+        this.getById(idClient, securityKey))
         .flatMapMany(client -> {
             clientC.setAdresseL1(client.getAdresseL1());
             clientC.setAdresseL2(client.getAdresseL2());
@@ -107,10 +126,11 @@ public class ClientController {
                             index+=1;
                         }
                     }
+                    list.removeIf(a->a.getId().equals("anonymous"));
                     commande.setItems(list);
                     clientC.setCommande(commande);
-                    return clients.save(clientC);
-                });
+                    return this.commandes.save(commande);
+                }).then(clients.save(clientC));
     }
 
     @GetMapping("/get/{idClient}/{securityKey}")
