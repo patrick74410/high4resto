@@ -67,13 +67,9 @@ public class ClientController {
             preOrd.setInside(Util.getTimeNow());
             preOrd.setOrderNumber(orderNumber);
             preOrd.setStock(tpStock);
+            this.stocks.deleteById(tpStock.getId()).block();
             return preOrders.save(preOrd);
-        })
-        .flatMap(preOrder->{
-
-            return this.stocks.deleteById(preOrder.getStock().getId());
-        })
-        .then(Mono.just(preOrd));
+        });
     }
 
     @GetMapping("/generateCommande/{idClient}/{securityKey}")
@@ -97,7 +93,7 @@ public class ClientController {
             clientC.setSendInfo(client.isSendInfo());
             clientC.setZip(client.getZip());
             clientC.setId(client.getId());
-            return Flux.fromIterable(client.getCurrentPanier()).delayElements(Duration.ofSeconds(1));
+            return Flux.fromIterable(client.getCurrentPanier());
         }).flatMap(item -> {
             return this.retriveItemFromStock(item.getName(), "outside", idClient, commande.getId());
         }).collectList()
