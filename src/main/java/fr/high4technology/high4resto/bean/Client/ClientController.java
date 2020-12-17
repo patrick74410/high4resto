@@ -1,6 +1,5 @@
 package fr.high4technology.high4resto.bean.Client;
 
-import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,10 +41,10 @@ public class ClientController {
     private StockRepository stocks;
 
 
-    private Mono<PreOrder> retriveItemFromStock(String item,String destination,String idCustomer,String orderNumber)
+    private Mono<PreOrder> retriveItemFromStock(ItemCarte item,String destination,String idCustomer,String orderNumber)
     {
         final PreOrder preOrd=new PreOrder();
-        return this.stocks.findAll().filter(s->s.getItem().getName().equals(item)).collectList()
+        return this.stocks.findAll().filter(s->s.getItem().getName().equals(item.getName())).collectList()
         .flatMap(result->{
             for(Stock stock:result)
             {
@@ -58,12 +57,13 @@ public class ClientController {
                     preOrd.setInside(Util.getTimeNow());
                     preOrd.setOrderNumber(orderNumber);
                     preOrd.setStock(stock);
+                    preOrd.getStock().setItem(item);
                     return this.stocks.deleteById(stock.getId());
                 }
             }
             return Mono.empty();
 
-        }).then(preOrders.save(preOrd));
+        }).then(preOrders.save(preOrd)).switchIfEmpty(Mono.just(PreOrder.builder().id("anonymous").stock(Stock.builder().item(ItemCarte.builder().name("fake").build()).build()).build()));
 
     }
 
@@ -90,13 +90,9 @@ public class ClientController {
             clientC.setId(client.getId());
             return Flux.fromIterable(client.getCurrentPanier());
         }).flatMap(item -> {
-            return this.retriveItemFromStock(item.getName(), "outside", idClient, commande.getId());
+            return this.retriveItemFromStock(item, "outside", idClient, commande.getId());
         }).collectList()
                 .flatMap(list -> {
-                    for(PreOrder preOrder:list)
-                    {
-                        log.warn(preOrder.getStock().getItem().getName());
-                    }
                     for(PreOrder preOrder:list)
                     {
                         clientC.getCurrentPanier().removeIf((fi)->fi.getName().equals(preOrder.getStock().getItem().getName()));
