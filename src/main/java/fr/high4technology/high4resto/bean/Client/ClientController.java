@@ -58,6 +58,7 @@ public class ClientController {
     private Mono<PreOrder> retriveItemFromStock(String item,String destination,String idCustomer,String orderNumber)
     {
         final PreOrder preOrd=new PreOrder();
+
         return this.stocks.findAll().filter(s->s.getItem().getName().equals(item)).collectList()
         .flatMap(result->{
             Stock tpStock=result.get(0);
@@ -67,8 +68,8 @@ public class ClientController {
             preOrd.setInside(Util.getTimeNow());
             preOrd.setOrderNumber(orderNumber);
             preOrd.setStock(tpStock);
-            return this.stocks.deleteById(tpStock.getId());
-        }).then(preOrders.save(preOrd));
+            return preOrders.save(preOrd);
+        }).and(this.stocks.deleteById(preOrd.getId())).then(Mono.just(preOrd));
 
     }
 
