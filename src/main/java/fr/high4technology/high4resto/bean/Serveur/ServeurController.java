@@ -30,6 +30,7 @@ import fr.high4technology.high4resto.WebSocket.ColdCookCanalHandler;
 import fr.high4technology.high4resto.WebSocket.CookCanalHandler;
 import fr.high4technology.high4resto.WebSocket.HotCookCanalHandler;
 import fr.high4technology.high4resto.WebSocket.WineStewardCanalHandler;
+import fr.high4technology.high4resto.bean.Concurrency;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorie;
 import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorieRepository;
@@ -126,21 +127,20 @@ public class ServeurController {
     }
 
     @GetMapping("/findPrepared/{mandatory}")
-    public Flux<Prepare> findPrepared(@PathVariable String mandatory)
-    {
-        return this.prepares.findAll().filter(a->a.getToPrepare().getOrder().getMandatory().equals(mandatory));
+    public Flux<Prepare> findPrepared(@PathVariable String mandatory) {
+        return this.prepares.findAll().filter(a -> a.getToPrepare().getOrder().getMandatory().equals(mandatory));
     }
 
     @GetMapping("/findToDelevery/{mandatory}")
-    public Flux<ToDelivery> findToDelevery(@PathVariable String mandatory)
-    {
-        return this.toDeliverys.findAll().filter(a->a.getPrepare().getToPrepare().getOrder().getMandatory().equals(mandatory));
+    public Flux<ToDelivery> findToDelevery(@PathVariable String mandatory) {
+        return this.toDeliverys.findAll()
+                .filter(a -> a.getPrepare().getToPrepare().getOrder().getMandatory().equals(mandatory));
     }
 
     @GetMapping("/findDelevery/{mandatory}")
-    public Flux<Delevery> findDelevery(@PathVariable String mandatory)
-    {
-        return this.deleverys.findAll().filter(a->a.getToDelivery().getPrepare().getToPrepare().getOrder().getMandatory().equals(mandatory));
+    public Flux<Delevery> findDelevery(@PathVariable String mandatory) {
+        return this.deleverys.findAll()
+                .filter(a -> a.getToDelivery().getPrepare().getToPrepare().getOrder().getMandatory().equals(mandatory));
     }
 
     @GetMapping("/findCategory/")
@@ -152,10 +152,12 @@ public class ServeurController {
     public Flux<Order> findOrder(@PathVariable String table) {
         return this.orders.findAll().filter(order -> {
             return (order.getPreOrder().getDestination().equals(table)) && (!order.isToTake());
-        }).sort((a,b)->{
-            if(a.getPreOrder().getStock().getItem().getCategorie().getOrder()>b.getPreOrder().getStock().getItem().getCategorie().getOrder())
+        }).sort((a, b) -> {
+            if (a.getPreOrder().getStock().getItem().getCategorie().getOrder() > b.getPreOrder().getStock().getItem()
+                    .getCategorie().getOrder())
                 return 1;
-            else if(b.getPreOrder().getStock().getItem().getCategorie().getOrder()>a.getPreOrder().getStock().getItem().getCategorie().getOrder())
+            else if (b.getPreOrder().getStock().getItem().getCategorie().getOrder() > a.getPreOrder().getStock()
+                    .getItem().getCategorie().getOrder())
                 return -1;
             else
                 return 0;
@@ -167,10 +169,11 @@ public class ServeurController {
     public Flux<PreOrder> findPreOrders(@PathVariable String table) {
         return this.preOrders.findAll().filter(preOrder -> {
             return preOrder.getDestination().equals(table);
-        }).sort((a,b)->{
-            if(a.getStock().getItem().getCategorie().getOrder()>b.getStock().getItem().getCategorie().getOrder())
+        }).sort((a, b) -> {
+            if (a.getStock().getItem().getCategorie().getOrder() > b.getStock().getItem().getCategorie().getOrder())
                 return 1;
-            else if(b.getStock().getItem().getCategorie().getOrder()>a.getStock().getItem().getCategorie().getOrder())
+            else if (b.getStock().getItem().getCategorie().getOrder() > a.getStock().getItem().getCategorie()
+                    .getOrder())
                 return -1;
             else
                 return 0;
@@ -251,7 +254,6 @@ public class ServeurController {
         }).flatMap(tables::save);
     }
 
-
     @DeleteMapping("/deleteTable/{idItem}")
     public Mono<ResponseEntity<Void>> delete(@PathVariable String idItem) {
 
@@ -262,19 +264,32 @@ public class ServeurController {
     @PutMapping("/moveBackToStock/")
     public Mono<Stock> moveBackToStock(@RequestBody PreOrder preOrder) {
         preOrder.getStock().getItem().setStock(1);
-        return this.preOrders.deleteById(preOrder.getId()).then(this.commandes.findById(preOrder.getOrderNumber()).map(result -> {
-            result.getItems().removeIf(a -> a.getId().equals(preOrder.getId()));
-            return result;
-        }).flatMap(this.commandes::save)).then(stocks.save(preOrder.getStock()));
+        return this.preOrders.deleteById(preOrder.getId())
+                .then(this.commandes.findById(preOrder.getOrderNumber()).map(result -> {
+                    result.getItems().removeIf(a -> a.getId().equals(preOrder.getId()));
+                    return result;
+                }).flatMap(this.commandes::save)).then(stocks.save(preOrder.getStock()));
     }
 
     @PutMapping("/moveToPreorder/")
     public Mono<PreOrder> moveToPreorder(@RequestBody PreOrder preOrder) {
-        preOrder.setInside(Util.getTimeNow());
-        preOrder.setId(preOrder.getStock().getId());
-        preOrder.getStock().getItem().setStock(1);
-        return this.stocks.deleteById(preOrder.getStock().getId())
-                .then(this.commandes.findById(preOrder.getOrderNumber()).map(result -> {
+
+        return this.stocks.findAll().filter(a -> a.getItem().getName().equals(preOrder.getStock().getItem().getName()))
+                .collectList().flatMap(result -> {
+
+                    for (Stock stock : result) {
+                        if (!Concurrency.mapStock.containsKey(stock.getId())) {
+                            Concurrency.mapStock.put(stock.getId(), 1);
+                            preOrder.setId(stock.getId());
+                            preOrder.setInside(Util.getTimeNow());
+                            preOrder.getStock().getItem().setStock(1);
+                            preOrder.setStock(stock);
+                            preOrder.getStock().setItem(preOrder.getStock().getItem());
+                            return this.stocks.deleteById(stock.getId());
+                        }
+                    }
+                    return Mono.empty();
+                }).then(this.commandes.findById(preOrder.getOrderNumber()).map(result -> {
                     if (result.getItems().size() < 1)
                         result.setInside(Util.getTimeNow());
                     result.getItems().add(preOrder);
@@ -285,47 +300,37 @@ public class ServeurController {
     @PutMapping("/moveToOrder/")
     public Mono<Annonce> moveToOrder2(@RequestBody Annonce annonce) {
         Queue<String> role = new ConcurrentLinkedQueue<String>();
-       return Mono.just(annonce.getElements())
-       .flatMapMany(elements->{
-            List<Order> orders=new ArrayList<Order>();
-            for(ElementAnnonce element:elements)
-            {
+        return Mono.just(annonce.getElements()).flatMapMany(elements -> {
+            List<Order> orders = new ArrayList<Order>();
+            for (ElementAnnonce element : elements) {
                 orders.addAll(element.getOrders());
             }
             return Flux.fromIterable(orders);
-       }).map(order->{
-           StringBuilder anonce=new StringBuilder();
-           for(OptionsItem option:order.getPreOrder().getStock().getItem().getOptions())
-           {
-                for(OptionItem choix:option.getOptions())
-                {
-                    if(choix.isSelected())
-                    anonce.append(choix.getLabel()+" ");
+        }).map(order -> {
+            StringBuilder anonce = new StringBuilder();
+            for (OptionsItem option : order.getPreOrder().getStock().getItem().getOptions()) {
+                for (OptionItem choix : option.getOptions()) {
+                    if (choix.isSelected())
+                        anonce.append(choix.getLabel() + " ");
                 }
-           }
-           anonce.append("."+order.getPreOrder().getMessageToNext());
-           order.setAnnonce(anonce.toString());
-           return order;
-       }).flatMap(this::moveToOrder)
-       .flatMap(order->{
-           return this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId());
-       })
-       .flatMap(result->{
-            for(String ro:result.getRoleName())
-            {
-                if(!role.contains(ro))
-                {
+            }
+            anonce.append("." + order.getPreOrder().getMessageToNext());
+            order.setAnnonce(anonce.toString());
+            return order;
+        }).flatMap(this::moveToOrder).flatMap(order -> {
+            return this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId());
+        }).flatMap(result -> {
+            for (String ro : result.getRoleName()) {
+                if (!role.contains(ro)) {
                     role.add(ro);
                 }
             }
             return Mono.empty();
-       })
-       .then(Mono.fromRunnable(()->{
+        }).then(Mono.fromRunnable(() -> {
             role.forEach(roles -> {
                 this.sendToCanal(roles, "update:" + "annonce");
             });
-       }))
-       .then(Mono.just(annonce));
+        })).then(Mono.just(annonce));
     }
 
     private Mono<Order> moveToOrder(@RequestBody Order order) {
@@ -338,62 +343,50 @@ public class ServeurController {
     @PutMapping("/moveToTake/")
     public Mono<Annonce> moveToTake2(@RequestBody Annonce annonce) {
         Queue<String> role = new ConcurrentLinkedQueue<String>();
-       return Mono.just(annonce.getElements())
-       .flatMapMany(elements->{
-            List<Order> orders=new ArrayList<Order>();
-            for(ElementAnnonce element:elements)
-            {
+        return Mono.just(annonce.getElements()).flatMapMany(elements -> {
+            List<Order> orders = new ArrayList<Order>();
+            for (ElementAnnonce element : elements) {
                 orders.addAll(element.getOrders());
             }
             return Flux.fromIterable(orders);
-       }).flatMap(this::moveToTake)
-       .flatMap(order->{
-           return this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId());
-       })
-       .flatMap(result->{
-            for(String ro:result.getRoleName())
-            {
-                if(!role.contains(ro))
-                {
+        }).flatMap(this::moveToTake).flatMap(order -> {
+            return this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId());
+        }).flatMap(result -> {
+            for (String ro : result.getRoleName()) {
+                if (!role.contains(ro)) {
                     role.add(ro);
                 }
             }
             return Mono.empty();
-       })
-       .then(Mono.fromRunnable(()->{
+        }).then(Mono.fromRunnable(() -> {
             role.forEach(roles -> {
                 this.sendToCanal(roles, "update:" + "envoie");
             });
-       }))
-       .then(Mono.just(annonce));
+        })).then(Mono.just(annonce));
     }
 
-    private Mono<Order> moveToTake(@RequestBody Order order)
-    {
+    private Mono<Order> moveToTake(@RequestBody Order order) {
         order.setToTake(true);
         order.setInside(Util.getTimeNow());
         return this.orders.save(order);
     }
 
     @PutMapping("/moveToToDelevery/")
-    public Mono<ToDelivery> moveToToDelevery(@RequestBody ToDelivery toDelivery)
-    {
+    public Mono<ToDelivery> moveToToDelevery(@RequestBody ToDelivery toDelivery) {
         toDelivery.setInside(Util.getTimeNow());
         toDelivery.setId(toDelivery.getPrepare().getId());
         return this.prepares.deleteById(toDelivery.getId()).then(this.toDeliverys.save(toDelivery));
     }
 
     @PutMapping("/moveToDelevery/")
-    public Mono<Delevery> moveToDelivery(@RequestBody Delevery delevery)
-    {
+    public Mono<Delevery> moveToDelivery(@RequestBody Delevery delevery) {
         delevery.setId(delevery.getToDelivery().getId());
         delevery.setInside(Util.getTimeNow());
         return this.toDeliverys.deleteById(delevery.getId()).then(this.deleverys.save(delevery));
     }
 
     @PutMapping("/moveToHistory/")
-    public Mono<History> moveToHistory(@RequestBody History history)
-    {
+    public Mono<History> moveToHistory(@RequestBody History history) {
         history.setInside(Util.getTimeNow());
         history.setId(history.getDelevery().getId());
         return this.deleverys.deleteById(history.getId()).then(this.historys.save(history));
@@ -410,20 +403,24 @@ public class ServeurController {
     }
 
     @PutMapping("/movePreparedToTrash/")
-    public Mono<Trash> movePreparedToTrash(@RequestBody Prepare prepare)
-    {
-        return this.prepares.deleteById(prepare.getId()).then(this.trashs.save(Trash.builder().id(prepare.getId()).delevery(Delevery.builder().id(prepare.getId()).toDelivery(ToDelivery.builder().id(prepare.getId()).prepare(prepare).build()).build()).build()));
+    public Mono<Trash> movePreparedToTrash(@RequestBody Prepare prepare) {
+        return this.prepares.deleteById(prepare.getId())
+                .then(this.trashs.save(Trash.builder().id(prepare.getId())
+                        .delevery(Delevery.builder().id(prepare.getId())
+                                .toDelivery(ToDelivery.builder().id(prepare.getId()).prepare(prepare).build()).build())
+                        .build()));
     }
 
     @PutMapping("/moveToDeleveryToTrash/")
-    public Mono<Trash> moveToDeleveryToTrash(@RequestBody ToDelivery toDelivery)
-    {
-        return this.toDeliverys.deleteById(toDelivery.getId()).then(this.trashs.save(Trash.builder().id(toDelivery.getId()).delevery(Delevery.builder().toDelivery(toDelivery).id(toDelivery.getId()).build()).build()));
+    public Mono<Trash> moveToDeleveryToTrash(@RequestBody ToDelivery toDelivery) {
+        return this.toDeliverys.deleteById(toDelivery.getId())
+                .then(this.trashs.save(Trash.builder().id(toDelivery.getId())
+                        .delevery(Delevery.builder().toDelivery(toDelivery).id(toDelivery.getId()).build()).build()));
     }
 
     @PutMapping("/moveDeleveryToTrash/")
-    public Mono<Trash> moveDeleveryToTrash(@RequestBody Delevery delevery)
-    {
-        return this.deleverys.deleteById(delevery.getId()).then(this.trashs.save(Trash.builder().id(delevery.getId()).delevery(delevery).build()));
+    public Mono<Trash> moveDeleveryToTrash(@RequestBody Delevery delevery) {
+        return this.deleverys.deleteById(delevery.getId())
+                .then(this.trashs.save(Trash.builder().id(delevery.getId()).delevery(delevery).build()));
     }
 }

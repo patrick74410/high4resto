@@ -22,14 +22,12 @@ import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrderRepositor
 import fr.high4technology.high4resto.bean.commande.Commande;
 import fr.high4technology.high4resto.bean.commande.CommandeRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/client")
 @RequiredArgsConstructor
-@Slf4j
 public class ClientController {
     @Autowired
     private ClientRepository clients;

@@ -53,7 +53,7 @@ public class DataInitializer {
                         roles.add("ROLE_EDITOR");
 
                         User admin = User.builder().roles(roles).email("").active(true)
-                                        .password(passwordEncoder.encode("iddadidkfq")).username("admin").build();
+                                        .password(passwordEncoder.encode("myPassword")).username("admin").build();
 
                         return Mono.just(admin);
                 }).flatMap(users::save));
