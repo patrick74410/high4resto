@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.Util.Util;
+import fr.high4technology.high4resto.bean.Concurrency;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 import fr.high4technology.high4resto.bean.OptionItem.OptionItem;
 import fr.high4technology.high4resto.bean.OptionItem.OptionsItem;
@@ -21,7 +22,6 @@ import fr.high4technology.high4resto.bean.Stock.StockRepository;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrder;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrderRepository;
 import fr.high4technology.high4resto.bean.commande.Commande;
-import fr.high4technology.high4resto.bean.commande.CommandeRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -35,41 +35,35 @@ public class ClientController {
     @Autowired
     private SecurityUserRepository security;
     @Autowired
-    private CommandeRepository commandes;
-    @Autowired
     private PreOrderRepository preOrders;
     @Autowired
     private StockRepository stocks;
-
-    public Mono<PreOrder> moveToPreorder(@RequestBody PreOrder preOrder) {
-        preOrder.setInside(Util.getTimeNow());
-        preOrder.setId(preOrder.getStock().getId());
-        preOrder.getStock().getItem().setStock(1);
-        return this.stocks.deleteById(preOrder.getStock().getId())
-                .then(this.commandes.findById(preOrder.getOrderNumber()).map(result -> {
-                    if (result.getItems().size() < 1)
-                        result.setInside(Util.getTimeNow());
-                    result.getItems().add(preOrder);
-                    return result;
-                }).flatMap(commandes::save)).then(this.preOrders.save(preOrder));
-    }
+    @Autowired
+    private Concurrency concurrency;
 
 
     private Mono<PreOrder> retriveItemFromStock(String item,String destination,String idCustomer,String orderNumber)
     {
         final PreOrder preOrd=new PreOrder();
-
         return this.stocks.findAll().filter(s->s.getItem().getName().equals(item)).collectList()
         .flatMap(result->{
-            Stock tpStock=result.get(0);
-            preOrd.setId(tpStock.getId());
-            preOrd.setDestination(destination);
-            preOrd.setIdCustomer(idCustomer);
-            preOrd.setInside(Util.getTimeNow());
-            preOrd.setOrderNumber(orderNumber);
-            preOrd.setStock(tpStock);
-            return preOrders.save(preOrd);
-        }).and(this.stocks.deleteById(preOrd.getId())).then(Mono.just(preOrd));
+            for(Stock stock:result)
+            {
+                if(!concurrency.getMap().containsKey(stock.getId()))
+                {
+                    concurrency.getMap().put(stock.getId(), 1);
+                    preOrd.setId(stock.getId());
+                    preOrd.setDestination(destination);
+                    preOrd.setIdCustomer(idCustomer);
+                    preOrd.setInside(Util.getTimeNow());
+                    preOrd.setOrderNumber(orderNumber);
+                    preOrd.setStock(stock);
+                    return this.stocks.deleteById(stock.getId());
+                }
+            }
+            return Mono.empty();
+
+        }).then(preOrders.save(preOrd));
 
     }
 
@@ -95,7 +89,7 @@ public class ClientController {
             clientC.setZip(client.getZip());
             clientC.setId(client.getId());
             return Flux.fromIterable(client.getCurrentPanier());
-        }).flatMap(item -> {
+        }).delayElements(Duration.ofMillis(100)).flatMap(item -> {
             return this.retriveItemFromStock(item.getName(), "outside", idClient, commande.getId());
         }).collectList()
                 .flatMap(list -> {
