@@ -1,5 +1,7 @@
 package fr.high4technology.high4resto.bean.Client;
 
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -95,7 +97,7 @@ public class ClientController {
             clientC.setSendInfo(client.isSendInfo());
             clientC.setZip(client.getZip());
             clientC.setId(client.getId());
-            return Flux.fromIterable(client.getCurrentPanier());
+            return Flux.fromIterable(client.getCurrentPanier()).delayElements(Duration.ofSeconds(1));
         }).flatMap(item -> {
             return this.retriveItemFromStock(item.getName(), "outside", idClient, commande.getId());
         }).collectList()
