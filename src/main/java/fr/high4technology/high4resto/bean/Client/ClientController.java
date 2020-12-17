@@ -129,8 +129,9 @@ public class ClientController {
                     list.removeIf(a->a.getId().equals("anonymous"));
                     commande.setItems(list);
                     clientC.setCommande(commande);
-                    return this.commandes.save(commande);
-                }).then(clients.save(clientC));
+                    return clients.save(clientC);
+                }).then(commandes.save(commande))
+                .then(Mono.just(clientC));
     }
 
     @GetMapping("/get/{idClient}/{securityKey}")
