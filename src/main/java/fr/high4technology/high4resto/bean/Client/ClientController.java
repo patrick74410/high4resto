@@ -43,9 +43,10 @@ public class ClientController {
 
     private Mono<PreOrder> retriveItemFromStock(ItemCarte item,String destination,String idCustomer,String orderNumber)
     {
-        final PreOrder preOrd=new PreOrder();
+        final PreOrder preOrd=PreOrder.builder().id("anonymous").stock(Stock.builder().item(ItemCarte.builder().name("fake").build()).build()).build();
         return this.stocks.findAll().filter(s->s.getItem().getName().equals(item.getName())).collectList()
         .flatMap(result->{
+
             for(Stock stock:result)
             {
                 if(!Concurrency.map.containsKey(stock.getId()))
@@ -63,7 +64,7 @@ public class ClientController {
             }
             return Mono.empty();
 
-        }).then(preOrders.save(preOrd)).switchIfEmpty(Mono.just(PreOrder.builder().id("anonymous").stock(Stock.builder().item(ItemCarte.builder().name("fake").build()).build()).build()));
+        }).then(preOrders.save(preOrd));
 
     }
 
@@ -95,7 +96,16 @@ public class ClientController {
                 .flatMap(list -> {
                     for(PreOrder preOrder:list)
                     {
-                        clientC.getCurrentPanier().removeIf((fi)->fi.getName().equals(preOrder.getStock().getItem().getName()));
+                        var index=0;
+                        for(ItemCarte item:clientC.getCurrentPanier())
+                        {
+                            if(item.getName().equals(preOrder.getStock().getItem().getName()))
+                            {
+                                clientC.getCurrentPanier().remove(index);
+                                break;
+                            }
+                            index+=1;
+                        }
                     }
                     commande.setItems(list);
                     clientC.setCommande(commande);
