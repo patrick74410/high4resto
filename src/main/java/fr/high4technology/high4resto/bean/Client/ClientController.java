@@ -23,12 +23,14 @@ import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrder;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrderRepository;
 import fr.high4technology.high4resto.bean.commande.Commande;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/client")
 @RequiredArgsConstructor
+@Slf4j
 public class ClientController {
     @Autowired
     private ClientRepository clients;
@@ -91,6 +93,10 @@ public class ClientController {
             return this.retriveItemFromStock(item.getName(), "outside", idClient, commande.getId());
         }).collectList()
                 .flatMap(list -> {
+                    for(PreOrder preOrder:list)
+                    {
+                        log.warn(preOrder.getStock().getItem().getName());
+                    }
                     for(PreOrder preOrder:list)
                     {
                         clientC.getCurrentPanier().removeIf((fi)->fi.getName().equals(preOrder.getStock().getItem().getName()));
