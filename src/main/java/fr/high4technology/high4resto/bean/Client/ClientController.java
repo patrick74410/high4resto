@@ -38,8 +38,6 @@ public class ClientController {
     private PreOrderRepository preOrders;
     @Autowired
     private StockRepository stocks;
-    @Autowired
-    private Concurrency concurrency;
 
 
     private Mono<PreOrder> retriveItemFromStock(String item,String destination,String idCustomer,String orderNumber)
@@ -49,9 +47,9 @@ public class ClientController {
         .flatMap(result->{
             for(Stock stock:result)
             {
-                if(!concurrency.getMap().containsKey(stock.getId()))
+                if(!Concurrency.map.containsKey(stock.getId()))
                 {
-                    concurrency.getMap().put(stock.getId(), 1);
+                    Concurrency.map.put(stock.getId(), 1);
                     preOrd.setId(stock.getId());
                     preOrd.setDestination(destination);
                     preOrd.setIdCustomer(idCustomer);

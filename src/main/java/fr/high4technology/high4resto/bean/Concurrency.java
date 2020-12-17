@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.Getter;
 
-@Getter
 public class Concurrency {
-    private Map<String, Integer> map = new ConcurrentHashMap<>();
+    public static Map<String, Integer> map = new ConcurrentHashMap<>();
 }
