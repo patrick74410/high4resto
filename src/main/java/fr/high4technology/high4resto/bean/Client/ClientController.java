@@ -126,7 +126,7 @@ public class ClientController {
                     }
                     list.removeIf(a->a.getId().equals("anonymous"));
                     ArrayList<PreOrder> fListe=new ArrayList<PreOrder>();
-                    for(PreOrder preOrder:commande.getItems())
+                    for(PreOrder preOrder:list)
                     {
                         PreOrder tp=preOrder;
                         try{
