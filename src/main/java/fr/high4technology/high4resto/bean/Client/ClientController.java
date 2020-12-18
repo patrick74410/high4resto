@@ -68,8 +68,8 @@ public class ClientController {
 
     }
 
-    @GetMapping("/generateCommande/{idClient}/{securityKey}")
-    public Mono<Client> generateCommande(@PathVariable String idClient, @PathVariable String securityKey) {
+    @GetMapping("/generateCommande/{idClient}/{securityKey}/{mode}")
+    public Mono<Client> generateCommande(@PathVariable String idClient, @PathVariable String securityKey,@PathVariable String mode) {
         final Commande commande=new Commande();
         final Client clientC=new Client();
 
@@ -84,6 +84,7 @@ public class ClientController {
             commande.setInside(Util.getTimeNow());
             commande.setMandatory(idClient);
             commande.setStatus("onProcess");
+            commande.setDeleveryMode(mode);
             return Mono.empty();
         }).then(
         this.getById(idClient, securityKey))
