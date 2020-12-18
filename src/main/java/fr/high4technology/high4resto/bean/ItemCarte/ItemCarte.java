@@ -41,9 +41,6 @@ public class ItemCarte {
     @Builder.Default
     private String description = "";
     @Getter
-    @Builder.Default
-    private double price = 0;
-    @Getter
     private int order;
     @Getter
     @Builder.Default
@@ -71,9 +68,19 @@ public class ItemCarte {
     private int stock = 5;
     @Getter
     private String remarque;
+    @Getter
+    private double price;
+    @Getter
+    private double priceHT;
+    @Getter
+    private double promotionM;
+    @Getter
+    private double priceFN;
+    @Getter
+    private double tvaPrice;
 
     @Transient
-    public Double finalPrice(String dateToDelivery) throws ParseException {
+    public void finalPrice(String dateToDelivery) throws ParseException {
         Date realDateToDelivery = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(dateToDelivery);
         Calendar c = Calendar.getInstance();
         c.setTime(realDateToDelivery);
@@ -117,6 +124,9 @@ public class ItemCarte {
                 }
             }
         }
-        return priceOfItem+priceOfSelection-reduction;
+        this.promotionM=reduction;
+        this.priceHT=(priceOfItem+priceOfSelection-reduction)/(100.0+this.tva.getTaux())*100.0;
+        this.priceFN=priceOfItem+priceOfSelection-reduction;
+        this.tvaPrice=priceHT-priceFN;
     }
 }

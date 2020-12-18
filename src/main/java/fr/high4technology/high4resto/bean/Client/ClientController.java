@@ -85,6 +85,7 @@ public class ClientController {
             commande.setMandatory(idClient);
             commande.setStatus("onProcess");
             commande.setDeleveryMode(mode);
+            commande.setFinish(false);
             return Mono.empty();
         }).then(
         this.getById(idClient, securityKey))
@@ -122,6 +123,14 @@ public class ClientController {
                         }
                     }
                     list.removeIf(a->a.getId().equals("anonymous"));
+                    commande.getItems().forEach(preOrder->{
+                        try{
+                            preOrder.getStock().getItem().finalPrice(Util.getTimeNow());
+                        }
+                        catch(Exception e){
+                            e.getMessage();
+                        }
+                    });
                     commande.setItems(list);
                     clientC.setCommande(commande);
                     return clients.save(clientC);
