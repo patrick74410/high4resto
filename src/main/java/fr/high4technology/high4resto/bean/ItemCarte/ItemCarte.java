@@ -80,7 +80,7 @@ public class ItemCarte {
     private double tvaPrice;
 
     @Transient
-    public void finalPrice(String dateToDelivery) throws ParseException {
+    public ItemCarte finalPrice(String dateToDelivery) throws ParseException {
         Date realDateToDelivery = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(dateToDelivery);
         Calendar c = Calendar.getInstance();
         c.setTime(realDateToDelivery);
@@ -128,5 +128,6 @@ public class ItemCarte {
         this.priceHT=(priceOfItem+priceOfSelection-reduction)/(100.0+this.tva.getTaux())*100.0;
         this.priceFN=priceOfItem+priceOfSelection-reduction;
         this.tvaPrice=priceHT-priceFN;
+        return this;
     }
 }

@@ -1,5 +1,7 @@
 package fr.high4technology.high4resto.bean.Client;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -123,15 +125,21 @@ public class ClientController {
                         }
                     }
                     list.removeIf(a->a.getId().equals("anonymous"));
-                    commande.getItems().forEach(preOrder->{
+                    ArrayList<PreOrder> fListe=new ArrayList<PreOrder>();
+                    for(PreOrder preOrder:commande.getItems())
+                    {
+                        PreOrder tp=preOrder;
                         try{
-                            preOrder.getStock().getItem().finalPrice(Util.getTimeNow());
+                            tp.getStock().setItem(tp.getStock().getItem().finalPrice(Util.getTimeNow()));
                         }
-                        catch(Exception e){
+                        catch(Exception e)
+                        {
                             e.getMessage();
                         }
-                    });
-                    commande.setItems(list);
+                        fListe.add(tp);
+                    }
+
+                    commande.setItems(fListe);
                     clientC.setCommande(commande);
                     return clients.save(clientC);
                 });
