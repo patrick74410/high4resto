@@ -36,7 +36,7 @@ public class ScheduledTasks {
     private StockRepository stocks;
 
 
-    @Scheduled(fixedRate = 1000 )
+    @Scheduled(fixedRate = 1000*60*15 )
     public void reportCurrentTime() {
         Queue<PreOrder> globalQueue = new ConcurrentLinkedQueue<PreOrder>();
         var flux = clients.findAll().map(client->{
