@@ -11,15 +11,16 @@ import java.util.TimeZone;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class Util {
     private static java.util.Random rand = new java.util.Random();
-	private static String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
+    private static String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
     private static Set<String> identifiers = new HashSet<String>();
-    private static final BigInteger PRIME32 = new BigInteger("01000193",         16);
-    private static final BigInteger MOD32   = new BigInteger("2").pow(32);
-    private static final BigInteger INIT32  = new BigInteger("811c9dc5",         16);
+    private static final BigInteger PRIME32 = new BigInteger("01000193", 16);
+    private static final BigInteger MOD32 = new BigInteger("2").pow(32);
+    private static final BigInteger INIT32 = new BigInteger("811c9dc5", 16);
 
     public static String getTimeNow() {
         Locale locale1 = Locale.FRANCE;
@@ -30,6 +31,12 @@ public class Util {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
         format.setTimeZone(tz1);
         return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE).format(cal.getTime());
+    }
+
+    public static Date parseDate(String date) throws ParseException
+    {
+        SimpleDateFormat formatter=new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+        return formatter.parse(date);
     }
 
     public static Date getDateNow() {
