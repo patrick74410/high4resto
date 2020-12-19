@@ -78,9 +78,12 @@ public class ItemCarte {
     private double priceFN;
     @Getter
     private double tvaPrice;
+    @Getter
+    private String longName;
 
     @Transient
     public ItemCarte finalPrice(String dateToDelivery) throws ParseException {
+        longName=this.name+" ";
         Date realDateToDelivery = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(dateToDelivery);
         Calendar c = Calendar.getInstance();
         c.setTime(realDateToDelivery);
@@ -95,7 +98,10 @@ public class ItemCarte {
         for (OptionsItem option : this.options) {
             for (OptionItem choix : option.getOptions()) {
                 if (choix.isSelected())
+                {
                     priceOfSelection += choix.getPrice();
+                    longName+="+ "+choix.getLabel()+" ";
+                }
             }
         }
         for (Promotion promotion : this.promotions) {
