@@ -39,7 +39,7 @@ public class ScheduledTasks {
     private StockRepository stocks;
 
 
-    @Scheduled(fixedRate = 1000*120 )
+    @Scheduled(fixedRate = 1000*600 )
     public void reportCurrentTime() {
         Queue<PreOrder> globalQueue = new ConcurrentLinkedQueue<PreOrder>();
         var flux = clients.findAll().map(client->{
@@ -57,7 +57,6 @@ public class ScheduledTasks {
                         items.add(item.getStock().getItem());
                         // add to preOrdersRemove
                         globalQueue.add(item);
-                        log.info("J'enlève la date");
                     }
                     else
                     {
