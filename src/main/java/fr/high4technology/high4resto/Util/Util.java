@@ -35,7 +35,7 @@ public class Util {
 
     public static Date parseDate(String date) throws ParseException
     {
-        SimpleDateFormat formatter=new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+        SimpleDateFormat formatter=new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return formatter.parse(date);
     }
 
