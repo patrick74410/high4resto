@@ -45,6 +45,7 @@ public class ScheduledTasks {
         var flux = clients.findAll().map(client->{
             int index=0;
             ArrayList<ItemCarte> items= new ArrayList<ItemCarte>();
+            ArrayList<PreOrder> preO=new ArrayList<PreOrder>();
             for(PreOrder item:client.getCommande().getItems())
             {
                 try
@@ -53,13 +54,15 @@ public class ScheduledTasks {
                     Date dateItem=Util.parseDate(item.getInside());
                     if(getDateDiff(dateItem,dateNow,TimeUnit.MINUTES)>15)
                     {
-                        // remove from preorders lists
-                        client.getCommande().getItems().remove(index);
                         // add to basket
                         items.add(item.getStock().getItem());
                         // add to preOrdersRemove
                         globalQueue.add(item);
                         log.info("J'enlève la date");
+                    }
+                    else
+                    {
+                        preO.add(item);
                     }
                 }
                 catch(Exception e)
@@ -68,9 +71,10 @@ public class ScheduledTasks {
                 }
                 index+=1;
             }
+
             client.setCurrentPanier(new ArrayList<ItemCarte>());
             client.getCurrentPanier().addAll(items);
-
+            client.getCommande().setItems(preO);
             return client;
         }).flatMap(clients::save)
         .collectList()
