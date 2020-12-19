@@ -43,7 +43,6 @@ public class ScheduledTasks {
     public void reportCurrentTime() {
         Queue<PreOrder> globalQueue = new ConcurrentLinkedQueue<PreOrder>();
         var flux = clients.findAll().map(client->{
-            int index=0;
             ArrayList<ItemCarte> items= new ArrayList<ItemCarte>();
             ArrayList<PreOrder> preO=new ArrayList<PreOrder>();
             for(PreOrder item:client.getCommande().getItems())
@@ -69,11 +68,9 @@ public class ScheduledTasks {
                 {
                     log.info(e.getMessage());
                 }
-                index+=1;
             }
 
-            client.setCurrentPanier(new ArrayList<ItemCarte>());
-            client.getCurrentPanier().addAll(items);
+            client.setCurrentPanier(items);
             client.getCommande().setItems(preO);
             return client;
         }).flatMap(clients::save)
