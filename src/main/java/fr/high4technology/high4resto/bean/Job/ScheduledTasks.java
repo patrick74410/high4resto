@@ -1,5 +1,6 @@
 package fr.high4technology.high4resto.bean.Job;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -16,6 +17,8 @@ import fr.high4technology.high4resto.bean.Client.ClientRepository;
 import fr.high4technology.high4resto.bean.Stock.StockRepository;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrder;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrderRepository;
+import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
+
 import reactor.core.publisher.Flux;
 
 @Component
@@ -41,6 +44,7 @@ public class ScheduledTasks {
         Queue<PreOrder> globalQueue = new ConcurrentLinkedQueue<PreOrder>();
         var flux = clients.findAll().map(client->{
             int index=0;
+            ArrayList<ItemCarte> items= new ArrayList<ItemCarte>();
             for(PreOrder item:client.getCommande().getItems())
             {
                 try
@@ -52,7 +56,7 @@ public class ScheduledTasks {
                         // remove from preorders lists
                         client.getCommande().getItems().remove(index);
                         // add to basket
-                        client.getCurrentPanier().add(item.getStock().getItem());
+                        items.add(item.getStock().getItem());
                         // add to preOrdersRemove
                         globalQueue.add(item);
                         log.info("J'enlève la date");
@@ -64,6 +68,9 @@ public class ScheduledTasks {
                 }
                 index+=1;
             }
+            client.setCurrentPanier(new ArrayList<ItemCarte>());
+            client.getCurrentPanier().addAll(items);
+
             return client;
         }).flatMap(clients::save)
         .collectList()
