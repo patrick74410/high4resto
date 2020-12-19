@@ -36,7 +36,7 @@ public class ScheduledTasks {
     private StockRepository stocks;
 
 
-    @Scheduled(fixedRate = 1000*60*15 )
+    @Scheduled(fixedRate = 1000*3 )
     public void reportCurrentTime() {
         Queue<PreOrder> globalQueue = new ConcurrentLinkedQueue<PreOrder>();
         var flux = clients.findAll().map(client->{
@@ -66,6 +66,7 @@ public class ScheduledTasks {
             }
             return client;
         }).flatMap(clients::save)
+        .collectList()
         .thenMany(Flux.fromIterable(globalQueue)
         .flatMap(preOrder->{
             return stocks.save(preOrder.getStock());
