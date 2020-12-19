@@ -47,8 +47,7 @@ public class ScheduledTasks {
                 {
                     Date dateNow=Util.getDateNow();
                     Date dateItem=Util.parseDate(item.getInside());
-                    log.warn(Long.toString(getDateDiff(dateItem,dateNow,TimeUnit.MINUTES)));
-                    if(getDateDiff(dateItem,dateNow,TimeUnit.MINUTES)>20)
+                    if(getDateDiff(dateItem,dateNow,TimeUnit.MINUTES)>15)
                     {
                         // remove from preorders lists
                         client.getCommande().getItems().remove(index);
