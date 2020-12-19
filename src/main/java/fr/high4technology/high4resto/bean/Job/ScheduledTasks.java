@@ -36,7 +36,7 @@ public class ScheduledTasks {
     private StockRepository stocks;
 
 
-    @Scheduled(fixedRate = 1000*60*10 )
+    @Scheduled(fixedRate = 1000 )
     public void reportCurrentTime() {
         Queue<PreOrder> globalQueue = new ConcurrentLinkedQueue<PreOrder>();
         var flux = clients.findAll().map(client->{
@@ -47,6 +47,7 @@ public class ScheduledTasks {
                 {
                     Date dateNow=Util.getDateNow();
                     Date dateItem=Util.parseDate(item.getInside());
+                    log.warn(Long.toString(getDateDiff(dateItem,dateNow,TimeUnit.MINUTES)));
                     if(getDateDiff(dateItem,dateNow,TimeUnit.MINUTES)>20)
                     {
                         // remove from preorders lists
@@ -60,7 +61,7 @@ public class ScheduledTasks {
                 }
                 catch(Exception e)
                 {
-
+                    log.info(e.getMessage());
                 }
                 index+=1;
             }
