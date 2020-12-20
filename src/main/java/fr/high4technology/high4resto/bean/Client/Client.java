@@ -22,7 +22,7 @@ import fr.high4technology.high4resto.bean.commande.Commande;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Client {
+public class Client{
     @Id
     private String id;
     @Getter

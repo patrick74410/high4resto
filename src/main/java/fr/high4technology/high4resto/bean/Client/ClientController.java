@@ -1,6 +1,7 @@
 package fr.high4technology.high4resto.bean.Client;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
@@ -8,7 +9,6 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.GeocodingApiRequest;
 import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.TravelMode;
@@ -55,46 +55,53 @@ public class ClientController {
     @Autowired
     private CommandeRepository commandes;
 
-    private GeoApiContext context = new GeoApiContext.Builder()
-    .apiKey(Variable.geoApi).build();
+    private GeoApiContext context = new GeoApiContext.Builder().apiKey(Variable.geoApi).build();
 
+    private Mono<PreOrder> retriveItemFromStock(ItemCarte item, String destination, String idCustomer,
+            String orderNumber) {
+        final PreOrder preOrd = PreOrder.builder().id("anonymous")
+                .stock(Stock.builder().item(ItemCarte.builder().name("fake").build()).build()).build();
+        return this.stocks.findAll().filter(s -> s.getItem().getName().equals(item.getName())).collectList()
+                .flatMap(result -> {
 
-    private Mono<PreOrder> retriveItemFromStock(ItemCarte item,String destination,String idCustomer,String orderNumber)
-    {
-        final PreOrder preOrd=PreOrder.builder().id("anonymous").stock(Stock.builder().item(ItemCarte.builder().name("fake").build()).build()).build();
-        return this.stocks.findAll().filter(s->s.getItem().getName().equals(item.getName())).collectList()
-        .flatMap(result->{
+                    for (Stock stock : result) {
+                        if (!Concurrency.mapStock.containsKey(stock.getId())) {
+                            Concurrency.mapStock.put(stock.getId(), 1);
+                            preOrd.setId(stock.getId());
+                            preOrd.setDestination(destination);
+                            preOrd.setIdCustomer(idCustomer);
+                            preOrd.setInside(Util.getTimeNow());
+                            preOrd.setOrderNumber(orderNumber);
+                            preOrd.setStock(stock);
+                            preOrd.getStock().setItem(item);
+                            return this.stocks.deleteById(stock.getId());
+                        }
+                    }
+                    return Mono.empty();
 
-            for(Stock stock:result)
-            {
-                if(!Concurrency.mapStock.containsKey(stock.getId()))
-                {
-                    Concurrency.mapStock.put(stock.getId(), 1);
-                    preOrd.setId(stock.getId());
-                    preOrd.setDestination(destination);
-                    preOrd.setIdCustomer(idCustomer);
-                    preOrd.setInside(Util.getTimeNow());
-                    preOrd.setOrderNumber(orderNumber);
-                    preOrd.setStock(stock);
-                    preOrd.getStock().setItem(item);
-                    return this.stocks.deleteById(stock.getId());
-                }
-            }
-            return Mono.empty();
+                }).then(preOrders.save(preOrd));
+    }
 
-        }).then(preOrders.save(preOrd));
+    @GetMapping("/checkPlanning/{idClient}/{securityKey}/{hourBegin}")
+    public Mono<Client> checkPlanning(@PathVariable String idClient, @PathVariable String securityKey,
+            @PathVariable String hourBegin) {
+        AtomicReference<Client> clientC = new AtomicReference<Client>();
 
+        return this.getById(idClient, securityKey).flatMap(client -> {
+            clientC.set(client);
+            return Mono.just(clientC.get());
+        });
     }
 
     @GetMapping("/generateCommande/{idClient}/{securityKey}/{mode}")
-    public Mono<Client> generateCommande(@PathVariable String idClient, @PathVariable String securityKey,@PathVariable String mode) {
-        final Commande commande=new Commande();
-        final Client clientC=new Client();
-        return
-        this.commandes.count().flatMap(count->{
+    public Mono<Client> generateCommande(@PathVariable String idClient, @PathVariable String securityKey,
+            @PathVariable String mode) {
+        final Commande commande = new Commande();
+        AtomicReference<Client> clientC = new AtomicReference<Client>();
+        return this.commandes.count().flatMap(count -> {
             commande.setNumber(count);
             return this.commandes.save(commande);
-        }).flatMap(coma->{
+        }).flatMap(coma -> {
             commande.setId(coma.getId());
             commande.setClient(idClient);
             commande.setDestination("outside");
@@ -104,75 +111,55 @@ public class ClientController {
             commande.setDeleveryMode(mode);
             commande.setFinish(false);
             return Mono.empty();
-        }).then(
-        this.getById(idClient, securityKey))
-        .flatMapMany(client -> {
-            clientC.setAdresseL1(client.getAdresseL1());
-            clientC.setAdresseL2(client.getAdresseL2());
-            clientC.setZip(client.getZip());
-            clientC.setCity(client.getCity());
-            GeocodingApiRequest req = GeocodingApi.newRequest(context).address(clientC.getAdresseL1()+" "+clientC.getAdresseL2()+" "+clientC.getZip()+" "+clientC.getCity());
+        }).then(this.getById(idClient, securityKey)).flatMapMany(client -> {
+            clientC.set(client);
+            GeocodingApiRequest req = GeocodingApi.newRequest(context).address(clientC.get().getAdresseL1() + " "
+                    + clientC.get().getAdresseL2() + " " + clientC.get().getZip() + " " + clientC.get().getCity());
             DirectionsApiRequest directionRequest = DirectionsApi.newRequest(context);
-            directionRequest.origin(new LatLng(Variable.gps.getLatitude(),Variable.gps.getLongitude()));
+            directionRequest.origin(new LatLng(Variable.gps.getLatitude(), Variable.gps.getLongitude()));
             DirectionsResult route;
             GeocodingResult[] results;
             try {
-                results=req.await();
+                results = req.await();
                 directionRequest.destination(results[0].geometry.location);
                 directionRequest.mode(TravelMode.DRIVING);
-                route=directionRequest.await();
-                commande.setDistanceTime(route.routes[0].legs[0].duration.humanReadable);
+                route = directionRequest.await();
+                commande.setDistanceTime(route.routes[0].legs[0].duration.inSeconds);
                 commande.setDistance(route.routes[0].legs[0].distance.inMeters);
-                clientC.setGps(Gps.builder().latitude(results[0].geometry.location.lat).longitude(results[0].geometry.location.lng).build());
+                clientC.get().setGps(Gps.builder().latitude(results[0].geometry.location.lat)
+                        .longitude(results[0].geometry.location.lng).build());
             } catch (Exception e) {
             }
-            clientC.setCommande(client.getCommande());
-            clientC.setCurrentPanier(client.getCurrentPanier());
-            clientC.setEmail(client.getEmail());
-            clientC.setFirstConnexion(client.getFirstConnexion());
-            clientC.setLastConnexion(client.getLastConnexion());
-            clientC.setLastName(client.getLastName());
-            clientC.setName(client.getName());
-            clientC.setPrice(client.getPrice());
-            clientC.setSendInfo(client.isSendInfo());
-            clientC.setId(client.getId());
             return Flux.fromIterable(client.getCurrentPanier());
         }).flatMap(item -> {
             return this.retriveItemFromStock(item, "outside", idClient, commande.getId());
-        }).collectList()
-                .flatMap(list -> {
-                    for(PreOrder preOrder:list)
-                    {
-                        var index=0;
-                        for(ItemCarte item:clientC.getCurrentPanier())
-                        {
-                            if(item.getName().equals(preOrder.getStock().getItem().getName()))
-                            {
-                                clientC.getCurrentPanier().remove(index);
-                                break;
-                            }
-                            index+=1;
-                        }
+        }).collectList().flatMap(list -> {
+            for (PreOrder preOrder : list) {
+                var index = 0;
+                for (ItemCarte item : clientC.get().getCurrentPanier()) {
+                    if (item.getName().equals(preOrder.getStock().getItem().getName())) {
+                        clientC.get().getCurrentPanier().remove(index);
+                        break;
                     }
-                    list.removeIf(a->a.getId().equals("anonymous"));
-                    ArrayList<PreOrder> fListe=new ArrayList<PreOrder>();
-                    for(PreOrder preOrder:list)
-                    {
-                        PreOrder tp=preOrder;
-                        try{
-                            tp.getStock().setItem(tp.getStock().getItem().finalPrice(Util.getTimeNow()));
-                        }
-                        catch(Exception e)
-                        {
-                            e.getMessage();
-                        }
-                        fListe.add(tp);
-                    }
+                    index += 1;
+                }
+            }
+            list.removeIf(a -> a.getId().equals("anonymous"));
+            ArrayList<PreOrder> fListe = new ArrayList<PreOrder>();
+            for (PreOrder preOrder : list) {
+                PreOrder tp = preOrder;
+                try {
+                    tp.getStock().setItem(tp.getStock().getItem().finalPrice(Util.getTimeNow()));
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+                fListe.add(tp);
+            }
 
-                    commande.setItems(fListe);
-                    clientC.setCommande(commande);
-                    return clients.save(clientC);
-                });
+            commande.setItems(fListe);
+            clientC.get().setCommande(commande);
+            return clients.save(clientC.get());
+        });
     }
 
     @GetMapping("/get/{idClient}/{securityKey}")

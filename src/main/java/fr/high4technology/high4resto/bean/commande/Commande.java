@@ -46,7 +46,9 @@ public class Commande {
     @Getter
     private String message;
     @Getter
-    private String distanceTime;
+    private long distanceTime;
     @Getter
     private long distance;
+    @Getter
+    private String timeToTake;
 }
