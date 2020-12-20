@@ -2,6 +2,17 @@ package fr.high4technology.high4resto.bean.Client;
 
 import java.util.ArrayList;
 
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.GeocodingApiRequest;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LatLng;
+import com.google.maps.model.TravelMode;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.Util.Util;
+import fr.high4technology.high4resto.Util.Variable;
 import fr.high4technology.high4resto.bean.Concurrency;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 import fr.high4technology.high4resto.bean.OptionItem.OptionItem;
@@ -19,6 +31,7 @@ import fr.high4technology.high4resto.bean.OptionItem.OptionsItem;
 import fr.high4technology.high4resto.bean.SecurityUser.SecurityUserRepository;
 import fr.high4technology.high4resto.bean.Stock.Stock;
 import fr.high4technology.high4resto.bean.Stock.StockRepository;
+import fr.high4technology.high4resto.bean.Struct.Gps;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrder;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrderRepository;
 import fr.high4technology.high4resto.bean.commande.Commande;
@@ -41,6 +54,9 @@ public class ClientController {
     private StockRepository stocks;
     @Autowired
     private CommandeRepository commandes;
+
+    private GeoApiContext context = new GeoApiContext.Builder()
+    .apiKey(Variable.geoApi).build();
 
 
     private Mono<PreOrder> retriveItemFromStock(ItemCarte item,String destination,String idCustomer,String orderNumber)
@@ -74,7 +90,6 @@ public class ClientController {
     public Mono<Client> generateCommande(@PathVariable String idClient, @PathVariable String securityKey,@PathVariable String mode) {
         final Commande commande=new Commande();
         final Client clientC=new Client();
-
         return
         this.commandes.count().flatMap(count->{
             commande.setNumber(count);
@@ -94,7 +109,23 @@ public class ClientController {
         .flatMapMany(client -> {
             clientC.setAdresseL1(client.getAdresseL1());
             clientC.setAdresseL2(client.getAdresseL2());
+            clientC.setZip(client.getZip());
             clientC.setCity(client.getCity());
+            GeocodingApiRequest req = GeocodingApi.newRequest(context).address(clientC.getAdresseL1()+" "+clientC.getAdresseL2()+" "+clientC.getZip()+" "+clientC.getCity());
+            DirectionsApiRequest directionRequest = DirectionsApi.newRequest(context);
+            directionRequest.origin(new LatLng(Variable.gps.getLatitude(),Variable.gps.getLongitude()));
+            DirectionsResult route;
+            GeocodingResult[] results;
+            try {
+                results=req.await();
+                directionRequest.destination(results[0].geometry.location);
+                directionRequest.mode(TravelMode.DRIVING);
+                route=directionRequest.await();
+                commande.setDistanceTime(route.routes[0].legs[0].duration.humanReadable);
+                commande.setDistance(route.routes[0].legs[0].distance.inMeters);
+                clientC.setGps(Gps.builder().latitude(results[0].geometry.location.lat).longitude(results[0].geometry.location.lng).build());
+            } catch (Exception e) {
+            }
             clientC.setCommande(client.getCommande());
             clientC.setCurrentPanier(client.getCurrentPanier());
             clientC.setEmail(client.getEmail());
@@ -104,7 +135,6 @@ public class ClientController {
             clientC.setName(client.getName());
             clientC.setPrice(client.getPrice());
             clientC.setSendInfo(client.isSendInfo());
-            clientC.setZip(client.getZip());
             clientC.setId(client.getId());
             return Flux.fromIterable(client.getCurrentPanier());
         }).flatMap(item -> {

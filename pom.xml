@@ -36,6 +36,13 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-texttospeech</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.maps/google-maps-services -->
+        <dependency>
+            <groupId>com.google.maps</groupId>
+            <artifactId>google-maps-services</artifactId>
+            <version>0.15.0</version>
+        </dependency>
+
 
         <dependency>
             <groupId>commons-io</groupId>

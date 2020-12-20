@@ -14,6 +14,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
+import fr.high4technology.high4resto.bean.Struct.Gps;
 import fr.high4technology.high4resto.bean.commande.Commande;
 
 @Data
@@ -60,4 +61,7 @@ public class Client {
     @Getter
     @Builder.Default
     private double price= 0.0;
+    @Getter
+    @Builder.Default
+    private Gps gps=Gps.builder().latitude(0).longitude(0).build();
 }

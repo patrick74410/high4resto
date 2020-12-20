@@ -69,7 +69,7 @@ public class ScheduledTasks {
                 }
             }
 
-            client.setCurrentPanier(items);
+            client.getCurrentPanier().addAll(items);
             client.getCommande().setItems(preO);
             return client;
         }).flatMap(clients::save)

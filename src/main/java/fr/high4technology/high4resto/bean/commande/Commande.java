@@ -45,5 +45,8 @@ public class Commande {
     private Double totalPrice;
     @Getter
     private String message;
-
+    @Getter
+    private String distanceTime;
+    @Getter
+    private long distance;
 }
