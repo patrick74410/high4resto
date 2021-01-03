@@ -18,5 +18,5 @@ public class ItemPlaning {
     private String id;
     @Getter
     @Builder.Default
-    private int[][] a = new int[24][60];
+    private double[] a = new double[24*60];
 }

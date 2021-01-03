@@ -20,6 +20,15 @@ import java.util.ArrayList;
 
 import fr.high4technology.high4resto.Util.Util;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
+import fr.high4technology.high4resto.bean.ItemCarte.ItemCarteRepository;
+import fr.high4technology.high4resto.bean.Tracability.Delevery.Delevery;
+import fr.high4technology.high4resto.bean.Tracability.Order.Order;
+import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrder;
+import fr.high4technology.high4resto.bean.Tracability.Prepare.Prepare;
+import fr.high4technology.high4resto.bean.Tracability.ToDelivery.ToDelivery;
+import fr.high4technology.high4resto.bean.Tracability.Trash.Trash;
+import fr.high4technology.high4resto.bean.Tracability.Trash.TrashRepository;
+import fr.high4technology.high4resto.bean.Tracability.toPrepare.ToPrepare;
 
 @RestController
 @RequestMapping("/api/stock")
@@ -28,6 +37,12 @@ public class StockController {
 
     @Autowired
     private StockRepository stocks;
+
+    @Autowired
+    private TrashRepository trashs;
+
+    @Autowired
+    private ItemCarteRepository items;
 
     @GetMapping("/find/")
     public Flux<Stock> getAll() {
@@ -75,6 +90,42 @@ public class StockController {
 
         return stocks.deleteById(idStock).map(r -> ResponseEntity.ok().<Void>build())
                 .defaultIfEmpty(ResponseEntity.ok().<Void>build());
+    }
+
+    @GetMapping("/updateQty/{userName}/{itemId}/{qty}")
+    public Mono<ResponseEntity<Void>> updateQty(@PathVariable String userName,@PathVariable String itemId,@PathVariable int qty)
+    {
+        return stocks.findAll().filter(stock -> stock.getItem().getId().equals(itemId))
+        .collectList().flatMapMany(listToDelete->{
+            ArrayList<Trash> insert = new ArrayList<Trash>();
+            for(Stock stock:listToDelete)
+            {
+                stock.getItem().setStock(1);
+                PreOrder tpPreorder=PreOrder.builder().id(stock.getId()).stock(stock).build();
+                Order tpOrder=Order.builder().id(stock.getId()).preOrder(tpPreorder).build();
+                ToPrepare tpToPrepare=ToPrepare.builder().order(tpOrder).id(stock.getId()).build();
+                Prepare tpPrepare=Prepare.builder().id(stock.getId()).toPrepare(tpToPrepare).build();
+                ToDelivery tpToDelivery=ToDelivery.builder().id(stock.getId()).prepare(tpPrepare).build();
+                Delevery tpDelevery=Delevery.builder().toDelivery(tpToDelivery).id(stock.getId()).build();
+                Trash tpTrash=Trash.builder().delevery(tpDelevery).causeMessage("Stock reset qty").inside(Util.getTimeNow()).id(stock.getId()).build();
+                insert.add(tpTrash);
+            }
+            return trashs.saveAll(insert);
+        }).flatMap(trash->{
+            return Mono.just(trash.getDelevery().getToDelivery().getPrepare().getToPrepare().getOrder().getPreOrder().getStock());
+        }).collectList()
+        .flatMapMany(stocks::deleteAll)
+        .then(items.findById(itemId))
+        .flatMapMany(item->{
+            ArrayList<Stock> stockList= new ArrayList<Stock>();
+            Stock tpStock=Stock.builder().inside(Util.getTimeNow()).item(item).username(userName).build();
+            for(int i=0;i!=qty;i+=1)
+            {
+                stockList.add(tpStock);
+            }
+            return stocks.saveAll(stockList);
+        })
+        .then(Mono.just(ResponseEntity.ok().<Void>build()));
     }
 
 }

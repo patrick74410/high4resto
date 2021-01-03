@@ -80,6 +80,13 @@ public class ItemCarte {
     private double tvaPrice;
     @Getter
     private String longName;
+    @Getter
+    @Builder.Default
+    private List<String> roles = new ArrayList<String>();
+    @Getter
+    private double part;
+    @Getter
+    private int time;
 
     @Transient
     public ItemCarte finalPrice(String dateToDelivery) throws ParseException {

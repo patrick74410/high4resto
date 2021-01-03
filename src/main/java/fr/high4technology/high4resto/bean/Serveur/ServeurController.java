@@ -35,7 +35,6 @@ import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorie;
 import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorieRepository;
 
-import fr.high4technology.high4resto.bean.ItemPreparation.ItemPreparationRepository;
 import fr.high4technology.high4resto.bean.OptionItem.OptionItem;
 import fr.high4technology.high4resto.bean.OptionItem.OptionsItem;
 import fr.high4technology.high4resto.bean.Stock.Stock;
@@ -73,8 +72,6 @@ public class ServeurController {
     private CommandeRepository commandes;
     @Autowired
     private StockRepository stocks;
-    @Autowired
-    private ItemPreparationRepository itemPreparations;
     @Autowired
     private ItemCategorieRepository itemCategories;
     @Autowired
@@ -317,14 +314,14 @@ public class ServeurController {
             anonce.append("." + order.getPreOrder().getMessageToNext());
             order.setAnnonce(anonce.toString());
             return order;
-        }).flatMap(this::moveToOrder).flatMap(order -> {
-            return this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId());
-        }).flatMap(result -> {
-            for (String ro : result.getRoleName()) {
+        }).flatMap(this::moveToOrder).flatMap(result -> {
+            for (String ro : result.getPreOrder().getStock().getItem().getRoles()) {
                 if (!role.contains(ro)) {
                     role.add(ro);
+
                 }
             }
+
             return Mono.empty();
         }).then(Mono.fromRunnable(() -> {
             role.forEach(roles -> {
@@ -349,10 +346,8 @@ public class ServeurController {
                 orders.addAll(element.getOrders());
             }
             return Flux.fromIterable(orders);
-        }).flatMap(this::moveToTake).flatMap(order -> {
-            return this.itemPreparations.findById(order.getPreOrder().getStock().getItem().getId());
-        }).flatMap(result -> {
-            for (String ro : result.getRoleName()) {
+        }).flatMap(this::moveToTake).flatMap(result -> {
+            for (String ro : result.getPreOrder().getStock().getItem().getRoles()) {
                 if (!role.contains(ro)) {
                     role.add(ro);
                 }

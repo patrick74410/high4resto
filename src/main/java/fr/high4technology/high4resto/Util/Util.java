@@ -33,6 +33,17 @@ public class Util {
         return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE).format(cal.getTime());
     }
 
+    public static String getStringSimpleDateNow() {
+        Locale locale1 = Locale.FRANCE;
+        TimeZone tz1 = TimeZone.getTimeZone("Europe/Paris");
+        Calendar cal = GregorianCalendar.getInstance(tz1, locale1);
+        if (tz1.inDaylightTime(new Date()))
+            cal.add(Calendar.HOUR, 1);
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
+        format.setTimeZone(tz1);
+        return new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).format(cal.getTime());
+    }
+
     public static Date parseDate(String date) throws ParseException
     {
         SimpleDateFormat formatter=new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");

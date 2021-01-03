@@ -99,6 +99,9 @@ public class ItemCarteController {
 			foundItem.setPromotions(itemCarte.getPromotions());
 			foundItem.setStock(itemCarte.getStock());
 			foundItem.setRemarque(itemCarte.getRemarque());
+			foundItem.setPart(itemCarte.getPart());
+			foundItem.setRoles(itemCarte.getRoles());
+			foundItem.setTime(itemCarte.getTime());
 			;
 			return foundItem;
 		}).flatMap(itemCartes::save);

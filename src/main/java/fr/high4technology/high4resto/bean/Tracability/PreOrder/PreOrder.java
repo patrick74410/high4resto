@@ -16,7 +16,7 @@ import fr.high4technology.high4resto.bean.Stock.Stock;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class PreOrder {
+public class PreOrder{
     @Id
     private String id;
     @Getter
