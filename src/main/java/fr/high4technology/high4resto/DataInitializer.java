@@ -1,8 +1,8 @@
 package fr.high4technology.high4resto;
 
 import fr.high4technology.high4resto.bean.user.*;
-import fr.high4technology.high4resto.Util.Util;
 import fr.high4technology.high4resto.bean.Allergene.*;
+/*
 import fr.high4technology.high4resto.bean.Horaire.Horaire;
 import fr.high4technology.high4resto.bean.Horaire.HoraireRepository;
 import fr.high4technology.high4resto.bean.ItemPlaning.ItemPlaning;
@@ -10,13 +10,16 @@ import fr.high4technology.high4resto.bean.Stock.Stock;
 import fr.high4technology.high4resto.bean.Stock.StockRepository;
 import fr.high4technology.high4resto.bean.Tracability.PreOrder.PreOrder;
 import fr.high4technology.high4resto.bean.commande.Commande;
+import fr.high4technology.high4resto.Util.Util;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.LinkedList;
+
+*/
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -33,9 +36,10 @@ public class DataInitializer {
         private final UserRepository users;
         private final AllergenRepository allergenes;
         private final PasswordEncoder passwordEncoder;
+/*
         private final StockRepository stocks;
         private final HoraireRepository horaires;
-
+*/
         @EventListener(value = ApplicationReadyEvent.class)
         public void init() {
                 log.info("start data initialization...");
@@ -77,7 +81,7 @@ public class DataInitializer {
                                 data -> log.info("data:" + data), err -> log.error("error:" + err),
                                 () -> log.info("done initialization..."));
 
-                AtomicReference<Horaire> horaireC = new AtomicReference<Horaire>();
+                /* AtomicReference<Horaire> horaireC = new AtomicReference<Horaire>();
 
 
                 this.horaires.findAll().flatMap(horaires->{
@@ -122,7 +126,7 @@ public class DataInitializer {
                         }
                         return Mono.just(commande);
                 })).subscribe();
-
+                */
         }
 
 }

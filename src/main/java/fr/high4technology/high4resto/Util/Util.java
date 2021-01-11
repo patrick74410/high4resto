@@ -10,7 +10,10 @@ import java.util.TimeZone;
 
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -21,6 +24,15 @@ public class Util {
     private static final BigInteger PRIME32 = new BigInteger("01000193", 16);
     private static final BigInteger MOD32 = new BigInteger("2").pow(32);
     private static final BigInteger INIT32 = new BigInteger("811c9dc5", 16);
+
+
+    public static String encodeValue(String value) {
+        try {
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex.getCause());
+        }
+    }
 
     public static String getTimeNow() {
         Locale locale1 = Locale.FRANCE;
