@@ -1,5 +1,12 @@
 package fr.high4technology.high4resto.Util;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -9,14 +16,6 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarte;
-
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.text.Normalizer;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class Util {
     private static java.util.Random rand = new java.util.Random();
@@ -29,7 +28,7 @@ public class Util {
 
     public static String encodeValue(String value) {
         value = Normalizer.normalize(value, Normalizer.Form.NFD);
-        value = value.replaceAll("\s+","-").replaceAll("\'","-");
+        value = value.replaceAll(" ","-").replaceAll("'", "-");
 
         try {
             return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
