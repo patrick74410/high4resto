@@ -14,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -27,6 +28,9 @@ public class Util {
 
 
     public static String encodeValue(String value) {
+        value = Normalizer.normalize(value, Normalizer.Form.NFD);
+        value = value.replaceAll("\s+","-").replaceAll("\'","-");
+
         try {
             return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException ex) {

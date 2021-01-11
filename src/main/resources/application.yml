@@ -9,5 +9,5 @@ jwt:
   secretKey: ecf1222c-88fd-47f3-988f-bdd78bade1ad
 logging:
   level:
-    fr.high4technology: DEBUG
-    org.springframework.web: DEBUG
+    fr.high4technology: INFO
+    org.springframework.web: INFO
