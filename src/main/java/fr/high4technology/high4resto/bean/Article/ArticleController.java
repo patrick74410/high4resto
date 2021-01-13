@@ -72,7 +72,7 @@ public class ArticleController {
 
 	@PutMapping("/insert/")
 	Mono<Article> insert(@RequestBody Article article) {
-		article.setDate(new SimpleDateFormat("dd/MM/yyyy").format(Util.getTimeNow()));
+		article.setDate(Util.getStringSimpleDateNow());
 		article.setId(Util.encodeValue(article.getTitle()));
 		return articles.save(article);
 	}
