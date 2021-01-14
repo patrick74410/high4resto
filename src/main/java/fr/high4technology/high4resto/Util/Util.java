@@ -28,7 +28,7 @@ public class Util {
 
     public static String encodeValue(String value) {
         value = Normalizer.normalize(value, Normalizer.Form.NFD);
-        value = value.replaceAll(" ","-").replaceAll("'", "-");
+        value = value.replaceAll(" ","-").replaceAll("'", "-").toLowerCase();
 
         try {
             return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());

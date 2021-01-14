@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.high4technology.high4resto.Util.Util;
 import fr.high4technology.high4resto.bean.Article.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -48,6 +49,7 @@ public class ArticleCategorieController {
 
 	@PutMapping("/insert/")
 	Mono<ArticleCategorie> insert(@RequestBody ArticleCategorie articleCategorie) {
+		articleCategorie.setId(Util.encodeValue(articleCategorie.getName()));
 		return articleCategories.save(articleCategorie);
 	}
 
