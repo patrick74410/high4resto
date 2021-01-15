@@ -25,10 +25,16 @@ public class Util {
     private static final BigInteger MOD32 = new BigInteger("2").pow(32);
     private static final BigInteger INIT32 = new BigInteger("811c9dc5", 16);
 
+	private static String unaccent(String src) {
+		return Normalizer
+				.normalize(src, Normalizer.Form.NFD)
+				.replaceAll("[^\\p{ASCII}]", "");
+	}
 
     public static String encodeValue(String value) {
-        value = Normalizer.normalize(value, Normalizer.Form.NFD);
-        value = value.replaceAll(" ","-").replaceAll("'", "-").toLowerCase();
+        value = unaccent(value);
+        value = value.replaceAll("\\p{Punct}", "");
+        value = value.replaceAll("\\s*,\\s*", "-").replaceAll("'", "-").toLowerCase();
 
         try {
             return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
