@@ -29,7 +29,14 @@ public class ArticleCategorieController {
 
 	@GetMapping("/find/")
 	public Flux<ArticleCategorie> getAllAll() {
-		return articleCategories.findAll();
+		return articleCategories.findAll().sort((a,b)->{
+			if(a.getOrder()>b.getOrder())
+				return 1;
+			else if(a.getOrder()<b.getOrder())
+				return -1;
+			else
+				return 0;
+		});
 	}
 
 	@GetMapping("/find/{idItem}")

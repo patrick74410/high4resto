@@ -33,8 +33,8 @@ public class Util {
 
     public static String encodeValue(String value) {
         value = unaccent(value);
-        value = value.replaceAll("\\p{Punct}", "");
-        value = value.replaceAll("\\s*,\\s*", "-").replaceAll("'", "-").toLowerCase();
+        value = value.replaceAll("\\p{Punct}", "-");
+        value = value.replaceAll("\\s+", "-").replaceAll("'", "-").toLowerCase();
 
         try {
             return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
