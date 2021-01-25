@@ -12,12 +12,13 @@ import fr.high4technology.high4resto.bean.Identite.IdentiteRepository;
 import fr.high4technology.high4resto.bean.Image.ImageRepository;
 import fr.high4technology.high4resto.bean.MetaTag.MetaTagRepository;
 import fr.high4technology.high4resto.bean.WebConfig.WebConfigRespository;
+import fr.high4technology.high4resto.Util.Variable;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/homePage")
+@RequestMapping("/"+Variable.apiPath+"/homePage")
 @RequiredArgsConstructor
 public class HomePageController {
     @Autowired

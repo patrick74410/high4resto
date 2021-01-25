@@ -11,6 +11,7 @@ import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
+import fr.high4technology.high4resto.Util.Variable;
 
 @Configuration
 public class ReactiveWebSocketConfiguration {
@@ -37,12 +38,12 @@ public class ReactiveWebSocketConfiguration {
     @Bean
     public HandlerMapping webSocketHandlerMapping() {
         Map<String, WebSocketHandler> map = new HashMap<>();
-        map.put("/api/canal/wineSteward", wineStewardCanal);
-        map.put("/api/canal/barWaiter", barWaiterCanal);
-        map.put("/api/canal/server", serverCanal);
-        map.put("/api/canal/hotCook", hotCookCanal);
-        map.put("/api/canal/coldCook", coldCookCanal);
-        map.put("/api/canal/cook", cookCanal);
+        map.put("/"+Variable.apiPath+"/canal/wineSteward", wineStewardCanal);
+        map.put("/"+Variable.apiPath+"/canal/barWaiter", barWaiterCanal);
+        map.put("/"+Variable.apiPath+"/canal/server", serverCanal);
+        map.put("/"+Variable.apiPath+"/canal/hotCook", hotCookCanal);
+        map.put("/"+Variable.apiPath+"/canal/coldCook", coldCookCanal);
+        map.put("/"+Variable.apiPath+"/canal/cook", cookCanal);
 
         SimpleUrlHandlerMapping handlerMapping = new SimpleUrlHandlerMapping();
         handlerMapping.setOrder(1);

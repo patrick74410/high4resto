@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.bean.Stock.StockRepository;
 import fr.high4technology.high4resto.bean.Stock.Stock;
+import fr.high4technology.high4resto.Util.Variable;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/itemCarte")
+@RequestMapping("/"+Variable.apiPath+"/itemCarte")
 @RequiredArgsConstructor
 public class ItemCarteController {
 	@Autowired

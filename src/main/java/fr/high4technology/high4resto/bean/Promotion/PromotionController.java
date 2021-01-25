@@ -18,9 +18,10 @@ import reactor.core.publisher.Mono;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import lombok.extern.slf4j.Slf4j;
+import fr.high4technology.high4resto.Util.Variable;
 
 @RestController
-@RequestMapping("/api/promotions")
+@RequestMapping("/"+Variable.apiPath+"/promotions")
 @RequiredArgsConstructor
 @Slf4j
 public class PromotionController {

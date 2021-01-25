@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.bean.Client.Client;
 import fr.high4technology.high4resto.bean.Client.ClientRepository;
+import fr.high4technology.high4resto.Util.Variable;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/authorize-me")
+@RequestMapping("/"+Variable.apiPath+"/authorize-me")
 @RequiredArgsConstructor
 public class SecurityUserController {
     private String securityKey = "7mvSDB5P@gr4_8A%tNB7wdBeI7YgHwSs47M5EIttjfYFN46tVUY8C1B5za06OzXP8pxinJIwdcK1";

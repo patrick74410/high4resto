@@ -25,10 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import fr.high4technology.high4resto.web.AuthenticationRequest;
+import fr.high4technology.high4resto.Util.Variable;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/"+Variable.apiPath+"/users")
 
 public class UserController {
 

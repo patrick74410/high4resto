@@ -25,6 +25,7 @@ import fr.high4technology.high4resto.bean.Identite.IdentiteRepository;
 import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarteRepository;
 import fr.high4technology.high4resto.bean.ItemCategorie.ItemCategorieRepository;
+import fr.high4technology.high4resto.Util.Variable;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -46,7 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/images")
+@RequestMapping("/"+Variable.apiPath+"/images")
 @RequiredArgsConstructor
 @Slf4j
 public class ImageController {

@@ -14,8 +14,10 @@ import reactor.core.publisher.Mono;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import fr.high4technology.high4resto.Util.Variable;
+
 @RestController
-@RequestMapping("/api/tva")
+@RequestMapping("/"+Variable.apiPath+"/tva")
 @RequiredArgsConstructor
 public class TvaController {
     @Autowired

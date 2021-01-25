@@ -20,9 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import fr.high4technology.high4resto.WebSocket.ServerCanalHandler;
 import fr.high4technology.high4resto.bean.ItemCarte.ItemCarteRepository;
 import lombok.extern.slf4j.Slf4j;
+import fr.high4technology.high4resto.Util.Variable;
 
 @RestController
-@RequestMapping("/api/allergene")
+@RequestMapping("/"+Variable.apiPath+"/allergene")
 @RequiredArgsConstructor
 @Slf4j
 public class AllergeneController {

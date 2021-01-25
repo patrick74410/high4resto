@@ -81,52 +81,6 @@ public class DataInitializer {
                                 data -> log.info("data:" + data), err -> log.error("error:" + err),
                                 () -> log.info("done initialization..."));
 
-                /* AtomicReference<Horaire> horaireC = new AtomicReference<Horaire>();
-
-
-                this.horaires.findAll().flatMap(horaires->{
-                        horaireC.set(horaires);
-                        return Mono.empty();
-                    }).then(stocks.findAll().collectList().flatMap(stocks -> {
-                        Commande commande = Commande.builder().items(new ArrayList<PreOrder>()).client("test")
-                                        .deleveryMode("click&collect").number(1).mandatory("demo").build();
-                        for (Stock stock : stocks) {
-                                PreOrder tp = PreOrder.builder().destination("outside").orderNumber("1").stock(stock)
-                                                .build();
-                                int r = (int) (Math.random() * 30);
-
-                                if(r==10)
-                                commande.getItems().add(tp);
-                        }
-                        for (PreOrder preOrder : commande.getItems()) {
-                                log.warn(preOrder.getStock().getItem().getName());
-                        }
-                        ItemPlaning planning=ItemPlaning.builder().id(Util.getStringSimpleDateNow()).a(horaireC.get().generatePlanning()).build();
-                        LinkedList<Double> commandeTrame= commande.generateMicroPlanning();
-                        int begin=12*60-commandeTrame.size();
-
-                        for(int i=begin;i!=planning.getA().length-commandeTrame.size();i++)
-                        {
-                            boolean goodPlace=true;
-                            for(int j=0;j!=commandeTrame.size();j++)
-                            {
-                                if(commandeTrame.get(j)+planning.getA()[i]>1.0)
-                                {
-                                    goodPlace=false;
-
-                                }
-                            }
-                            if(goodPlace)
-                            {
-                                int heure=(i+commandeTrame.size())/60;
-                                int minute=(i+commandeTrame.size())%60;
-                                log.warn(Integer.toString(heure)+":"+Integer.toString(minute));
-                                break;
-                            }
-                        }
-                        return Mono.just(commande);
-                })).subscribe();
-                */
         }
 
 }

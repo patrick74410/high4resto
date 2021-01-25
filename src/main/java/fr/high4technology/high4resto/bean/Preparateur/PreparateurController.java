@@ -31,13 +31,14 @@ import fr.high4technology.high4resto.bean.Tracability.Prepare.Prepare;
 import fr.high4technology.high4resto.bean.Tracability.Prepare.PrepareRepository;
 import fr.high4technology.high4resto.bean.Tracability.toPrepare.ToPrepare;
 import fr.high4technology.high4resto.bean.Tracability.toPrepare.ToPrepareRepository;
+import fr.high4technology.high4resto.Util.Variable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/preparateur")
+@RequestMapping("/"+Variable.apiPath+"/preparateur")
 @RequiredArgsConstructor
 @Slf4j
 public class PreparateurController {

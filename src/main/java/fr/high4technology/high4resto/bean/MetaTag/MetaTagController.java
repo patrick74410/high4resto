@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.bean.Struct.KeyMap;
+import fr.high4technology.high4resto.Util.Variable;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/metaTag")
+@RequestMapping("/"+Variable.apiPath+"/metaTag")
 @RequiredArgsConstructor
 
 public class MetaTagController {

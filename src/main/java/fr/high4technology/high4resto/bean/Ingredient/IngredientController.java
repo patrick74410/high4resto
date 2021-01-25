@@ -1,5 +1,7 @@
 package fr.high4technology.high4resto.bean.Ingredient;
 
+import fr.high4technology.high4resto.Util.Variable;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +17,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/ingredient")
+@RequestMapping("/"+Variable.apiPath+"/ingredient")
 @RequiredArgsConstructor
 public class IngredientController {
 	@Autowired

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.Util.Util;
+import fr.high4technology.high4resto.Util.Variable;
 import fr.high4technology.high4resto.bean.Article.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/articleCategorie")
+@RequestMapping("/"+Variable.apiPath+"/articleCategorie")
 @RequiredArgsConstructor
 @Slf4j
 public class ArticleCategorieController {

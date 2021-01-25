@@ -58,13 +58,14 @@ import fr.high4technology.high4resto.bean.commande.Commande;
 import fr.high4technology.high4resto.bean.commande.CommandeRepository;
 import fr.high4technology.high4resto.bean.table.Table;
 import fr.high4technology.high4resto.bean.table.TableRepository;
+import fr.high4technology.high4resto.Util.Variable;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 import fr.high4technology.high4resto.bean.Struct.ElementAnnonce;
 
 @RestController
-@RequestMapping("/api/serveur")
+@RequestMapping("/"+Variable.apiPath+"/serveur")
 @RequiredArgsConstructor
 public class ServeurController {
 

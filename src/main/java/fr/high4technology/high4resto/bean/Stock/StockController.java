@@ -29,9 +29,10 @@ import fr.high4technology.high4resto.bean.Tracability.ToDelivery.ToDelivery;
 import fr.high4technology.high4resto.bean.Tracability.Trash.Trash;
 import fr.high4technology.high4resto.bean.Tracability.Trash.TrashRepository;
 import fr.high4technology.high4resto.bean.Tracability.toPrepare.ToPrepare;
+import fr.high4technology.high4resto.Util.Variable;
 
 @RestController
-@RequestMapping("/api/stock")
+@RequestMapping("/"+Variable.apiPath+"/stock")
 @RequiredArgsConstructor
 public class StockController {
 

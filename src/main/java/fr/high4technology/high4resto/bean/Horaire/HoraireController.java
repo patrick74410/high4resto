@@ -15,11 +15,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import fr.high4technology.high4resto.Util.Variable;
 import fr.high4technology.high4resto.bean.Struct.BetweenTime;
 
 @RestController
-@RequestMapping("/api/horaire")
+@RequestMapping("/"+Variable.apiPath+"/horaire")
 @RequiredArgsConstructor
 public class HoraireController {
 

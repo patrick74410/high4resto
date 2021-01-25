@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.bean.Image.Image;
 import fr.high4technology.high4resto.bean.ImageCategorie.ImageCategorie;
+import fr.high4technology.high4resto.Util.Variable;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/webConfig")
+@RequestMapping("/"+Variable.apiPath+"/webConfig")
 @RequiredArgsConstructor
 public class WebConfigController {
 	@Autowired

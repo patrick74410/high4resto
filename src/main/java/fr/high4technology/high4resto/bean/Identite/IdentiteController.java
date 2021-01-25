@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.bean.Struct.KeyMap;
 import fr.high4technology.high4resto.bean.Struct.Gps;
+import fr.high4technology.high4resto.Util.Variable;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api/identite")
+@RequestMapping("/"+Variable.apiPath+"/identite")
 @RequiredArgsConstructor
 public class IdentiteController {
 	@Autowired

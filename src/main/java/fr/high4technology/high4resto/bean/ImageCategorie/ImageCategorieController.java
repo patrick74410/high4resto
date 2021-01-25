@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.high4technology.high4resto.bean.Image.ImageRepository;
+import fr.high4technology.high4resto.Util.Variable;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/imageCategorie")
+@RequestMapping("/"+Variable.apiPath+"/imageCategorie")
 @RequiredArgsConstructor
 @Slf4j
 public class ImageCategorieController {
